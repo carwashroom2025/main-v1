@@ -1,0 +1,349 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "title": "Find Your Perfect Ride",
+      "description": "Explore thousands of new and used cars from trusted dealers.",
+      "imageUrl": "https://images.unsplash.com/photo-1707399720697-b1d1502fac58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcG9ydHMlMjBjYXJ8ZW58MHx8fHwxNzU4NTg3NjU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sports car"
+    },
+    {
+      "id": "hero-2",
+      "title": "Quality Service Guaranteed",
+      "description": "Connect with top-rated mechanics and service centers near you.",
+      "imageUrl": "https://images.unsplash.com/photo-1471540161297-5ddd90d98af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBjYXJ8ZW58MHx8fHwxNzU4NTgyNDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern car"
+    },
+    {
+      "id": "hero-3",
+      "title": "Your Car, Your Way",
+      "description": "From detailing to modifications, find every service you need.",
+      "imageUrl": "https://images.unsplash.com/photo-1599474151975-1f978922fa02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjBtZWNoYW5pY3xlbnwwfHx8fDE3NTg1ODI0NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car mechanic"
+    },
+    {
+      "id": "category-car-wash",
+      "description": "Car being washed with soap and water",
+      "imageUrl": "https://imgs.search.brave.com/zB1jpwxX0Lew1awKk-zsiRwGOSpasAcQ8NitJ5f-rXk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA3LzMzLzc2LzU1/LzM2MF9GXzczMzc2/NTU2Nl9PY0hTMEc5/Tjd1dWZNUzZIODdp/N0JmdE5TV09PVHhU/ci5qcGc",
+      "imageHint": "car wash"
+    },
+    {
+      "id": "category-service-centers",
+      "description": "A professional auto service center",
+      "imageUrl": "https://images.unsplash.com/photo-1613214149922-f1809c99b414?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwc2VydmljZXxlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car service"
+    },
+    {
+      "id": "category-car-dealers",
+      "description": "A car dealership showroom",
+      "imageUrl": "https://images.unsplash.com/photo-1548618607-fe992dd33eff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXIlMjBzaG93cm9vbXxlbnwwfHx8fDE3NTg2OTc2MDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car showroom"
+    },
+    {
+      "id": "category-showrooms",
+      "description": "A modern car showroom with luxury cars",
+      "imageUrl": "https://images.unsplash.com/photo-1647200528173-8ba041352ff2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwc2hvd3Jvb218ZW58MHx8fHwxNzU4Njk3NjAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car showroom"
+    },
+    {
+      "id": "category-used-cars",
+      "description": "A lot of used cars for sale",
+      "imageUrl": "https://imgs.search.brave.com/jBz4h3cqY7WqUKenj8otfUdPzNzjJodoRl6YBxQtXHk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzEzLzY0LzY1LzQ1/LzM2MF9GXzEzNjQ2/NTQ1NzhfandPV0Ew/RXJheTc1dVZDN3Fk/U09WVlpxSTVQZVlK/OFEuanBn",
+      "imageHint": "car lot"
+    },
+    {
+      "id": "category-car-insurance",
+      "description": "A person signing an insurance document with a car key and model car on the desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dn",
+      "imageHint": "car insurance"
+    },
+    {
+      "id": "category-rent-a-car",
+      "description": "A person receiving car keys for a rental car",
+      "imageUrl": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZW50YWwlMjBjYXJ8ZW58MHx8fHwxNzU4ODE5NjEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rental car"
+    },
+    {
+      "id": "category-spare-parts",
+      "description": "Shelves with various car spare parts",
+      "imageUrl": "https://images.unsplash.com/photo-1429772011165-0c2e054367b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYXIlMjBwYXJ0c3xlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car parts"
+    },
+    {
+      "id": "category-modifiers",
+      "description": "Mechanic working on a car engine.",
+      "imageUrl": "https://images.unsplash.com/photo-1648438048841-79c1de22b81e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXIlMjBtb2RpZmljYXRpb258ZW58MHx8fHwxNzU4ODE5NjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car modification"
+    },
+    {
+      "id": "business-1",
+      "description": "The storefront of a premium auto detailer",
+      "imageUrl": "https://images.unsplash.com/photo-1619431856706-ca2cc58258f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdXRvJTIwZGV0YWlsaW5nfGVufDB8fHx8MTc1ODU4MjQ1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "auto detailing"
+    },
+    {
+      "id": "business-2",
+      "description": "An experienced mechanic working under a car",
+      "imageUrl": "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWNoYW5pY3xlbnwwfHx8fDE3NTg1ODI0NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mechanic"
+    },
+    {
+      "id": "business-3",
+      "description": "A friendly car salesman at a dealership",
+      "imageUrl": "https://images.unsplash.com/photo-1652454420939-c4a80fe071c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYXIlMjBzYWxlc21hbnxlbnwwfHx8fDE3NTg1ODI0NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car salesman"
+    },
+    {
+      "id": "blog-1",
+      "description": "A person changing a tire on the side of the road",
+      "imageUrl": "https://images.unsplash.com/photo-1541443131338-2c23c5c96abc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGFuZ2luZyUyMHRpcmV8ZW58MHx8fHwxNjU2NTk2NDYw&ixlib=rb-1.2.1&q=80&w=1080",
+      "imageHint": "changing tire"
+    },
+    {
+      "id": "blog-2",
+      "description": "The interior dashboard of a futuristic electric car",
+      "imageUrl": "https://images.unsplash.com/photo-1636763086471-9f29bc34ab9e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU4NTgyNDU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car interior"
+    },
+    {
+      "id": "blog-3",
+      "description": "A classic vintage car at a car show",
+      "imageUrl": "https://images.unsplash.com/photo-1587750059638-e7e8c43b99fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx2aW50YWdlJTIwY2FyfGVufDB8fHx8MTc1ODUwODE4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "vintage car"
+    },
+    {
+      "id": "blog-4",
+      "description": "Autonomous vehicle driving on a city street.",
+      "imageUrl": "https://images.unsplash.com/photo-1650699060601-a5040b8716f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhdXRvbm9tb3VzJTIwdmVoaWNsZXxlbnwwfHx8fDE3NTg1OTAxNTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "autonomous vehicle"
+    },
+    {
+      "id": "blog-5",
+      "description": "A person polishing a black car.",
+      "imageUrl": "https://images.unsplash.com/photo-1620584898989-d39f7f9ed1b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYXIlMjBkZXRhaWxpbmd8ZW58MHx8fHwxNzU4NTkyNjI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car detailing"
+    },
+    {
+      "id": "blog-6",
+      "description": "A lineup of different colored SUVs.",
+      "imageUrl": "https://images.unsplash.com/photo-1654439034729-e95ca170bf0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdXYlMjBsaW5ldXB8ZW58MHx8fHwxNzU4NjAzOTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "suv lineup"
+    },
+    {
+      "id": "blog-7",
+      "description": "A set of mechanic tools.",
+      "imageUrl": "https://images.unsplash.com/photo-1602267774924-38124c047174?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWNoYW5pYyUyMHRvb2xzfGVufDB8fHx8MTc1ODYwMzk1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mechanic tools"
+    },
+    {
+      "id": "blog-8",
+      "description": "A hydrogen fuel pump and an electric car charger.",
+      "imageUrl": "https://images.unsplash.com/photo-1744740606226-c255367b942e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aHlkcm9nZW4lMjBlbGVjdHJpY3xlbnwwfHx8fDE3NTg2MDM5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hydrogen electric"
+    },
+    {
+      "id": "blog-9",
+      "description": "A classic Ford Mustang in a garage.",
+      "imageUrl": "https://images.unsplash.com/photo-1564435148079-9933cfd96b6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjbGFzc2ljJTIwbXVzdGFuZ3xlbnwwfHx8fDE3NTg2MDM5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classic mustang"
+    },
+    {
+      "id": "blog-10",
+      "description": "An OBD-II scanner connected to a car.",
+      "imageUrl": "https://images.unsplash.com/photo-1706304003186-61fa7521c236?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxvYmQlMjBzY2FubmVyfGVufDB8fHx8MTc1ODYwMzk1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "obd scanner"
+    },
+    {
+      "id": "blog-11",
+      "description": "A car driving safely in traffic.",
+      "imageUrl": "https://images.unsplash.com/photo-1518275844767-6639632e106b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzYWZlJTIwZHJpdmluZ3xlbnwwfHx8fDE3NTg2MDM5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "safe driving"
+    },
+    {
+      "id": "blog-12",
+      "description": "A document that says 'Extended Warranty'.",
+      "imageUrl": "https://images.unsplash.com/photo-1707779491283-4989f727825f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYXIlMjB3YXJyYW50eXxlbnwwfHx8fDE3NTg2MDM5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car warranty"
+    },
+    {
+      "id": "blog-13",
+      "description": "A car driving on a scenic road.",
+      "imageUrl": "https://images.unsplash.com/photo-1569916385763-5f248d0f04c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cm9hZCUyMHRyaXB8ZW58MHx8fHwxNzU4NjAzMzcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "road trip"
+    },
+    {
+      "id": "author-1",
+      "description": "Portrait of a man in a white polo shirt and black cap",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/person.jpg",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "gallery-1",
+      "description": "Car headlight",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-1-1-150x150.jpg",
+      "imageHint": "car headlight"
+    },
+    {
+      "id": "gallery-2",
+      "description": "Car wheel",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-2-150x150.jpg",
+      "imageHint": "car wheel"
+    },
+    {
+      "id": "gallery-3",
+      "description": "Car front grill",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-3-150x150.jpg",
+      "imageHint": "car grill"
+    },
+    {
+      "id": "gallery-4",
+      "description": "Car dashboard speedometer",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-4-150x150.jpg",
+      "imageHint": "car speedometer"
+    },
+    {
+      "id": "gallery-5",
+      "description": "Car steering wheel",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-5-150x150.jpg",
+      "imageHint": "steering wheel"
+    },
+    {
+      "id": "gallery-6",
+      "description": "Car tail light",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-6-150x150.jpg",
+      "imageHint": "car taillight"
+    },
+    {
+      "id": "ad-car",
+      "description": "Red car for an advertisement",
+      "imageUrl": "https://wgl-dsites.net/wp-content/uploads/2024/05/car-2-1.png",
+      "imageHint": "red car"
+    },
+    {
+      "id": "vehicle-1",
+      "description": "Black Mercedes-Benz S-Class",
+      "imageUrl": "https://images.unsplash.com/photo-1617814076231-2c58846db944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxibGFjayUyMG1lcmNlZGVzfGVufDB8fHx8MTc1ODU4NjY5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black mercedes"
+    },
+    {
+      "id": "vehicle-2",
+      "description": "Red Land Rover Discovery",
+      "imageUrl": "https://images.unsplash.com/photo-1634888253476-91d22c195c95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyZWQlMjBsYW5kLXJvdmVyfGVufDB8fHx8MTc1ODU4NjY5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red land-rover"
+    },
+    {
+      "id": "vehicle-3",
+      "description": "Silver BMW X6 2023",
+      "imageUrl": "https://images.unsplash.com/photo-1599833093633-c67d2fa30822?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzaWx2ZXIlMjBibXd8ZW58MHx8fHwxNzU4NTg2Njk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silver bmw"
+    },
+    {
+      "id": "vehicle-4",
+      "description": "Blue BMW M8 Gran Coupe",
+      "imageUrl": "https://images.unsplash.com/photo-1597858520924-940b26c8170d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxibHVlJTIwYm13fGVufDB8fHx8MTc1ODU4NjY5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blue bmw"
+    },
+    {
+      "id": "vehicle-5",
+      "description": "White Audi A8 2022",
+      "imageUrl": "https://images.unsplash.com/photo-1682351963603-5e033fa29b2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGl0ZSUyMGF1ZGl8ZW58MHx8fHwxNzU4NTg2Njk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white audi"
+    },
+    {
+      "id": "vehicle-6",
+      "description": "Red Volvo XC40 Recharge",
+      "imageUrl": "https://images.unsplash.com/photo-1615458692470-dd8e7cb6e7d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxyZWQlMjB2b2x2b3xlbnwwfHx8fDE3NTg1ODY2OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red volvo"
+    },
+    {
+      "id": "vehicle-7",
+      "description": "Grey Porsche 911 Carrera",
+      "imageUrl": "https://images.unsplash.com/photo-1673075344642-f1154db41bc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3JleSUyMHBvcnNjaGV8ZW58MHx8fHwxNzU4NTkyMjU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "grey porsche"
+    },
+    {
+      "id": "vehicle-8",
+      "description": "Red Ford Mustang GT",
+      "imageUrl": "https://images.unsplash.com/photo-1560402974-0748b8635ac7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZWQlMjBtdXN0YW5nfGVufDB8fHx8MTc1ODU5MjI1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red mustang"
+    },
+    {
+      "id": "vehicle-9",
+      "description": "White Tesla Model 3",
+      "imageUrl": "https://images.unsplash.com/photo-1692806224359-9cf5ae2df1aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3aGl0ZSUyMHRlc2xhfGVufDB8fHx8MTc1ODU5MjI1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white tesla"
+    },
+    {
+      "id": "vehicle-10",
+      "description": "Black Jeep Wrangler Rubicon",
+      "imageUrl": "https://images.unsplash.com/photo-1736508835022-3f4a1eb1f274?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMGplZXB8ZW58MHx8fHwxNzU4NTkyMjU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black jeep"
+    },
+    {
+      "id": "offer-dealer",
+      "description": "Front view of a modern black sports car",
+      "imageUrl": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "black car"
+    },
+    {
+      "id": "offer-financing",
+      "description": "Interior of a car showing the steering wheel and dashboard",
+      "imageUrl": "https://images.unsplash.com/photo-1563729548-e43944a68735?q=80&w=1974&auto=format&fit=crop",
+      "imageHint": "car interior"
+    },
+    {
+      "id": "offer-service",
+      "description": "Front view of a red luxury sports car",
+      "imageUrl": "https://images.unsplash.com/photo-1616422285853-2b073a9de281?q=80&w=1974&auto=format&fit=crop",
+      "imageHint": "red car"
+    },
+    {
+      "id": "offer-tradein",
+      "description": "Rear view of a grey sports car with a carbon fiber spoiler",
+      "imageUrl": "https://images.unsplash.com/photo-1604134789233-a1b92494943a?q=80&w=1964&auto=format&fit=crop",
+      "imageHint": "sports car"
+    },
+    {
+      "id": "vehicle-gallery-1",
+      "description": "Sleek silver sports car from the front",
+      "imageUrl": "https://images.unsplash.com/photo-1701338070453-81d0cfa0ee80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzaWx2ZXIlMjBjYXJ8ZW58MHx8fHwxNzU4NTgyMjMzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silver car"
+    },
+    {
+      "id": "vehicle-gallery-2",
+      "description": "Front view of the silver car",
+      "imageUrl": "https://images.unsplash.com/photo-1523983519351-ab98a0abe560?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYXIlMjBmcm9udHxlbnwwfHx8fDE3NTg1OTY5MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car front"
+    },
+    {
+      "id": "vehicle-gallery-3",
+      "description": "Rear view of the silver car",
+      "imageUrl": "https://images.unsplash.com/photo-1592163964712-9b710489ee54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjByZWFyfGVufDB8fHx8MTc1ODU5NjkwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car rear"
+    },
+    {
+      "id": "vehicle-gallery-4",
+      "description": "Interior view of the car's dashboard and steering wheel",
+      "imageUrl": "https://images.unsplash.com/photo-1606224103857-e4c74b0139df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXIlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NTg1ODI0NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car interior"
+    },
+    {
+      "id": "vehicle-gallery-5",
+      "description": "Close-up of the car's wheel and rim",
+      "imageUrl": "https://images.unsplash.com/photo-1621712151262-60bd142ba19f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXIlMjB3aGVlbHxlbnwwfHx8fDE3NTg1ODg1Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car wheel"
+    },
+    {
+      "id": "map-placeholder",
+      "description": "A placeholder map of a city.",
+      "imageUrl": "https://images.unsplash.com/photo-1717343823307-973d0903d222?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODU4MzIxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "city map"
+    },
+    {
+      "id": "others-category",
+      "description": "Man washing a car",
+      "imageUrl": "https://images.unsplash.com/photo-1633990308758-b26aada5804e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXIlMjB0b29sc3xlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car tools"
+    }
+  ]
+}
