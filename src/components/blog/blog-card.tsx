@@ -130,17 +130,17 @@ export function BlogCard({ post, priority = false }: BlogCardProps) {
           <p className="text-muted-foreground mb-4 line-clamp-2 flex-grow">{post.excerpt}</p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground mt-auto">
               <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                  <User className="mr-2 h-4 w-4" />
                   <span>{post.author}</span>
               </div>
               <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="mr-2 h-4 w-4" />
                   <span>{format(new Date(post.date), 'MMMM d, yyyy')}</span>
               </div>
           </div>
         </CardContent>
       </Card>
-       {canManagePost && (
+      {canManagePost && (
             <BlogPostForm
                 isOpen={isFormOpen}
                 setIsOpen={setIsFormOpen}
