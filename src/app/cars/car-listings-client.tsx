@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { vehicleBrands, vehicleTypes, vehicleYears } from '@/lib/car-data';
 import {
@@ -25,63 +25,53 @@ import { getCars } from '@/lib/firebase/firestore';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ListCarButton } from '@/components/cars/list-car-button';
+import { Timestamp } from 'firebase/firestore';
 
 const ITEMS_PER_PAGE = 9;
 
-export function CarListingsClient() {
+export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicle[] }) {
   const searchParams = useSearchParams();
-  const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    brand: 'all',
-    type: 'all',
-    year: 'all',
-  });
+  const [allVehicles, setAllVehicles] = useState<Vehicle[]>(initialVehicles);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  
+  const brand = searchParams.get('brand') || 'all';
+  const type = searchParams.get('type') || 'all';
+  const year = searchParams.get('year') || 'all';
 
   const fetchCars = async () => {
     setLoading(true);
-    const { vehicles } = await getCars();
-    setAllVehicles(vehicles);
+    const { vehicles } = await getCars({all: true});
+    const serializedVehicles = vehicles.map(v => ({
+      ...v,
+      createdAt: v.createdAt ? (v.createdAt as Timestamp).toDate().toISOString() : undefined,
+    })) as Vehicle[];
+    setAllVehicles(serializedVehicles);
     setLoading(false);
   }
-
-  useEffect(() => {
-    fetchCars();
-  }, []);
 
   const onCarListed = () => {
     fetchCars();
   }
 
   useEffect(() => {
-    setFilters({
-      brand: searchParams.get('brand') || 'all',
-      type: searchParams.get('type') || 'all',
-      year: searchParams.get('year') || 'all',
-    });
     setCurrentPage(1);
-  }, [searchParams]);
+  }, [brand, type, year]);
 
-  const handleFilterChange = (filterName: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [filterName]: value }));
-    setCurrentPage(1); // Reset to first page on filter change
-  };
-
-  const filteredVehicles = allVehicles.filter((vehicle) => {
+  const filteredVehicles = useMemo(() => allVehicles.filter((vehicle) => {
     return (
-      (filters.brand === 'all' || vehicle.make === filters.brand) &&
-      (filters.type === 'all' || vehicle.bodyType === filters.type) &&
-      (filters.year === 'all' || vehicle.year.toString() === filters.year)
+      (brand === 'all' || vehicle.make === brand) &&
+      (type === 'all' || vehicle.bodyType === type) &&
+      (year === 'all' || vehicle.year.toString() === year)
     );
-  });
+  }), [allVehicles, brand, type, year]);
 
   const totalPages = Math.ceil(filteredVehicles.length / ITEMS_PER_PAGE);
 
-  const currentVehicles = filteredVehicles.slice(
+  const currentVehicles = useMemo(() => filteredVehicles.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
-  );
+  ), [filteredVehicles, currentPage]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -89,33 +79,16 @@ export function CarListingsClient() {
     }
   };
 
-  if (loading) {
-    return (
-        <>
-            <div className="bg-card p-6 rounded-lg shadow-md mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Skeleton className="h-80 w-full" />
-                <Skeleton className="h-80 w-full" />
-                <Skeleton className="h-80 w-full" />
-                <Skeleton className="h-80 w-full" />
-                <Skeleton className="h-80 w-full" />
-                <Skeleton className="h-80 w-full" />
-            </div>
-        </>
-    );
-  }
-
   return (
     <>
       <div className="bg-card p-6 rounded-lg shadow-md mb-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-            <Select value={filters.brand} onValueChange={(value) => handleFilterChange('brand', value)}>
+            <Select value={brand} onValueChange={(value) => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (value === 'all') params.delete('brand'); else params.set('brand', value);
+                window.history.pushState(null, '', `?${params.toString()}`);
+                // This will trigger a re-render and the useEffect will catch the change
+            }}>
                 <SelectTrigger>
                 <SelectValue placeholder="Brand" />
                 </SelectTrigger>
@@ -126,7 +99,11 @@ export function CarListingsClient() {
                 ))}
                 </SelectContent>
             </Select>
-            <Select value={filters.type} onValueChange={(value) => handleFilterChange('type', value)}>
+            <Select value={type} onValueChange={(value) => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (value === 'all') params.delete('type'); else params.set('type', value);
+                window.history.pushState(null, '', `?${params.toString()}`);
+            }}>
                 <SelectTrigger>
                 <SelectValue placeholder="Type" />
                 </SelectTrigger>
@@ -137,7 +114,11 @@ export function CarListingsClient() {
                 ))}
                 </SelectContent>
             </Select>
-            <Select value={filters.year} onValueChange={(value) => handleFilterChange('year', value)}>
+            <Select value={year} onValueChange={(value) => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (value === 'all') params.delete('year'); else params.set('year', value);
+                window.history.pushState(null, '', `?${params.toString()}`);
+            }}>
                 <SelectTrigger>
                 <SelectValue placeholder="Year" />
                 </SelectTrigger>
@@ -152,11 +133,22 @@ export function CarListingsClient() {
             </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
-            ))}
-        </div>
+        {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-80 w-full" />
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {currentVehicles.map((vehicle) => (
+                <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                ))}
+            </div>
+        )}
 
         {totalPages > 1 && (
             <div className="mt-12">
@@ -201,4 +193,3 @@ export function CarListingsClient() {
     </>
   );
 }
-
