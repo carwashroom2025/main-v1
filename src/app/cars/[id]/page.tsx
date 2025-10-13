@@ -171,7 +171,12 @@ export default async function CarDetailPage({ params }: { params: { id: string }
   const toISODate = (date: Timestamp | string | undefined) => {
     if (!date) return undefined;
     if (typeof date === 'string') return date;
-    if ('toDate' in date) return date.toDate().toISOString();
+    // Check if it's a Firestore Timestamp
+    if (typeof date === 'object' && 'toDate' in date && typeof date.toDate === 'function') {
+      return date.toDate().toISOString();
+    }
+    // If it's some other object or just not what we expect, we can't convert it.
+    // Depending on requirements, you might want to return a default or throw an error.
     return undefined;
   };
 
@@ -252,8 +257,9 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                     <CardContent>
                         {vehicle.price > 0 && (
                             <div className="bg-primary/10 border-2 border-dashed border-primary/50 text-primary p-4 rounded-lg text-center mb-6">
-                                <p className="text-sm font-semibold">PRICE</p>
+                                <p className="text-sm font-semibold">PRICE (USD)</p>
                                 <p className="text-3xl font-bold">${vehicle.price.toLocaleString()}</p>
+                                <p className="text-xs text-primary/80 mt-1">Price may vary by country.</p>
                             </div>
                         )}
                         <div className="space-y-1">
