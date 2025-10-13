@@ -121,10 +121,12 @@ function OverviewItem({ label, value, icon }: { label: string; value?: string | 
     const Icon = icon;
     if (!value) return null;
     return (
-        <div className="flex flex-col items-center justify-center rounded-lg border p-4 text-center">
-            <Icon className="h-8 w-8 text-primary mb-2" />
-            <p className="font-bold text-lg">{value}</p>
-            <p className="text-xs text-muted-foreground">{label}</p>
+        <div className="flex items-center justify-between border-b py-3 text-sm">
+            <div className="flex items-center gap-2">
+                <Icon className="h-4 w-4 text-muted-foreground" />
+                <p className="text-muted-foreground">{label}</p>
+            </div>
+            <p className="font-semibold">{value}</p>
         </div>
     )
 }
@@ -181,7 +183,6 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     { label: "Make", value: vehicle.make, icon: iconMap.make },
     { label: "Model", value: vehicle.model, icon: iconMap.model },
     { label: "Year", value: vehicle.year, icon: iconMap.year },
-    { label: 'Price', value: vehicle.price ? `$${vehicle.price.toLocaleString()}` : 'N/A', icon: iconMap.price },
     { label: "Body Type", value: vehicle.bodyType, icon: iconMap.bodyType },
     { label: "Drive Type", value: vehicle.driveType, icon: iconMap.driveType },
     { label: "Fuel Type", value: vehicle.fuelType, icon: iconMap.fuelType },
@@ -242,8 +243,16 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                     <CardHeader>
                         <CardTitle>Overview</CardTitle>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-2 gap-4">
-                        {overview.map(spec => <OverviewItem key={spec.label} {...spec} />)}
+                    <CardContent>
+                        {vehicle.price > 0 && (
+                            <div className="bg-primary/10 border-2 border-dashed border-primary/50 text-primary p-4 rounded-lg text-center mb-6">
+                                <p className="text-sm font-semibold">PRICE</p>
+                                <p className="text-3xl font-bold">${vehicle.price.toLocaleString()}</p>
+                            </div>
+                        )}
+                        <div className="space-y-1">
+                             {overview.map(spec => <OverviewItem key={spec.label} {...spec} />)}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
