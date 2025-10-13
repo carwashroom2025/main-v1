@@ -256,10 +256,10 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                     </CardHeader>
                     <CardContent>
                         {vehicle.price > 0 && (
-                            <div className="bg-primary/10 border-2 border-dashed border-primary/50 text-primary p-4 rounded-lg text-center mb-6">
-                                <p className="text-sm font-semibold">PRICE (USD)</p>
-                                <p className="text-3xl font-bold">${vehicle.price.toLocaleString()}</p>
-                                <p className="text-xs text-primary/80 mt-1">Price may vary by country.</p>
+                            <div className="bg-muted p-4 rounded-lg text-center mb-6">
+                                <p className="text-sm font-semibold text-muted-foreground">PRICE (USD)</p>
+                                <p className="text-3xl font-bold text-foreground">${vehicle.price.toLocaleString()}</p>
+                                <p className="text-xs text-muted-foreground/80 mt-1">Price may vary by country.</p>
                             </div>
                         )}
                         <div className="space-y-1">
