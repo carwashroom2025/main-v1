@@ -31,10 +31,10 @@ export function ServiceListings({
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [businessListings, setBusinessListings] = useState<Business[]>(initialBusinessListings);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
 
   const selectedCategories = searchParams.get('categories')?.split(',') || [];
   const selectedCountry = searchParams.get('country') || 'all';
-  const finalSearchTerm = searchParams.get('q') || '';
   const sortBy = searchParams.get('sort') || 'date-desc';
 
   const onBusinessListed = async () => {
@@ -48,7 +48,8 @@ export function ServiceListings({
   
   useEffect(() => {
     setCurrentPage(1);
-  }, [finalSearchTerm, selectedCategories, selectedCountry, sortBy]);
+    setSearchTerm(searchParams.get('q') || '');
+  }, [searchParams]);
 
   const filteredListings = businessListings
     .filter((listing) => {
@@ -61,9 +62,8 @@ export function ServiceListings({
         selectedCountry === 'all' ||
         listing.location.includes(selectedCountry);
       const searchMatch =
-        !finalSearchTerm ||
-        listing.title.toLowerCase().includes(finalSearchTerm.toLowerCase()) ||
-        listing.description.toLowerCase().includes(finalSearchTerm.toLowerCase());
+        !searchTerm ||
+        listing.title.toLowerCase().startsWith(searchTerm.toLowerCase());
       return categoryMatch && countryMatch && searchMatch;
     })
     .sort((a, b) => {
