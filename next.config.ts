@@ -46,6 +46,12 @@ const nextConfig: NextConfig = {
         hostname: 'imgs.search.brave.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
