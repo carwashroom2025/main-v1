@@ -609,10 +609,13 @@ export async function getCars({ page = 1, limit = 9, sortBy = 'createdAt-desc', 
 
     // Client-side sorting
     allCars.sort((a, b) => {
+        const timeA = a.createdAt ? (a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime()) : 0;
+        const timeB = b.createdAt ? (b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime()) : 0;
+
         if (sortBy === 'createdAt-asc') {
-            return (a.createdAt?.toMillis() || 0) - (b.createdAt?.toMillis() || 0);
+            return timeA - timeB;
         }
-        return (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0);
+        return timeB - timeA;
     });
 
     const totalCount = allCars.length;
@@ -1200,4 +1203,5 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
+
 
