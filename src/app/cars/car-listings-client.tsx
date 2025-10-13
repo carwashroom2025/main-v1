@@ -81,8 +81,11 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   return (
     <>
+      <div className="flex justify-end mb-4">
+        <ListCarButton onCarListed={onCarListed} />
+      </div>
       <div className="bg-card p-6 rounded-lg shadow-md mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             <Select value={brand} onValueChange={(value) => {
                 const params = new URLSearchParams(searchParams.toString());
                 if (value === 'all') params.delete('brand'); else params.set('brand', value);
@@ -129,7 +132,6 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
                 ))}
                 </SelectContent>
             </Select>
-            <ListCarButton onCarListed={onCarListed} />
             </div>
         </div>
 
