@@ -73,11 +73,13 @@ export function AdminDashboard() {
 
   const [chartData, setChartData] = useState<any[]>([]);
   const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [chartLoading, setChartLoading] = useState(true);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchDashboardData() {
+    async function fetchStats() {
+      setStatsLoading(true);
       try {
         const [
           usersCount,
@@ -86,8 +88,6 @@ export function AdminDashboard() {
           blogPostsCount,
           pendingListingsCount,
           reviewsCount,
-          monthlyUsers,
-          activities,
         ] = await Promise.all([
           getUsersCount(),
           getBusinessesCount(),
@@ -95,10 +95,7 @@ export function AdminDashboard() {
           getBlogPostsCount(),
           getPendingListingsCount(),
           getReviewsCount(),
-          getMonthlyUserRegistrations(),
-          getRecentActivities(5),
         ]);
-        
         setStats({
           users: usersCount,
           businesses: businessesCount,
@@ -107,31 +104,51 @@ export function AdminDashboard() {
           pendingListings: pendingListingsCount,
           reviews: reviewsCount,
         });
-
-        setRecentActivities(activities);
-
-        if (monthlyUsers.length > 0) {
-            setChartData(monthlyUsers);
-        } else {
-            setChartData([
-                { month: 'January', users: 0 },
-                { month: 'February', users: 0 },
-                { month: 'March', users: 0 },
-                { month: 'April', users: 0 },
-                { month: 'May', users: 0 },
-                { month: 'June', users: 0 },
-            ]);
-        }
-
       } catch (error) {
         console.error("Failed to fetch dashboard stats:", error);
       } finally {
-        setLoading(false);
-        setActivitiesLoading(false);
+        setStatsLoading(false);
       }
     }
+    
+    async function fetchChartData() {
+        setChartLoading(true);
+        try {
+            const monthlyUsers = await getMonthlyUserRegistrations();
+            if (monthlyUsers.length > 0) {
+                setChartData(monthlyUsers);
+            } else {
+                setChartData([
+                    { month: 'January', users: 0 },
+                    { month: 'February', users: 0 },
+                    { month: 'March', users: 0 },
+                    { month: 'April', users: 0 },
+                    { month: 'May', users: 0 },
+                    { month: 'June', users: 0 },
+                ]);
+            }
+        } catch (error) {
+            console.error("Failed to fetch chart data:", error);
+        } finally {
+            setChartLoading(false);
+        }
+    }
 
-    fetchDashboardData();
+    async function fetchActivities() {
+        setActivitiesLoading(true);
+        try {
+            const activities = await getRecentActivities(5);
+            setRecentActivities(activities);
+        } catch (error) {
+            console.error("Failed to fetch recent activities:", error);
+        } finally {
+            setActivitiesLoading(false);
+        }
+    }
+
+    fetchStats();
+    fetchChartData();
+    fetchActivities();
   }, []);
   
   const getActivityLink = (activity: Activity) => {
@@ -177,7 +194,7 @@ export function AdminDashboard() {
                 <CardDescription>New user sign-ups over the last 6 months.</CardDescription>
             </CardHeader>
             <CardContent>
-                {loading ? (
+                {chartLoading ? (
                     <Skeleton className="h-[250px] w-full" />
                 ) : (
                  <ChartContainer config={chartConfig} className="h-[250px] w-full">
