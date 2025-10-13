@@ -50,7 +50,7 @@ export function ListBusiness({ onBusinessListed }: ListBusinessProps) {
             return;
         }
 
-        if (['Member', 'Admin', 'Owner'].includes(user.role)) {
+        if (['Member', 'Admin', 'Owner', 'Author'].includes(user.role)) {
             setIsFormOpen(true);
         } else {
             setIsAlertOpen(true);

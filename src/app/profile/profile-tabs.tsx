@@ -58,7 +58,7 @@ export default function ProfileTabs() {
 
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'profile';
-  const isMember = user && ['Member', 'Admin', 'Owner'].includes(user.role);
+  const isMember = user && ['Member', 'Admin', 'Owner', 'Author'].includes(user.role);
 
   useEffect(() => {
     if (user && isMember) {
