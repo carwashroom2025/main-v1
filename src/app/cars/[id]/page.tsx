@@ -168,15 +168,21 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     createdAt: (review.createdAt as Timestamp).toDate().toISOString(),
   }));
 
+  const toISODate = (date: Timestamp | string | undefined) => {
+    if (!date) return undefined;
+    if (typeof date === 'string') return date;
+    if ('toDate' in date) return date.toDate().toISOString();
+    return undefined;
+  };
 
   const serializableVehicle = {
     ...vehicle,
-    createdAt: vehicle.createdAt ? (vehicle.createdAt as Timestamp).toDate().toISOString() : undefined,
+    createdAt: toISODate(vehicle.createdAt),
   };
   
   const serializableSimilarCars = similarCars.map(car => ({
       ...car,
-      createdAt: car.createdAt ? (car.createdAt as Timestamp).toDate().toISOString() : undefined,
+      createdAt: toISODate(car.createdAt),
   }));
 
   const overview = [
