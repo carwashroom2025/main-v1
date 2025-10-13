@@ -36,9 +36,6 @@ export default function CarsPage() {
 function CarListingsSkeleton() {
     return (
         <>
-            <div className="flex justify-end mb-8">
-              <Skeleton className="h-12 w-40" />
-            </div>
             <Skeleton className="h-32 w-full mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <Skeleton className="h-80 w-full" />

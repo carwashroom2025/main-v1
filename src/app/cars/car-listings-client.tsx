@@ -23,7 +23,6 @@ import {
 import type { Vehicle } from '@/lib/types';
 import { getCars } from '@/lib/firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ListCarButton } from '@/components/cars/list-car-button';
 import { toISODate } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -68,21 +67,6 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
     updateURL('q', '');
   }
 
-  const fetchCars = async () => {
-    setLoading(true);
-    const { vehicles } = await getCars({all: true});
-    const serializedVehicles = vehicles.map(v => ({
-      ...v,
-      createdAt: toISODate(v.createdAt),
-    })) as Vehicle[];
-    setAllVehicles(serializedVehicles);
-    setLoading(false);
-  }
-
-  const onCarListed = () => {
-    fetchCars();
-  }
-
   useEffect(() => {
     setCurrentPage(1);
   }, [brand, type, year, searchTerm]);
@@ -111,9 +95,6 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   return (
     <>
-      <div className="flex justify-end mb-8">
-        <ListCarButton onCarListed={onCarListed} />
-      </div>
       <Card className="mb-8">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">

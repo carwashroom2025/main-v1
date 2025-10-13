@@ -366,5 +366,3 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
     </Dialog>
   );
 }
-
-    
