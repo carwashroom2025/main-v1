@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -24,23 +24,63 @@ type ServiceFiltersProps = {
   fetchBusinessesAction: () => Promise<any>;
 };
 
+// Debounce hook
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Derive state directly from searchParams to avoid hydration issues
-  const searchTerm = searchParams.get('q') || '';
+  // State for the input field, updated immediately
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+  
+  // Debounced value that will be used to trigger the search
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
   const selectedCategories = searchParams.get('categories') || 'all';
   const selectedCountry = searchParams.get('country') || 'all';
   const sortBy = searchParams.get('sort') || 'date-desc';
 
-  const [currentSearchTerm, setCurrentSearchTerm] = useState(searchTerm);
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    setCurrentSearchTerm(searchParams.get('q') || '');
+    // Sync the input field if the URL changes from external navigation
+    setSearchTerm(searchParams.get('q') || '');
   }, [searchParams]);
+
+  const updateURL = useCallback((key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value && value !== 'all') {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }, [searchParams, pathname, router]);
+
+  useEffect(() => {
+    // Only trigger search when the debounced value changes
+    // and it's different from the current URL param to avoid unnecessary pushes
+    if (debouncedSearchTerm !== searchParams.get('q')) {
+       updateURL('q', debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, searchParams, updateURL]);
+
 
   useEffect(() => {
     if (categories) {
@@ -56,24 +96,8 @@ export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFil
     }
   }, [categories]);
 
-  const handleSearch = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (currentSearchTerm) {
-      params.set('q', currentSearchTerm);
-    } else {
-      params.delete('q');
-    }
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
   const handleFilterChange = (filterName: 'categories' | 'country' | 'sort', value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === 'all' || !value) {
-      params.delete(filterName);
-    } else {
-      params.set(filterName, value);
-    }
-    router.push(`${pathname}?${params.toString()}`);
+    updateURL(filterName, value);
   };
 
   return (
@@ -90,11 +114,8 @@ export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFil
                         type="text"
                         placeholder="Search for a Service..."
                         className="pl-10 h-12"
-                        value={currentSearchTerm}
-                        onChange={(e) => setCurrentSearchTerm(e.target.value)}
-                        onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSearch();
-                        }}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     </div>
                     <Select value={selectedCategories} onValueChange={(value) => handleFilterChange('categories', value)}>
