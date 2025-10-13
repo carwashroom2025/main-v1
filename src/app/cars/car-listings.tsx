@@ -4,7 +4,6 @@ import { CarListingsClient } from './car-listings-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCars } from '@/lib/firebase/firestore';
 import type { Vehicle } from '@/lib/types';
-import { Timestamp } from 'firebase/firestore';
 import { toISODate } from '@/lib/utils';
 
 async function fetchInitialCars(): Promise<Vehicle[]> {
@@ -22,14 +21,10 @@ export default async function CarListings() {
   function CarListingsSkeleton() {
     return (
         <>
-            <div className="bg-card p-6 rounded-lg shadow-md mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                </div>
+            <div className="flex justify-end mb-8">
+              <Skeleton className="h-12 w-40" />
             </div>
+            <Skeleton className="h-32 w-full mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <Skeleton className="h-80 w-full" />
                 <Skeleton className="h-80 w-full" />

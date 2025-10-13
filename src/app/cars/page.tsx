@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { Suspense } from 'react';
 import CarListings from './car-listings';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ListCarButton } from '@/components/cars/list-car-button';
 
 export default function CarsPage() {
   return (
@@ -37,13 +36,10 @@ export default function CarsPage() {
 function CarListingsSkeleton() {
     return (
         <>
-            <div className="bg-card p-6 rounded-lg shadow-md mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                </div>
+            <div className="flex justify-end mb-8">
+              <Skeleton className="h-12 w-40" />
             </div>
+            <Skeleton className="h-32 w-full mb-8" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <Skeleton className="h-80 w-full" />
                 <Skeleton className="h-80 w-full" />
@@ -55,4 +51,3 @@ function CarListingsSkeleton() {
         </>
     )
 }
-

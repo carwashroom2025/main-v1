@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { vehicleBrands, vehicleTypes, vehicleYears } from '@/lib/car-data';
 import {
   Select,
@@ -22,17 +22,21 @@ import {
 } from '@/components/ui/pagination';
 import type { Vehicle } from '@/lib/types';
 import { getCars } from '@/lib/firebase/firestore';
-import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ListCarButton } from '@/components/cars/list-car-button';
-import { Timestamp } from 'firebase/firestore';
 import { toISODate } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Search, X } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 9;
 
 export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicle[] }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  
   const [allVehicles, setAllVehicles] = useState<Vehicle[]>(initialVehicles);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,6 +44,29 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
   const brand = searchParams.get('brand') || 'all';
   const type = searchParams.get('type') || 'all';
   const year = searchParams.get('year') || 'all';
+  const searchTerm = searchParams.get('q') || '';
+
+  const updateURL = useCallback((key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value && value !== 'all') {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }, [searchParams, pathname, router]);
+
+  const handleFilterChange = (filterName: 'brand' | 'type' | 'year', value: string) => {
+    updateURL(filterName, value);
+  };
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateURL('q', e.target.value);
+  }
+
+  const clearSearch = () => {
+    updateURL('q', '');
+  }
 
   const fetchCars = async () => {
     setLoading(true);
@@ -58,15 +85,16 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [brand, type, year]);
+  }, [brand, type, year, searchTerm]);
 
   const filteredVehicles = useMemo(() => allVehicles.filter((vehicle) => {
     return (
       (brand === 'all' || vehicle.make === brand) &&
       (type === 'all' || vehicle.bodyType === type) &&
-      (year === 'all' || vehicle.year.toString() === year)
+      (year === 'all' || vehicle.year.toString() === year) &&
+      (searchTerm === '' || vehicle.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }), [allVehicles, brand, type, year]);
+  }), [allVehicles, brand, type, year, searchTerm]);
 
   const totalPages = Math.ceil(filteredVehicles.length / ITEMS_PER_PAGE);
 
@@ -83,16 +111,35 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   return (
     <>
-      <div className="flex justify-between items-start mb-8">
-        <div className="bg-card p-6 rounded-lg shadow-md">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <Select value={brand} onValueChange={(value) => {
-                const params = new URLSearchParams(searchParams.toString());
-                if (value === 'all') params.delete('brand'); else params.set('brand', value);
-                window.history.pushState(null, '', `?${params.toString()}`);
-                // This will trigger a re-render and the useEffect will catch the change
-            }}>
-                <SelectTrigger>
+      <div className="flex justify-end mb-8">
+        <ListCarButton onCarListed={onCarListed} />
+      </div>
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+            <div className="relative lg:col-span-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                  type="text"
+                  placeholder="Search by name..."
+                  className="pl-10 h-12 pr-10"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+              />
+              {searchTerm && (
+                  <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                      onClick={clearSearch}
+                  >
+                      <X className="h-5 w-5" />
+                  </Button>
+              )}
+            </div>
+            <Select value={brand} onValueChange={(value) => handleFilterChange('brand', value)}>
+                <SelectTrigger className="h-12">
                 <SelectValue placeholder="Brand" />
                 </SelectTrigger>
                 <SelectContent>
@@ -102,12 +149,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
                 ))}
                 </SelectContent>
             </Select>
-            <Select value={type} onValueChange={(value) => {
-                const params = new URLSearchParams(searchParams.toString());
-                if (value === 'all') params.delete('type'); else params.set('type', value);
-                window.history.pushState(null, '', `?${params.toString()}`);
-            }}>
-                <SelectTrigger>
+            <Select value={type} onValueChange={(value) => handleFilterChange('type', value)}>
+                <SelectTrigger className="h-12">
                 <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,12 +160,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
                 ))}
                 </SelectContent>
             </Select>
-            <Select value={year} onValueChange={(value) => {
-                const params = new URLSearchParams(searchParams.toString());
-                if (value === 'all') params.delete('year'); else params.set('year', value);
-                window.history.pushState(null, '', `?${params.toString()}`);
-            }}>
-                <SelectTrigger>
+            <Select value={year} onValueChange={(value) => handleFilterChange('year', value)}>
+                <SelectTrigger className="h-12">
                 <SelectValue placeholder="Year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,9 +172,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
                 </SelectContent>
             </Select>
             </div>
-        </div>
-        <ListCarButton onCarListed={onCarListed} />
-      </div>
+        </CardContent>
+      </Card>
 
         {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -146,11 +184,16 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
                 <Skeleton className="h-80 w-full" />
                 <Skeleton className="h-80 w-full" />
             </div>
-        ) : (
+        ) : currentVehicles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {currentVehicles.map((vehicle) => (
                 <VehicleCard key={vehicle.id} vehicle={vehicle} />
                 ))}
+            </div>
+        ) : (
+            <div className="text-center py-16 border-2 border-dashed rounded-lg">
+                <h3 className="text-xl font-semibold">No Cars Found</h3>
+                <p className="text-muted-foreground mt-2">Try adjusting your search or filters.</p>
             </div>
         )}
 
