@@ -27,7 +27,7 @@ export function FeaturedCars() {
     <section className="py-12 md:py-24 bg-secondary">
       <div className="container">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold tracking-tight">Featured Cars</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Explore Cars</h2>
              <p className="mt-2 text-muted-foreground">
                 Check out our handpicked selection of quality vehicles.
             </p>
