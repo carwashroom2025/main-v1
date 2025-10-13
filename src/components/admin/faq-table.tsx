@@ -124,7 +124,7 @@ export function FaqTable({ questions, onDataChange }: FaqTableProps) {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
-                        <Link href={`/faq/${question.id}`} className="flex justify-between w-full">
+                        <Link href={`/forum/${question.id}`} className="flex justify-between w-full">
                             <span>View</span>
                             <Eye className="h-4 w-4" />
                         </Link>

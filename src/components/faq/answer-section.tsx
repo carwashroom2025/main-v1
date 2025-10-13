@@ -193,7 +193,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
             <p className="text-muted-foreground">You must be logged in to post an answer.</p>
              <div className="mt-4 flex justify-center gap-4">
                 <Button asChild>
-                    <Link href={`/login?redirect=/faq/${question.id}`}>Login</Link>
+                    <Link href={`/login?redirect=/forum/${question.id}`}>Login</Link>
                 </Button>
                 <Button asChild variant="outline">
                     <Link href="/register">Register</Link>

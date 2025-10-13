@@ -23,7 +23,7 @@ const navLinks = [
   { href: '/services', label: 'Services' },
   { href: '/cars', label: 'Cars' },
   { href: '/blog', label: 'Blog' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/forum', label: 'Forum' },
   { href: '/contact', label: 'Contact' },
 ];
 
