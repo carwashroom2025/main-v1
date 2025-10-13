@@ -57,13 +57,16 @@ export const deleteFile = async (fileUrl: string) => {
       return;
     }
     
-    if (!fileUrl.startsWith('gs://') && !fileUrl.startsWith('https://firebasestorage.googleapis.com')) {
-        console.warn(`URL is not a Firebase Storage URL, skipping deletion: ${fileUrl}`);
-        return;
+    // Check if it's a gs:// URL or a regular https:// URL and construct the ref accordingly.
+    let fileRef;
+    if (fileUrl.startsWith('gs://') || fileUrl.startsWith('https://firebasestorage.googleapis.com')) {
+        fileRef = ref(storage, fileUrl);
+    } else {
+        // If it's just a path, create the reference directly.
+        fileRef = ref(storage, fileUrl);
     }
 
     try {
-        const fileRef = ref(storage, fileUrl);
         await deleteObject(fileRef);
     } catch (error: any) {
         if (error.code === 'storage/object-not-found') {
