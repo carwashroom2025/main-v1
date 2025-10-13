@@ -20,7 +20,7 @@ import { initializeApp, deleteApp, getApp } from 'firebase/app';
 import { doc, setDoc, getDoc, Timestamp, updateDoc, getFirestore } from 'firebase/firestore';
 import { logActivity } from './firestore';
 import type { User } from '../types';
-import { app, db, auth } from './firebase';
+import { app, db, auth, firebaseConfig } from './firebase';
 
 
 export const signUp = async (email: string, password: string, username: string): Promise<void> => {
@@ -44,7 +44,8 @@ export const signUp = async (email: string, password: string, username: string):
 
 export const createUserAsAdmin = async (email: string, password: string, username: string, role: User['role']): Promise<void> => {
   // Create a secondary app instance to create a user without signing them in
-  const secondaryApp = initializeApp(getApp().options, `secondary-app-${Date.now()}`);
+  const secondaryAppName = `secondary-app-${Date.now()}`;
+  const secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
   const secondaryAuth = getAuth(secondaryApp);
 
   try {
