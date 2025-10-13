@@ -6,6 +6,7 @@ import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import Loading from '../loading';
 
 export default function AdminLayout({
   children,
@@ -24,18 +25,7 @@ export default function AdminLayout({
   }, [user, loading, router]);
 
   if (loading || !user || !['Admin', 'Owner'].includes(user.role)) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="flex flex-col md:flex-row gap-8">
-          <aside className="w-full md:w-1/4">
-            <Skeleton className="h-64 w-full" />
-          </aside>
-          <main className="flex-1">
-            <Skeleton className="h-96 w-full" />
-          </main>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
