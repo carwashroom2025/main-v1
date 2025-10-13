@@ -26,6 +26,8 @@ import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ListCarButton } from '@/components/cars/list-car-button';
 import { Timestamp } from 'firebase/firestore';
+import { toISODate } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -44,7 +46,7 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
     const { vehicles } = await getCars({all: true});
     const serializedVehicles = vehicles.map(v => ({
       ...v,
-      createdAt: v.createdAt ? (v.createdAt as Timestamp).toDate().toISOString() : undefined,
+      createdAt: toISODate(v.createdAt),
     })) as Vehicle[];
     setAllVehicles(serializedVehicles);
     setLoading(false);
@@ -81,10 +83,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   return (
     <>
-      <div className="flex justify-end mb-4">
-        <ListCarButton onCarListed={onCarListed} />
-      </div>
-      <div className="bg-card p-6 rounded-lg shadow-md mb-8">
+      <div className="flex justify-between items-start mb-8">
+        <div className="bg-card p-6 rounded-lg shadow-md">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             <Select value={brand} onValueChange={(value) => {
                 const params = new URLSearchParams(searchParams.toString());
@@ -134,6 +134,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
             </Select>
             </div>
         </div>
+        <ListCarButton onCarListed={onCarListed} />
+      </div>
 
         {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

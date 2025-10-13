@@ -5,12 +5,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getCars } from '@/lib/firebase/firestore';
 import type { Vehicle } from '@/lib/types';
 import { Timestamp } from 'firebase/firestore';
+import { toISODate } from '@/lib/utils';
 
-async function fetchInitialCars() {
+async function fetchInitialCars(): Promise<Vehicle[]> {
     const { vehicles } = await getCars({ all: true });
     return vehicles.map(v => ({
         ...v,
-        createdAt: v.createdAt ? (v.createdAt as Timestamp).toDate().toISOString() : undefined,
+        createdAt: toISODate(v.createdAt),
     })) as Vehicle[];
 }
 
