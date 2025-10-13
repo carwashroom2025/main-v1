@@ -126,14 +126,6 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
                 <Edit className="h-5 w-5" />
             </Button>
         )}
-        {vehicle.status && (
-            <Badge
-            variant={vehicle.status === 'New' ? 'default' : 'secondary'}
-            className="text-sm py-1 px-3"
-            >
-            {vehicle.status}
-            </Badge>
-        )}
       </div>
     </div>
      {canEdit && (

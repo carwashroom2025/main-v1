@@ -96,7 +96,6 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
             <TableHead>Make</TableHead>
             <TableHead>Year</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Status</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
             </TableHead>
@@ -109,11 +108,6 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
               <TableCell>{vehicle.make}</TableCell>
               <TableCell>{vehicle.year}</TableCell>
               <TableCell>${vehicle.price?.toLocaleString()}</TableCell>
-              <TableCell>
-                <Badge variant={vehicle.status === 'New' ? 'default' : 'secondary'}>
-                  {vehicle.status}
-                </Badge>
-              </TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

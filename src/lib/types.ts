@@ -64,8 +64,6 @@ export type Vehicle = {
     imageUrls: string[];
     
     // Legacy fields for compatibility
-    status?: 'New' | 'Used' | 'Top';
-    rating?: number;
     averageRating?: number;
     createdAt?: Timestamp;
 };
