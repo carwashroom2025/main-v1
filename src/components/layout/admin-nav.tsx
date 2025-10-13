@@ -17,6 +17,7 @@ import {
   Activity,
   HelpCircle,
   Shapes,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -30,6 +31,7 @@ const adminNavLinks = [
   { href: '/admin/reviews', label: 'Moderate Reviews', icon: MessageSquare },
   { href: '/admin/blog', label: 'Manage Blog', icon: FileText },
   { href: '/admin/forum', label: 'Manage Forum', icon: HelpCircle },
+  { href: '/admin/storage', label: 'Manage Storage', icon: ImageIcon },
   { href: '/admin/activity', label: 'Activity Log', icon: Activity },
   { href: '/admin/settings', label: 'Security & SEO', icon: ShieldCheck },
 ];
