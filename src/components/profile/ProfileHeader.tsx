@@ -20,7 +20,7 @@ export function ProfileHeader() {
 
 
   return (
-    <div className="w-full rounded-lg bg-card border p-6 flex flex-col md:flex-row items-center gap-6">
+    <div className="w-full rounded-lg bg-card p-6 flex flex-col md:flex-row items-center gap-6">
         <Avatar className="h-24 w-24 border-4 border-background ring-2 ring-primary">
             <AvatarImage src={user.avatarUrl} alt={user.name} />
             <AvatarFallback className="text-3xl">
@@ -49,7 +49,7 @@ export function ProfileHeader() {
 
 function ProfileHeaderSkeleton() {
     return (
-        <div className="w-full rounded-lg bg-card border p-6 flex items-center gap-6">
+        <div className="w-full rounded-lg bg-card p-6 flex items-center gap-6">
             <Skeleton className="h-24 w-24 rounded-full" />
             <div className="space-y-2">
                 <Skeleton className="h-8 w-48" />
