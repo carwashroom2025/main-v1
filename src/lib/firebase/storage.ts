@@ -1,8 +1,7 @@
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { app } from './firebase';
-import { v4 as uuidv4 } from 'uuid';
 
-const storage = getStorage(app);
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from './firebase';
+import { v4 as uuidv4 } from 'uuid';
 
 export const uploadFile = (
   file: File,
