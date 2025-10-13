@@ -11,8 +11,15 @@ export const uploadFile = (
   onProgress: (progress: number) => void
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    const fileName = `${uuidv4()}-${file.name.replace(/\s+/g, '_')}`;
-    const fileRef = ref(storage, `${path}/${fileName}`);
+    // Sanitize the file name to prevent path issues
+    const sanitizedFileName = file.name.replace(/\s+/g, '_');
+    const uniqueFileName = `${uuidv4()}-${sanitizedFileName}`;
+    
+    // Ensure the path is clean and does not have leading/trailing slashes
+    const cleanPath = path.replace(/^\/|\/$/g, '');
+    const fullPath = `${cleanPath}/${uniqueFileName}`;
+
+    const fileRef = ref(storage, fullPath);
     const uploadTask = uploadBytesResumable(fileRef, file);
 
     uploadTask.on(
@@ -27,7 +34,7 @@ export const uploadFile = (
         if (error.code === 'storage/unauthorized') {
             friendlyMessage = 'Upload failed: You do not have permission to upload files. Please check your Storage Rules.';
         } else if (error.code === 'storage/retry-limit-exceeded') {
-            friendlyMessage = 'Upload failed: Network connection issue or service unavailable. Please try again.';
+            friendlyMessage = 'Upload failed: Network connection issue or service unavailable. Please check permissions and try again.';
         }
         reject(new Error(friendlyMessage));
       },
