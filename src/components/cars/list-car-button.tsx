@@ -7,6 +7,7 @@ import { useAuth } from '@/context/auth-context';
 import { CarForm } from '@/components/admin/car-form';
 import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type ListCarButtonProps = {
   onCarListed: () => void;
