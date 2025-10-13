@@ -27,19 +27,25 @@ export function ProfileImageUploader({ user, onAvatarChange }: ProfileImageUploa
     setIsUploading(true);
 
     try {
-      if (user.avatarUrl) {
-        if (user.avatarUrl.includes('firebasestorage.googleapis.com')) {
-          try {
-            await deleteFile(user.avatarUrl);
-          } catch (deleteError: any) {
-            console.warn("Could not delete previous avatar, it might not exist in storage:", deleteError.message);
-          }
+      // If a previous avatar exists and it's a Firebase Storage URL, delete it.
+      if (user.avatarUrl && user.avatarUrl.includes('firebasestorage.googleapis.com')) {
+        try {
+          await deleteFile(user.avatarUrl);
+        } catch (deleteError: any) {
+          // Log a warning if deletion fails, but don't block the upload.
+          // The old file might not exist, which is a common scenario.
+          console.warn("Could not delete previous avatar, it might not exist in storage:", deleteError.message);
         }
       }
       
-      const newAvatarUrl = await uploadFile(file, `avatars/${user.id}`, (progress) => {
-        // You could show a progress bar here if desired
-      });
+      const newAvatarUrl = await uploadFile(
+        file,
+        `avatars/${user.id}`,
+        (progress) => {
+          // You could show a progress bar here if desired
+          console.log(`Upload is ${progress}% done`);
+        }
+      );
 
       onAvatarChange(newAvatarUrl);
       
@@ -47,7 +53,7 @@ export function ProfileImageUploader({ user, onAvatarChange }: ProfileImageUploa
       console.error('Upload failed', error);
       toast({
         title: 'Upload Failed',
-        description: 'Could not upload your new profile picture. Please try again.',
+        description: error.message || 'Could not upload your new profile picture. Please try again.',
         variant: 'destructive',
       });
     } finally {
