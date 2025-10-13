@@ -12,15 +12,22 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { useSearchParams } from 'next/navigation';
-import type { Business } from '@/lib/types';
+import type { Business, Category } from '@/lib/types';
+import { ServiceFilters } from './service-filters';
 
 const ITEMS_PER_PAGE = 15;
 
 type ServiceListingsProps = {
   initialBusinessListings: Business[];
+  categories: Category[];
+  fetchBusinessesAction: () => Promise<Business[]>;
 };
 
-export function ServiceListings({ initialBusinessListings }: ServiceListingsProps) {
+export function ServiceListings({ 
+    initialBusinessListings, 
+    categories, 
+    fetchBusinessesAction 
+}: ServiceListingsProps) {
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [businessListings, setBusinessListings] = useState<Business[]>(initialBusinessListings);
@@ -30,9 +37,12 @@ export function ServiceListings({ initialBusinessListings }: ServiceListingsProp
   const finalSearchTerm = searchParams.get('q') || '';
   const sortBy = searchParams.get('sort') || 'date-desc';
 
+  const onBusinessListed = async () => {
+    const updatedListings = await fetchBusinessesAction();
+    setBusinessListings(updatedListings);
+  };
+
   useEffect(() => {
-    // In a real app, you might re-fetch data here if it's stale.
-    // For now, we'll just filter the initial data.
     setBusinessListings(initialBusinessListings);
   }, [initialBusinessListings]);
   
@@ -44,6 +54,7 @@ export function ServiceListings({ initialBusinessListings }: ServiceListingsProp
     .filter((listing) => {
       const categoryMatch =
         selectedCategories.length === 0 ||
+        selectedCategories[0] === 'all' ||
         selectedCategories.includes(listing.category);
       const countryMatch =
         !selectedCountry ||
@@ -85,58 +96,61 @@ export function ServiceListings({ initialBusinessListings }: ServiceListingsProp
   };
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentListings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
-        {currentListings.length === 0 && (
-          <p className="text-center text-muted-foreground col-span-full">
-            No services found matching your criteria.
-          </p>
-        )}
-      </div>
+    <>
+      <ServiceFilters categories={categories} onBusinessListed={onBusinessListed} />
+      <div className="space-y-8 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentListings.map((listing) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+          {currentListings.length === 0 && (
+            <p className="text-center text-muted-foreground col-span-full">
+              No services found matching your criteria.
+            </p>
+          )}
+        </div>
 
-      {totalPages > 1 && (
-        <div className="mt-8">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(Math.max(1, currentPage - 1));
-                  }}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
+        {totalPages > 1 && (
+          <div className="mt-8">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
                     href="#"
-                    isActive={currentPage === page}
                     onClick={(e) => {
                       e.preventDefault();
-                      handlePageChange(page);
+                      handlePageChange(Math.max(1, currentPage - 1));
                     }}
-                  >
-                    {page}
-                  </PaginationLink>
+                  />
                 </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(Math.min(totalPages, currentPage + 1));
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
-    </div>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === page}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(page);
+                      }}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(Math.min(totalPages, currentPage + 1));
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

@@ -34,12 +34,11 @@ export default async function ServicesPage() {
 
   return (
     <Suspense fallback={<ServiceListingsSkeleton/>}>
-        <ServiceFilters categories={serializableCategories as Category[]} fetchBusinessesAction={fetchBusinesses} />
-        <div className="mt-8">
-            <ServiceListings
-                initialBusinessListings={serializableBusinessListings as unknown as Business[]}
-            />
-        </div>
+        <ServiceListings
+            initialBusinessListings={serializableBusinessListings as unknown as Business[]}
+            categories={serializableCategories as Category[]}
+            fetchBusinessesAction={fetchBusinesses}
+        />
     </Suspense>
   );
 }

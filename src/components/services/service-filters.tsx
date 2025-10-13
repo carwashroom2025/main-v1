@@ -21,47 +21,20 @@ const locations = ['USA', 'UK', 'UAE', 'CANADA', 'INDIA', 'CHINA', 'JAPAN'];
 
 type ServiceFiltersProps = {
   categories: Category[];
-  fetchBusinessesAction: () => Promise<any>;
+  onBusinessListed: () => void;
 };
 
-// Debounce hook
-function useDebounce(value: string, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
-export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFiltersProps) {
+export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // State for the input field, updated immediately
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
-  
-  // Debounced value that will be used to trigger the search
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
+  const searchTerm = searchParams.get('q') || '';
   const selectedCategories = searchParams.get('categories') || 'all';
   const selectedCountry = searchParams.get('country') || 'all';
   const sortBy = searchParams.get('sort') || 'date-desc';
 
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    // Sync the input field if the URL changes from external navigation
-    setSearchTerm(searchParams.get('q') || '');
-  }, [searchParams]);
 
   const updateURL = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -72,15 +45,6 @@ export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFil
     }
     router.push(`${pathname}?${params.toString()}`);
   }, [searchParams, pathname, router]);
-
-  useEffect(() => {
-    // Only trigger search when the debounced value changes
-    // and it's different from the current URL param to avoid unnecessary pushes
-    if (debouncedSearchTerm !== searchParams.get('q')) {
-       updateURL('q', debouncedSearchTerm);
-    }
-  }, [debouncedSearchTerm, searchParams, updateURL]);
-
 
   useEffect(() => {
     if (categories) {
@@ -99,11 +63,15 @@ export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFil
   const handleFilterChange = (filterName: 'categories' | 'country' | 'sort', value: string) => {
     updateURL(filterName, value);
   };
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateURL('q', e.target.value);
+  }
 
   return (
     <div className="space-y-8">
         <div className="flex justify-end">
-            <ListBusiness onBusinessListed={fetchBusinessesAction} />
+            <ListBusiness onBusinessListed={onBusinessListed} />
         </div>
         <Card>
             <CardContent className="p-6">
@@ -115,7 +83,7 @@ export function ServiceFilters({ categories, fetchBusinessesAction }: ServiceFil
                         placeholder="Search for a Service..."
                         className="pl-10 h-12"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchChange}
                     />
                     </div>
                     <Select value={selectedCategories} onValueChange={(value) => handleFilterChange('categories', value)}>
