@@ -112,6 +112,11 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+         'spin-slow': {
+          'to': {
+            transform: 'rotate(360deg)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -119,6 +124,7 @@ export default {
         'fade-in-down': 'fade-in-down 0.8s ease-out forwards',
         'slide-up-fade': 'slide-up-fade 0.8s ease-out forwards',
         'marquee': 'marquee 40s linear infinite',
+        'spin-slow': 'spin-slow 3s linear infinite',
       },
       typography: ({ theme }: { theme: (path: string) => string }) => ({
         DEFAULT: {
