@@ -1,14 +1,17 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, Share2, Heart } from 'lucide-react';
+import { Star, Share2, Heart, Edit } from 'lucide-react';
 import type { Vehicle } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/auth-context';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { CarForm } from '@/components/admin/car-form';
+import { useRouter } from 'next/navigation';
 
 type CarDetailHeaderProps = {
   vehicle: Vehicle;
@@ -20,6 +23,10 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
     const { toast } = useToast();
     const { user, loading, toggleFavoriteCar } = useAuth();
     const isFavorite = user?.favoriteCars?.includes(vehicle.id);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const router = useRouter();
+
+    const canEdit = user && ['Author', 'Admin', 'Owner'].includes(user.role);
 
     const handleShare = async () => {
         const shareData = {
@@ -79,8 +86,14 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
         }
         toggleFavoriteCar(vehicle.id);
       }
+      
+      const onDataChange = () => {
+        setIsFormOpen(false);
+        router.refresh();
+      }
 
   return (
+    <>
     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-4xl font-bold tracking-tight">{`${vehicle.make} ${vehicle.model} ${vehicle.year}`}</h1>
@@ -108,6 +121,11 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
         <Button variant="ghost" size="icon" onClick={handleShare}>
           <Share2 className="h-5 w-5" />
         </Button>
+         {canEdit && (
+            <Button variant="ghost" size="icon" onClick={() => setIsFormOpen(true)}>
+                <Edit className="h-5 w-5" />
+            </Button>
+        )}
         {vehicle.status && (
             <Badge
             variant={vehicle.status === 'New' ? 'default' : 'secondary'}
@@ -118,5 +136,14 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
         )}
       </div>
     </div>
+     {canEdit && (
+        <CarForm 
+            isOpen={isFormOpen} 
+            setIsOpen={setIsFormOpen} 
+            vehicle={vehicle} 
+            onDataChange={onDataChange} 
+        />
+    )}
+    </>
   );
 }
