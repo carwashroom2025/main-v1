@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { Category } from '@/lib/types';
 import { ListBusiness } from '@/components/services/list-business';
@@ -68,6 +68,10 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
     updateURL('q', e.target.value);
   }
 
+  const clearSearch = () => {
+    updateURL('q', '');
+  }
+
   return (
     <div className="space-y-8">
         <div className="flex justify-end">
@@ -81,10 +85,21 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
                     <Input
                         type="text"
                         placeholder="Search for a Service..."
-                        className="pl-10 h-12"
+                        className="pl-10 h-12 pr-10"
                         value={searchTerm}
                         onChange={handleSearchChange}
                     />
+                     {searchTerm && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                            onClick={clearSearch}
+                        >
+                            <X className="h-5 w-5" />
+                        </Button>
+                    )}
                     </div>
                     <Select value={selectedCategories} onValueChange={(value) => handleFilterChange('categories', value)}>
                     <SelectTrigger className="h-12">
