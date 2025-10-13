@@ -105,7 +105,7 @@ export function MyBusinessesTab() {
 
   return (
     <>
-      <Card className="max-w-4xl mx-auto mt-6">
+      <Card>
         <CardHeader>
           <CardTitle>My Businesses</CardTitle>
           <CardDescription>Manage your business listings.</CardDescription>

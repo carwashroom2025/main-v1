@@ -3,7 +3,6 @@
 
 import { useAuth } from '@/context/auth-context';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,14 +10,13 @@ import { useState, useEffect } from 'react';
 import { updateUser } from '@/lib/firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { sendPasswordReset } from '@/lib/firebase/auth';
-import { format } from 'date-fns';
 import { ProfileImageUploader } from '@/components/profile/profile-image-uploader';
 import type { User } from '@/lib/types';
+import { Skeleton } from '../ui/skeleton';
 
 export function ProfileSettingsTab() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, loading } = useAuth();
   const [name, setName] = useState('');
   const { toast } = useToast();
 
@@ -28,8 +26,13 @@ export function ProfileSettingsTab() {
     }
   }, [user]);
 
-  if (!user) {
-    return null;
+  if (loading || !user) {
+    return (
+        <div className="grid grid-cols-1 gap-6">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-48 w-full" />
+        </div>
+    );
   }
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
@@ -91,31 +94,7 @@ export function ProfileSettingsTab() {
   };
 
   return (
-    <Card className="max-w-4xl mx-auto mt-6">
-      <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-1 space-y-6">
-          <div className="flex flex-col items-center text-center">
-            <ProfileImageUploader user={user} onAvatarChange={handleAvatarUpdate} />
-            <h2 className="text-2xl font-semibold mt-4">{user.name}</h2>
-            <p className="text-muted-foreground">{user.email}</p>
-            <Badge variant="outline" className="mt-2">{user.role}</Badge>
-          </div>
-          <Separator />
-          <div className="space-y-3 text-sm">
-            <h3 className="font-semibold text-muted-foreground tracking-wider uppercase">Details</h3>
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Joined:</span>
-              <span className="font-medium">{user.createdAt ? format(user.createdAt.toDate(), 'PPP') : 'N/A'}</span>
-            </div>
-            {user.lastLogin && (
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Last Login:</span>
-                <span className="font-medium">{format(user.lastLogin.toDate(), 'PPp')}</span>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="md:col-span-2 space-y-6">
+      <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Profile</CardTitle>
@@ -123,6 +102,10 @@ export function ProfileSettingsTab() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleProfileUpdate} className="space-y-4">
+                 <div className="space-y-2">
+                    <Label>Profile Picture</Label>
+                    <ProfileImageUploader user={user} onAvatarChange={handleAvatarUpdate} />
+                 </div>
                 <div>
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -156,7 +139,5 @@ export function ProfileSettingsTab() {
             </CardContent>
           </Card>
         </div>
-      </CardContent>
-    </Card>
   );
 }

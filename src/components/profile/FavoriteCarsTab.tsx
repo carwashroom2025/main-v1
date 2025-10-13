@@ -31,7 +31,7 @@ export function FavoriteCarsTab() {
   }, [user]);
 
   return (
-    <Card className="max-w-4xl mx-auto mt-6">
+    <Card>
       <CardHeader>
         <CardTitle>My Favorite Cars</CardTitle>
         <CardDescription>A list of cars you have saved.</CardDescription>

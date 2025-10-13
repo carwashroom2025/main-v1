@@ -1,41 +1,60 @@
 
+'use client';
+
 import { Suspense } from 'react';
-import ProfileTabs from './profile-tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import Image from 'next/image';
+import { ProfileHeader } from '@/components/profile/ProfileHeader';
+import { ProfileSidebar } from '@/components/profile/ProfileSidebar';
+import { useSearchParams } from 'next/navigation';
+import { ProfileSettingsTab } from '@/components/profile/ProfileSettingsTab';
+import { FavoriteCarsTab } from '@/components/profile/FavoriteCarsTab';
+import { FavoriteBusinessesTab } from '@/components/profile/FavoriteBusinessesTab';
+import { MyBusinessesTab } from '@/components/profile/MyBusinessesTab';
+import { MyActivityTab } from '@/components/profile/MyActivityTab';
+import { useAuth } from '@/context/auth-context';
+
+function ProfileContent() {
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'profile';
+
+  return (
+    <div className="container py-12">
+        <ProfileHeader />
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+            <aside className="md:col-span-1">
+                 <ProfileSidebar />
+            </aside>
+            <main className="md:col-span-3">
+               {activeTab === 'profile' && <ProfileSettingsTab />}
+               {activeTab === 'fav-cars' && <FavoriteCarsTab />}
+               {activeTab === 'fav-businesses' && <FavoriteBusinessesTab />}
+               {activeTab === 'my-businesses' && <MyBusinessesTab />}
+               {activeTab === 'activity' && <MyActivityTab />}
+            </main>
+        </div>
+    </div>
+  );
+}
+
 
 export default function ProfilePage() {
   return (
-    <>
-      <div className="relative py-12 md:py-16 text-center text-white overflow-hidden">
-        <Image
-            src="https://images.unsplash.com/photo-1568605117036-5fe5e7185743?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYXJ8ZW58MHx8fHwxNzU4ODg1ODQxfDA&ixlib=rb-4.1.0&q=80&w=1080"
-            alt="Profile page background"
-            fill
-            className="object-cover"
-            priority
-            data-ai-hint="car driver"
-        />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="container relative">
-          <h1 className="text-4xl font-bold tracking-tight">My Profile</h1>
-          <p className="mt-2 text-lg text-white/80">
-            View and manage your account details.
-          </p>
-        </div>
-      </div>
-      <Suspense fallback={<ProfilePageSkeleton />}>
-        <ProfileTabs />
-      </Suspense>
-    </>
+    <Suspense fallback={<ProfilePageSkeleton />}>
+        <ProfileContent />
+    </Suspense>
   );
 }
 
 function ProfilePageSkeleton() {
   return (
     <div className="container py-12 space-y-6">
-        <Skeleton className="h-10 w-full max-w-3xl mx-auto" />
-        <Skeleton className="h-96 w-full max-w-4xl mx-auto" />
+        <Skeleton className="h-40 w-full" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <Skeleton className="h-64 w-full" />
+            <div className="md:col-span-3">
+                <Skeleton className="h-96 w-full" />
+            </div>
+        </div>
     </div>
   )
 }

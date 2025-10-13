@@ -27,7 +27,7 @@ export function MyActivityTab() {
   }, [user]);
 
   return (
-    <Card className="max-w-2xl mx-auto mt-6">
+    <Card>
       <CardHeader>
         <CardTitle>My Activity</CardTitle>
         <CardDescription>A log of your recent reviews and comments.</CardDescription>

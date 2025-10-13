@@ -36,7 +36,7 @@ export function FavoriteBusinessesTab() {
   }, [user]);
 
   return (
-    <Card className="max-w-4xl mx-auto mt-6">
+    <Card>
       <CardHeader>
         <CardTitle>My Favorite Businesses</CardTitle>
         <CardDescription>A list of businesses you have saved.</CardDescription>
