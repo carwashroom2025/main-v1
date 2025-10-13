@@ -2,7 +2,14 @@
 'use client';
 
 import Image from 'next/image';
-import { HeroTabs } from './hero-tabs';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '../ui/skeleton';
+
+const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full max-w-3xl h-[172px] bg-white/10" />,
+});
+
 
 export function Hero() {
   return (
