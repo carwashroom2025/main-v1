@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "codeuxe-auto-p-2-8356111-9323a"
-  }
+    "default": "codeuxe-auto-p-2-8356111-9323a",
+    "Carwashroom": "codeuxe-auto-p-2-8356111-9323a"
+  },
+  "targets": {},
+  "etags": {}
 }

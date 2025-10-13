@@ -22,6 +22,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useAuth } from '@/context/auth-context';
 import { locations } from '@/lib/car-data';
 import { Timestamp } from 'firebase/firestore';
+import { uploadFile } from '@/lib/firebase/storage';
+import { Progress } from '../ui/progress';
+import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 type BusinessFormProps = {
   isOpen: boolean;
@@ -64,8 +68,8 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
   const { toast } = useToast();
   const { user } = useAuth();
   const isAdmin = user && ['Admin', 'Owner'].includes(user.role);
-  const [galleryUrlsText, setGalleryUrlsText] = useState('');
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<{[key: string]: number} | null>(null);
 
 
   useEffect(() => {
@@ -86,7 +90,6 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
     if (isOpen) {
         if (business) {
             setFormData(business);
-            setGalleryUrlsText(business.galleryImageUrls?.join(',\n') || '');
         } else {
             setFormData({
                 ...initialFormData,
@@ -95,7 +98,6 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                 status: isAdmin ? 'approved' : 'pending',
                 verified: isAdmin, // Auto-verify if an admin is creating it
             });
-            setGalleryUrlsText('');
         }
     }
   }, [business, isOpen, user, isAdmin]);
@@ -137,30 +139,57 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
     setFormData(prev => ({...prev, featured: !!checked}));
   }
   
-  const handleGalleryUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setGalleryUrlsText(e.target.value);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'mainImageUrl' | 'galleryImageUrls') => {
+      const files = e.target.files;
+      if (!files) return;
+
+      const newUploads: {[key: string]: number} = {};
+      Array.from(files).forEach(file => newUploads[file.name] = 0);
+      setUploadProgress(prev => ({...prev, ...newUploads}));
+
+      try {
+        const uploadPromises = Array.from(files).map(file => 
+            uploadFile(file, 'business-images', (progress) => {
+                setUploadProgress(prev => ({...prev, [file.name]: progress}))
+            })
+        );
+        const urls = await Promise.all(uploadPromises);
+
+        if(field === 'mainImageUrl') {
+            setFormData(prev => ({...prev, mainImageUrl: urls[0]}));
+        } else {
+            setFormData(prev => ({...prev, galleryImageUrls: [...(prev.galleryImageUrls || []), ...urls]}));
+        }
+        toast({ title: "Images Uploaded", description: "The image(s) have been successfully uploaded." });
+      } catch (error: any) {
+          toast({ title: "Upload Failed", description: error.message, variant: 'destructive'});
+      } finally {
+          setUploadProgress(null);
+      }
+  };
+  
+  const removeImage = (url: string, field: 'mainImageUrl' | 'galleryImageUrls') => {
+      if(field === 'mainImageUrl') {
+          setFormData(prev => ({...prev, mainImageUrl: ''}));
+      } else {
+          setFormData(prev => ({...prev, galleryImageUrls: prev.galleryImageUrls?.filter(u => u !== url)}));
+      }
+      // Note: This does not delete from Firebase Storage. A dedicated "delete" button could be added for that.
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const galleryImageUrls = galleryUrlsText.split(',').map(url => url.trim()).filter(url => url);
-
-    const dataToSave: Partial<Business> = {
-        ...formData,
-        galleryImageUrls
-    };
-
     try {
       if (business) {
-        await updateBusiness(business.id, dataToSave as Business);
+        await updateBusiness(business.id, formData as Business);
         toast({
           title: 'Business Updated',
           description: `"${formData.title}" has been successfully updated.`,
         });
       } else {
-        await addBusiness(dataToSave as Omit<Business, 'id'>);
+        await addBusiness(formData as Omit<Business, 'id'>);
         toast({
           title: 'Business Added',
           description: `"${formData.title}" has been successfully added.`,
@@ -259,16 +288,43 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     </div>
                  </div>
             </div>
-             <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Image URLs</h3>
+            <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Images</h3>
                 <div className="space-y-2">
-                    <Label htmlFor="mainImageUrl">Main Image URL</Label>
-                    <Input id="mainImageUrl" name="mainImageUrl" value={formData.mainImageUrl || ''} onChange={handleChange} placeholder="https://example.com/image.jpg" />
+                    <Label>Main Image</Label>
+                    {formData.mainImageUrl ? (
+                        <div className="relative group w-48 h-32">
+                           <Image src={formData.mainImageUrl} alt="Main business" fill className="object-cover rounded-md" />
+                           <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => removeImage(formData.mainImageUrl!, 'mainImageUrl')}><X className="h-4 w-4" /></Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <label htmlFor="main-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"><Upload className="h-8 w-8 text-muted-foreground" /><span className="text-sm text-muted-foreground">Click to upload</span></label>
+                            <Input id="main-image-upload" type="file" className="sr-only" onChange={(e) => handleImageUpload(e, 'mainImageUrl')} accept="image/*" />
+                        </div>
+                    )}
                 </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="galleryImageUrls">Gallery Image URLs (comma-separated)</Label>
-                    <Textarea id="galleryImageUrls" name="galleryImageUrls" value={galleryUrlsText} onChange={handleGalleryUrlsChange} placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg" />
+                <div className="space-y-2">
+                    <Label>Gallery Images</Label>
+                    <div className="flex flex-wrap gap-2">
+                        {(formData.galleryImageUrls || []).map(url => (
+                            <div key={url} className="relative group w-24 h-24">
+                                <Image src={url} alt="Gallery image" fill className="object-cover rounded-md" />
+                                <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeImage(url, 'galleryImageUrls')}><X className="h-3 w-3" /></Button>
+                            </div>
+                        ))}
+                         <div>
+                            <label htmlFor="gallery-upload" className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"><Upload className="h-6 w-6 text-muted-foreground" /></label>
+                            <Input id="gallery-upload" type="file" multiple className="sr-only" onChange={(e) => handleImageUpload(e, 'galleryImageUrls')} accept="image/*" />
+                        </div>
+                    </div>
                 </div>
+                {uploadProgress && Object.entries(uploadProgress).map(([name, progress]) => (
+                    <div key={name}>
+                        <p className="text-sm text-muted-foreground">{name}</p>
+                        <Progress value={progress} />
+                    </div>
+                ))}
             </div>
 
             {isAdmin && (
@@ -295,8 +351,8 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
             
             <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
+            <Button type="submit" disabled={loading || !!uploadProgress}>
+                {loading ? 'Saving...' : (!!uploadProgress ? 'Uploading...' : 'Save Changes')}
             </Button>
             </DialogFooter>
         </form>
@@ -304,3 +360,5 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
     </Dialog>
   );
 }
+
+    

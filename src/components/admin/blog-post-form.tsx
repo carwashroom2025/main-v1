@@ -21,6 +21,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { format } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
 import { blogCategories } from '@/lib/blog-data';
+import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
+import { uploadFile } from '@/lib/firebase/storage';
+import { Progress } from '../ui/progress';
 
 type BlogPostFormProps = {
   isOpen: boolean;
@@ -52,6 +56,7 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
   const isEditMode = !!post;
   const isAdmin = user && ['Admin', 'Owner'].includes(user.role);
   const [tagsString, setTagsString] = useState('');
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   
   useEffect(() => {
     async function fetchAuthors() {
@@ -104,6 +109,22 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
   
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagsString(e.target.value);
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadProgress(0);
+    try {
+        const url = await uploadFile(file, 'blog-images', setUploadProgress);
+        setFormData(prev => ({...prev, imageUrl: url}));
+        toast({ title: "Image Uploaded", description: "The image has been successfully uploaded." });
+    } catch (error: any) {
+        toast({ title: "Upload Failed", description: error.message, variant: 'destructive'});
+    } finally {
+        setUploadProgress(null);
+    }
   }
 
 
@@ -194,14 +215,39 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="imageUrl">Image URL</Label>
-                    <Input id="imageUrl" name="imageUrl" value={formData.imageUrl || ''} onChange={handleChange} placeholder="https://example.com/image.jpg" />
-                </div>
                  <div className="space-y-2">
                     <Label htmlFor="readTime">Read Time (minutes)</Label>
                     <Input id="readTime" name="readTime" type="number" value={formData.readTime || 0} onChange={handleChange} required />
                 </div>
+                 <div className="space-y-2 md:col-span-2">
+                    <Label>Featured Image</Label>
+                     {formData.imageUrl ? (
+                        <div className="relative group w-48 h-32">
+                           <Image src={formData.imageUrl} alt="Featured Image" fill className="object-cover rounded-md" />
+                           <Button
+                               type="button"
+                               variant="destructive"
+                               size="icon"
+                               className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100"
+                               onClick={() => setFormData(prev => ({...prev, imageUrl: ''}))}
+                           >
+                               <X className="h-4 w-4" />
+                           </Button>
+                        </div>
+                    ) : (
+                        <div className="w-full">
+                            <label
+                                htmlFor="image-upload"
+                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"
+                            >
+                                <Upload className="h-8 w-8 text-muted-foreground" />
+                                <span className="text-sm text-muted-foreground">Click to upload</span>
+                            </label>
+                            <Input id="image-upload" type="file" className="sr-only" onChange={handleImageUpload} accept="image/*" />
+                        </div>
+                    )}
+                    {uploadProgress !== null && <Progress value={uploadProgress} className="w-full" />}
+                 </div>
                 <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="excerpt">Excerpt</Label>
                     <Textarea id="excerpt" name="excerpt" value={formData.excerpt || ''} onChange={handleChange} />
@@ -214,8 +260,8 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
             
             <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Changes'}
+                <Button type="submit" disabled={loading || uploadProgress !== null}>
+                    {loading ? 'Saving...' : (uploadProgress !== null ? 'Uploading...' : 'Save Changes')}
                 </Button>
             </DialogFooter>
         </form>
@@ -223,3 +269,5 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
     </Dialog>
   );
 }
+
+    

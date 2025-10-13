@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,8 +20,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { addVehicle, updateVehicle } from '@/lib/firebase/firestore';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Checkbox } from '../ui/checkbox';
-import { X } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
 import { vehicleBrands, vehicleTypes } from '@/lib/car-data';
+import Image from 'next/image';
+import { uploadFile } from '@/lib/firebase/storage';
+import { Progress } from '../ui/progress';
 
 type CarFormProps = {
   isOpen: boolean;
@@ -67,7 +69,7 @@ const initialFormData: Omit<Vehicle, 'id' | 'createdAt'> = {
     height: 0,
     wheelbase: 0,
     groundClearance: 0,
-    vehicleWeight: 0,
+    vehicleWeight: 0, 
     maxPayload: 0,
     bootSpace: 0,
     dragCoefficient: 0,
@@ -88,7 +90,7 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const [newVariant, setNewVariant] = useState('');
-  const [imageUrlsText, setImageUrlsText] = useState('');
+  const [uploadProgress, setUploadProgress] = useState<{[key: string]: number} | null>(null);
 
 
   useEffect(() => {
@@ -97,10 +99,8 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
         ...initialFormData,
         ...vehicle,
       });
-      setImageUrlsText(vehicle.imageUrls?.join('\n') || '');
     } else {
       setFormData(initialFormData as Vehicle);
-      setImageUrlsText('');
     }
   }, [vehicle, isOpen]);
 
@@ -141,9 +141,39 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
     }));
   };
   
-  const handleImageUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setImageUrlsText(e.target.value);
-  }
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newUploads: {[key: string]: number} = {};
+    Array.from(files).forEach(file => newUploads[file.name] = 0);
+    setUploadProgress(prev => ({...prev, ...newUploads}));
+
+    try {
+      const uploadPromises = Array.from(files).map(file => 
+          uploadFile(file, 'vehicle-images', (progress) => {
+              setUploadProgress(prev => ({...prev, [file.name]: progress}))
+          })
+      );
+      const urls = await Promise.all(uploadPromises);
+
+      setFormData(prev => ({...prev, imageUrls: [...(prev.imageUrls || []), ...urls]}));
+      toast({ title: "Images Uploaded", description: "The image(s) have been successfully uploaded." });
+    } catch (error: any) {
+        toast({ title: "Upload Failed", description: error.message, variant: 'destructive'});
+    } finally {
+        setUploadProgress(null);
+    }
+  };
+
+  const removeImage = (urlToRemove: string) => {
+    setFormData(prev => ({
+        ...prev,
+        imageUrls: prev.imageUrls.filter(url => url !== urlToRemove)
+    }));
+    // Note: This does not delete the image from storage. 
+    // For a production app, you would add a call to a `deleteFile` function here.
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,7 +182,6 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
     const updatedFormData = {
         ...formData,
         name: `${formData.make} ${formData.model} ${formData.year}`,
-        imageUrls: imageUrlsText.split('\n').map(url => url.trim()).filter(url => url),
     };
 
     try {
@@ -301,18 +330,35 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
                 <AccordionItem value="media">
                     <AccordionTrigger>🖼️ Media</AccordionTrigger>
                     <AccordionContent className="space-y-4 pt-4">
-                         <div className="space-y-2">
-                            <Label htmlFor="imageUrls">Image URLs (one per line)</Label>
-                            <Textarea id="imageUrls" value={imageUrlsText} onChange={handleImageUrlsChange} rows={5} placeholder="https://example.com/image1.jpg\nhttps://example.com/image2.jpg"/>
+                        <div className="space-y-2">
+                           <Label>Vehicle Images</Label>
+                           <div className="flex flex-wrap gap-2">
+                                {(formData.imageUrls || []).map(url => (
+                                    <div key={url} className="relative group w-24 h-24">
+                                        <Image src={url} alt="Vehicle image" fill className="object-cover rounded-md" />
+                                        <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeImage(url)}><X className="h-3 w-3" /></Button>
+                                    </div>
+                                ))}
+                                <div>
+                                    <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"><Upload className="h-6 w-6 text-muted-foreground" /></label>
+                                    <Input id="image-upload" type="file" multiple className="sr-only" onChange={handleImageUpload} accept="image/*" />
+                                </div>
+                            </div>
                         </div>
+                        {uploadProgress && Object.entries(uploadProgress).map(([name, progress]) => (
+                            <div key={name}>
+                                <p className="text-sm text-muted-foreground">{name}</p>
+                                <Progress value={progress} />
+                            </div>
+                        ))}
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
             
             <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Changes'}
+                <Button type="submit" disabled={loading || !!uploadProgress}>
+                    {loading ? 'Saving...' : (!!uploadProgress ? 'Uploading...' : 'Save Changes')}
                 </Button>
             </DialogFooter>
         </form>
@@ -320,3 +366,5 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
     </Dialog>
   );
 }
+
+    
