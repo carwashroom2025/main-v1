@@ -1,115 +1,31 @@
-'use client';
 
-import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, ArrowLeft } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import type { Question, Answer } from '@/lib/types';
-import Link from 'next/link';
-import { AnswerSection } from '@/components/faq/answer-section';
-import { formatDistanceToNow } from 'date-fns';
-import { getQuestion, voteOnQuestion, getQuestionWithoutIncrementingViews } from '@/lib/firebase/firestore';
-import { useAuth } from '@/context/auth-context';
-import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import Image from "next/image";
 
-type SerializableAnswer = Omit<Answer, 'createdAt'> & { createdAt: string };
-type SerializableQuestion = Omit<Question, 'createdAt' | 'answers'> & {
-  createdAt: string;
-  answers: SerializableAnswer[];
-};
-
-
-export function QuestionDetails({ initialQuestion }: { initialQuestion: SerializableQuestion }) {
-  const [question, setQuestion] = useState(initialQuestion);
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    setQuestion(initialQuestion);
-  }, [initialQuestion]);
-  
-  const refreshQuestion = async () => {
-    const updatedQuestionData = await getQuestionWithoutIncrementingViews(initialQuestion.id);
-    if (updatedQuestionData) {
-       const serializableQuestion = {
-        ...updatedQuestionData,
-        createdAt: updatedQuestionData.createdAt.toDate().toISOString(),
-        answers: updatedQuestionData.answers.map(answer => ({
-          ...answer,
-          createdAt: answer.createdAt.toDate().toISOString()
-        }))
-      };
-      setQuestion(serializableQuestion as any);
-    }
-  }
-
-
-  const handleVote = async (type: 'up' | 'down') => {
-    if (!user) {
-        toast({ title: "Login Required", description: "You must be logged in to vote.", variant: "destructive" });
-        return;
-    }
-
-    try {
-        await voteOnQuestion(question.id, user.id, type);
-        refreshQuestion();
-    } catch(e: any) {
-        toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
-  };
-
-  const hasUpvoted = user && (question.upvotedBy || []).includes(user.id);
-  const hasDownvoted = user && (question.downvotedBy || []).includes(user.id);
-
+export default function ForumLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="container py-12 md:py-16 max-w-4xl">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-            <Link href="/forum" className="text-sm text-muted-foreground hover:text-primary flex items-center mb-4">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to questions
-            </Link>
+    <>
+      <div className="relative py-12 md:py-16 text-center text-white overflow-hidden">
+        <Image
+            src="https://images.unsplash.com/photo-1690633129658-59a39ed32368?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="Support"
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint="abstract pattern"
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="container relative">
+          <h1 className="text-4xl font-bold tracking-tight">Forum</h1>
+          <p className="mt-2 text-lg text-white/80">
+            Find answers to common questions about our services and platform.
+          </p>
         </div>
       </div>
-
-      <Card className="mb-8">
-        <CardContent className="p-6 flex gap-4">
-            <div className="flex flex-col items-center text-center text-sm">
-                <Button variant="ghost" onClick={() => handleVote('up')} className={cn(hasUpvoted && 'text-primary')}>
-                    <ArrowUp className="h-6 w-6" />
-                </Button>
-                <span className="text-2xl font-bold my-1">{question.votes}</span>
-                 <Button variant="ghost" onClick={() => handleVote('down')} className={cn(hasDownvoted && 'text-destructive')}>
-                    <ArrowDown className="h-6 w-6" />
-                </Button>
-            </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold mb-2">{question.title}</h2>
-            <p className="text-muted-foreground mb-4">{question.body}</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {question.tags.map(tag => (
-                <Badge key={tag} variant="secondary">#{tag}</Badge>
-              ))}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {isClient ? (
-                  <span>Asked {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
-              ) : (
-                  <span>Asked... &bull; {question.views} views</span>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <AnswerSection question={question} onAnswerChange={refreshQuestion} />
-    </div>
+      {children}
+    </>
   );
 }
