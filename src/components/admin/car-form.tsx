@@ -46,6 +46,7 @@ const initialFormData: Omit<Vehicle, 'id' | 'createdAt'> = {
     make: '',
     model: '',
     year: currentYear,
+    price: 0,
     bodyType: '',
     fuelType: 'Petrol',
     transmission: 'Automatic',
@@ -223,6 +224,7 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
                             </div>
                             <div className="space-y-2"><Label>Model</Label><Input name="model" value={formData.model} onChange={handleChange} /></div>
                             <div className="space-y-2"><Label>Year</Label><Select name="year" value={String(formData.year)} onValueChange={(v) => handleSelectChange('year', Number(v))}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent></Select></div>
+                            <div className="space-y-2"><Label>Price ($)</Label><Input type="number" name="price" value={formData.price} onChange={handleChange} /></div>
                             <div className="space-y-2"><Label>Body Type</Label><Select name="bodyType" value={formData.bodyType} onValueChange={(v) => handleSelectChange('bodyType', v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{vehicleTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
                             <div className="space-y-2"><Label>Drive Type</Label><Select name="driveType" value={formData.driveType} onValueChange={(v) => handleSelectChange('driveType', v as Vehicle['driveType'])}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{['FWD', 'RWD', 'AWD/4WD'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
                             <div className="space-y-2"><Label>Fuel Type</Label><Select name="fuelType" value={formData.fuelType} onValueChange={(v) => handleSelectChange('fuelType', v as Vehicle['fuelType'])}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{['Petrol', 'Diesel', 'Hybrid', 'Electric'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>

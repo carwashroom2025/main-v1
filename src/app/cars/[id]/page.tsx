@@ -32,7 +32,8 @@ import {
   Wind,
   DoorOpen,
   GitBranch,
-  Info
+  Info,
+  DollarSign
 } from 'lucide-react';
 import type { Vehicle, Review } from '@/lib/types';
 import { CarDetailGallery } from '@/components/cars/car-detail-gallery';
@@ -74,6 +75,7 @@ const iconMap: { [key: string]: React.ElementType } = {
     doors: DoorOpen,
     seats: Users,
     variants: GitBranch,
+    price: DollarSign,
 
     // Performance & Safety
     engine: Settings,
@@ -167,6 +169,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     { label: "Make", value: vehicle.make, icon: iconMap.make },
     { label: "Model", value: vehicle.model, icon: iconMap.model },
     { label: "Year", value: vehicle.year, icon: iconMap.year },
+    { label: 'Price', value: vehicle.price ? `$${vehicle.price.toLocaleString()}` : 'N/A', icon: iconMap.price },
     { label: "Body Type", value: vehicle.bodyType, icon: iconMap.bodyType },
     { label: "Drive Type", value: vehicle.driveType, icon: iconMap.driveType },
     { label: "Fuel Type", value: vehicle.fuelType, icon: iconMap.fuelType },

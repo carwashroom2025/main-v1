@@ -22,6 +22,7 @@ export type Vehicle = {
     make: string;
     model: string;
     year: number;
+    price: number;
     bodyType: string;
     driveType: 'FWD' | 'RWD' | 'AWD/4WD';
     fuelType: 'Petrol' | 'Diesel' | 'Hybrid' | 'Electric';
