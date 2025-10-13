@@ -117,6 +117,18 @@ function SpecItem({ label, value, icon, unit }: { label: string, value: string |
     );
 }
 
+function OverviewItem({ label, value, icon }: { label: string; value?: string | number; icon: React.ElementType }) {
+    const Icon = icon;
+    if (!value) return null;
+    return (
+        <div className="flex flex-col items-center justify-center rounded-lg border p-4 text-center">
+            <Icon className="h-8 w-8 text-primary mb-2" />
+            <p className="font-bold text-lg">{value}</p>
+            <p className="text-xs text-muted-foreground">{label}</p>
+        </div>
+    )
+}
+
 function FeatureList({ title, features, icon }: { title: string, features?: string[], icon?: React.ReactNode }) {
     if (!features || features.length === 0) return null;
     return (
@@ -174,8 +186,6 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     { label: "Drive Type", value: vehicle.driveType, icon: iconMap.driveType },
     { label: "Fuel Type", value: vehicle.fuelType, icon: iconMap.fuelType },
     { label: "Doors", value: vehicle.doors, icon: iconMap.doors },
-    { label: "Seats", value: vehicle.seats, icon: iconMap.seats },
-    { label: "Variants", value: vehicle.variants?.join(', '), icon: iconMap.variants },
   ];
 
   const performanceAndSafety = [
@@ -228,12 +238,14 @@ export default async function CarDetailPage({ params }: { params: { id: string }
             </div>
 
             <div className="lg:col-span-1">
-                <div className="border rounded-lg p-6">
-                    <h3 className="text-2xl font-bold mb-4">Overview</h3>
-                    <div className="flex flex-col gap-2">
-                        {overview.map(spec => <SpecItem key={spec.label} {...spec} />)}
-                    </div>
-                </div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Overview</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                        {overview.map(spec => <OverviewItem key={spec.label} {...spec} />)}
+                    </CardContent>
+                </Card>
             </div>
         </div>
 
