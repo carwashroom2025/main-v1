@@ -29,7 +29,7 @@ const adminNavLinks = [
   { href: '/admin/users', label: 'Manage Users', icon: Users },
   { href: '/admin/reviews', label: 'Moderate Reviews', icon: MessageSquare },
   { href: '/admin/blog', label: 'Manage Blog', icon: FileText },
-  { href: '/admin/faq', label: 'Manage FAQ', icon: HelpCircle },
+  { href: '/admin/forum', label: 'Manage Forum', icon: HelpCircle },
   { href: '/admin/activity', label: 'Activity Log', icon: Activity },
   { href: '/admin/settings', label: 'Security & SEO', icon: ShieldCheck },
 ];
