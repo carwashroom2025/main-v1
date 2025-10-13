@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Suspense } from 'react';
 import CarListings from './car-listings';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ListCarButton } from '@/components/cars/list-car-button';
 
 export default function CarsPage() {
   return (
@@ -54,3 +55,4 @@ function CarListingsSkeleton() {
         </>
     )
 }
+

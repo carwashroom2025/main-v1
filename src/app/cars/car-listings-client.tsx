@@ -24,6 +24,7 @@ import type { Vehicle } from '@/lib/types';
 import { getCars } from '@/lib/firebase/firestore';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ListCarButton } from '@/components/cars/list-car-button';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -38,15 +39,20 @@ export function CarListingsClient() {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
+  const fetchCars = async () => {
+    setLoading(true);
+    const { vehicles } = await getCars();
+    setAllVehicles(vehicles);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function fetchCars() {
-        setLoading(true);
-        const { vehicles } = await getCars();
-        setAllVehicles(vehicles);
-        setLoading(false);
-    }
     fetchCars();
   }, []);
+
+  const onCarListed = () => {
+    fetchCars();
+  }
 
   useEffect(() => {
     setFilters({
@@ -108,7 +114,7 @@ export function CarListingsClient() {
   return (
     <>
       <div className="bg-card p-6 rounded-lg shadow-md mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
             <Select value={filters.brand} onValueChange={(value) => handleFilterChange('brand', value)}>
                 <SelectTrigger>
                 <SelectValue placeholder="Brand" />
@@ -142,6 +148,7 @@ export function CarListingsClient() {
                 ))}
                 </SelectContent>
             </Select>
+            <ListCarButton onCarListed={onCarListed} />
             </div>
         </div>
 

@@ -653,7 +653,7 @@ export async function getRecentCars(count: number): Promise<Vehicle[]> {
 
 export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>): Promise<string> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Admin', 'Owner', 'Author'].includes(currentUser.role)) {
         throw new Error('You do not have permission to add vehicles.');
     }
     
@@ -663,7 +663,7 @@ export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>)
         createdAt: Timestamp.now(),
     });
     
-    await logActivity(`Admin "${currentUser.name}" added a new vehicle: "${vehicleData.name}".`, 'data', docRef.id, currentUser.id);
+    await logActivity(`User "${currentUser.name}" added a new vehicle: "${vehicleData.name}".`, 'data', docRef.id, currentUser.id);
     return docRef.id;
 }
 
@@ -1200,3 +1200,4 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
+
