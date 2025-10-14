@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, ImageIcon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +33,7 @@ import type { Category } from '@/lib/types';
 import { deleteCategory } from '@/lib/firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { CategoryForm } from './category-form';
+import Image from 'next/image';
 
 type CategoryTableProps = {
   categories: Category[];
@@ -95,6 +96,7 @@ export function CategoryTable({ categories, onDataChange }: CategoryTableProps) 
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
@@ -104,6 +106,15 @@ export function CategoryTable({ categories, onDataChange }: CategoryTableProps) 
         <TableBody>
           {categories.map((category) => (
             <TableRow key={category.id}>
+              <TableCell>
+                  <div className="w-16 h-10 bg-muted rounded-md flex items-center justify-center">
+                    {category.imageUrl ? (
+                        <Image src={category.imageUrl} alt={category.name} width={64} height={40} className="object-cover rounded-md" />
+                    ) : (
+                        <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </div>
+              </TableCell>
               <TableCell className="font-medium">{category.name}</TableCell>
               <TableCell>
                 <DropdownMenu>

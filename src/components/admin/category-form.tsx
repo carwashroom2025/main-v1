@@ -16,6 +16,10 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { Category } from '@/lib/types';
 import { addCategory, updateCategory } from '@/lib/firebase/firestore';
+import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
+import { uploadFile } from '@/lib/firebase/storage';
+import { Progress } from '../ui/progress';
 
 type CategoryFormProps = {
   isOpen: boolean;
@@ -24,13 +28,15 @@ type CategoryFormProps = {
   onDataChange: () => void;
 };
 
-const initialFormData: Omit<Category, 'id' | 'createdAt'> = {
+const initialFormData: Partial<Category> = {
   name: '',
+  imageUrl: '',
 };
 
 export function CategoryForm({ isOpen, setIsOpen, category, onDataChange }: CategoryFormProps) {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState<Partial<Category>>(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -48,6 +54,22 @@ export function CategoryForm({ isOpen, setIsOpen, category, onDataChange }: Cate
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadProgress(0);
+    try {
+        const url = await uploadFile(file, 'category-images', setUploadProgress);
+        setFormData(prev => ({...prev, imageUrl: url}));
+        toast({ title: "Image Uploaded", description: "The image has been successfully uploaded." });
+    } catch (error: any) {
+        toast({ title: "Upload Failed", description: error.message, variant: 'destructive'});
+    } finally {
+        setUploadProgress(null);
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -60,7 +82,7 @@ export function CategoryForm({ isOpen, setIsOpen, category, onDataChange }: Cate
           description: `"${formData.name}" has been successfully updated.`,
         });
       } else {
-        await addCategory(formData);
+        await addCategory(formData as Omit<Category, 'id' | 'createdAt'>);
         toast({
           title: 'Category Added',
           description: `"${formData.name}" has been successfully added.`,
@@ -92,12 +114,41 @@ export function CategoryForm({ isOpen, setIsOpen, category, onDataChange }: Cate
         <form onSubmit={handleSubmit} className="py-4 space-y-6">
             <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+                <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Image</Label>
+              {formData.imageUrl ? (
+                  <div className="relative group w-full h-32">
+                     <Image src={formData.imageUrl} alt={formData.name || 'Category image'} fill className="object-cover rounded-md" />
+                     <Button
+                         type="button"
+                         variant="destructive"
+                         size="icon"
+                         className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100"
+                         onClick={() => setFormData(prev => ({...prev, imageUrl: ''}))}
+                     >
+                         <X className="h-4 w-4" />
+                     </Button>
+                  </div>
+              ) : (
+                  <div className="w-full">
+                      <label
+                          htmlFor="image-upload"
+                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"
+                      >
+                          <Upload className="h-8 w-8 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">Click to upload</span>
+                      </label>
+                      <Input id="image-upload" type="file" className="sr-only" onChange={handleImageUpload} accept="image/*" />
+                  </div>
+              )}
+              {uploadProgress !== null && <Progress value={uploadProgress} className="w-full mt-2" />}
             </div>
             
             <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading || uploadProgress !== null}>
                     {loading ? 'Saving...' : 'Save Changes'}
                 </Button>
             </DialogFooter>

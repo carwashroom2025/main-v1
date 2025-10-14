@@ -205,5 +205,6 @@ export type Review = {
 export type Category = {
     id: string;
     name: string;
+    imageUrl?: string;
     createdAt?: Timestamp;
 }

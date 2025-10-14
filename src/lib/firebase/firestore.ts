@@ -6,6 +6,7 @@ import type { BlogPost, Business, Vehicle, User, Activity, Question, Answer, Set
 import { deleteFile } from './storage';
 import { getCurrentUser } from './auth';
 import { v4 as uuidv4 } from 'uuid';
+import { PlaceHolderImages } from '../placeholder-images';
 
 // Settings
 export async function getSettings(id: 'security' | 'seo'): Promise<any> {
@@ -1106,6 +1107,19 @@ export async function seedInitialCategories(): Promise<{count: number, message: 
         return { count: 0, message: "Categories collection is not empty. Seeding aborted." };
     }
 
+    const categoryImageMap: { [key: string]: string } = {
+        'Car Wash & Detailing': 'category-car-wash',
+        'Service Centres': 'category-service-centers',
+        'Dealerships': 'category-car-dealers',
+        'Pre Owned Car Dealers': 'category-used-cars',
+        'Showrooms': 'category-showrooms',
+        'Insurance & Protection': 'category-car-insurance',
+        'Car Rentals': 'category-rent-a-car',
+        'Parts & Accessories': 'category-spare-parts',
+        'Customs & Modifications': 'category-modifiers',
+        'Other Services': 'others-category',
+      };
+
     const initialCategories = [
       { name: "Car Wash & Detailing" },
       { name: "Service Centres" },
@@ -1122,8 +1136,11 @@ export async function seedInitialCategories(): Promise<{count: number, message: 
     const batch = writeBatch(db);
     initialCategories.forEach(category => {
         const docRef = doc(collection(db, 'categories'));
+        const imageId = categoryImageMap[category.name];
+        const image = PlaceHolderImages.find(img => img.id === imageId);
         batch.set(docRef, { 
             ...category,
+            imageUrl: image?.imageUrl || '',
             createdAt: Timestamp.now()
         });
     });
@@ -1203,5 +1220,3 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
-
-
