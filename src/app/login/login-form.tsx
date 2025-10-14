@@ -96,15 +96,17 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
-        <CardHeader className="text-center">
-            <div onClick={() => router.push('/')} className="flex justify-center items-center space-x-2 mb-4 cursor-pointer">
-              <span className="text-2xl font-bold uppercase">Car<span className="text-destructive">washroom</span></span>
-            </div>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>Enter your email below to login to your account</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <>
+        <div className="grid gap-2 text-center">
+            <Link href="/" className="flex justify-center items-center space-x-2 mb-4">
+                <span className="text-2xl font-bold uppercase">Car<span className="text-destructive">washroom</span></span>
+            </Link>
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-balance text-muted-foreground">
+            Enter your email below to login to your account
+            </p>
+        </div>
+        <div className="grid gap-4">
             {showResend && (
                 <Alert className="mb-4">
                     <Terminal className="h-4 w-4" />
@@ -174,13 +176,13 @@ export default function LoginForm() {
                 </Button>
             </form>
             </Form>
-            <div className="mt-4 text-center text-sm">
+        </div>
+        <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}
             <Link href="/register" className="underline">
                 Sign up
             </Link>
-            </div>
-        </CardContent>
-    </Card>
+        </div>
+    </>
   );
 }
