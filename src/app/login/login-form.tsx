@@ -6,7 +6,6 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { signIn, resendVerificationEmail } from '@/lib/firebase/auth';
@@ -97,15 +96,6 @@ export default function LoginForm() {
 
   return (
     <>
-        <div className="grid gap-2 text-center">
-            <Link href="/" className="flex justify-center items-center space-x-2 mb-4">
-                <span className="text-2xl font-bold uppercase">Car<span className="text-destructive">washroom</span></span>
-            </Link>
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-balance text-muted-foreground">
-            Enter your email below to login to your account
-            </p>
-        </div>
         <div className="grid gap-4">
             {showResend && (
                 <Alert className="mb-4">
