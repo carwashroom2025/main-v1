@@ -94,13 +94,22 @@ export const signIn = async (email: string, password: string, rememberMe: boolea
     throw error;
   }
   
+  // Perform non-critical updates in the background without awaiting them
+  const updatePromises = [];
+  
   // Sync verification status on login
   if (user.emailVerified && userData && !userData.verified) {
-    await updateDoc(userDocRef, { verified: true });
+    updatePromises.push(updateDoc(userDocRef, { verified: true }));
   }
 
-  await updateDoc(userDocRef, {
+  // Update last login time
+  updatePromises.push(updateDoc(userDocRef, {
     lastLogin: Timestamp.now(),
+  }));
+  
+  Promise.all(updatePromises).catch(error => {
+    console.error("Background update failed after login:", error);
+    // Optionally log this error to a monitoring service
   });
 };
 
