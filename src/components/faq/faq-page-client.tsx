@@ -134,9 +134,12 @@ export function FaqPageClient() {
                 <CardContent className="flex-grow">
                     <p className="text-muted-foreground line-clamp-2">{q.body}</p>
                      <div className="flex flex-wrap gap-2 mt-4">
-                        {q.tags.map(tag => (
+                        {q.tags.slice(0, 4).map(tag => (
                             <Badge key={tag} variant="secondary">#{tag}</Badge>
                         ))}
+                        {q.tags.length > 4 && (
+                            <Badge variant="outline">+{q.tags.length - 4} more</Badge>
+                        )}
                     </div>
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-4">
