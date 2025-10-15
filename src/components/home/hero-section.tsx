@@ -35,7 +35,7 @@ export function Hero() {
           <HeroTabs />
         </div>
       </div>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white">
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white">
           <span className="text-sm tracking-widest uppercase">Scroll</span>
           <div className="relative h-10 w-6 rounded-full border-2 border-white">
               <div className="absolute left-1/2 top-2 h-2 w-1 -translate-x-1/2 rounded-full bg-white animate-scroll-down"></div>
