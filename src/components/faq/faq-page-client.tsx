@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search } from 'lucide-react';
+import { ArrowBigUp, Eye, MessageSquare, Search } from 'lucide-react';
 import Link from 'next/link';
 import type { Question } from '@/lib/types';
 import { getQuestions } from '@/lib/firebase/firestore';
@@ -144,12 +144,12 @@ export function FaqPageClient() {
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-4">
                     <div className="flex justify-between w-full text-sm text-muted-foreground">
-                        <div className="flex gap-4">
-                            <span>{q.votes} votes</span>
-                            <span className={q.answers.some(a => a.accepted) ? 'text-green-600' : ''}>
-                                {q.answers.length} answers
+                        <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-1.5"><ArrowBigUp className="h-4 w-4" /> {q.votes}</span>
+                            <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
+                                <MessageSquare className="h-4 w-4" /> {q.answers.length}
                             </span>
-                            <span>{q.views} views</span>
+                            <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views}</span>
                         </div>
                     </div>
                      <div className="text-sm text-muted-foreground text-right w-full">
