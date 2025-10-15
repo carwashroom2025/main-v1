@@ -131,7 +131,7 @@ export function FaqPageClient() {
                         </Link>
                     </CardTitle>
                     <p className="text-sm text-muted-foreground pt-1">
-                        by <span className="font-medium text-foreground">{q.author}</span> <i className="italic">posted {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</i>
+                        by <span className="font-medium text-foreground">{q.author}</span>
                     </p>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -151,6 +151,9 @@ export function FaqPageClient() {
                             <MessageSquare className="h-4 w-4" /> {q.answers.length}
                         </span>
                         <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views}</span>
+                    </div>
+                    <div>
+                        <i className="italic">posted {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</i>
                     </div>
                 </CardFooter>
             </Card>
