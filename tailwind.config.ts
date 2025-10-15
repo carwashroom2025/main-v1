@@ -117,6 +117,11 @@ export default {
             transform: 'rotate(360deg)',
           },
         },
+        'scroll-down': {
+          '0%': { opacity: '0', transform: 'translateY(-8px) translateX(-50%)' },
+          '50%': { opacity: '1' },
+          '100%': { opacity: '0', transform: 'translateY(8px) translateX(-50%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -125,6 +130,7 @@ export default {
         'slide-up-fade': 'slide-up-fade 0.8s ease-out forwards',
         'marquee': 'marquee 40s linear infinite',
         'spin-slow': 'spin-slow 3s linear infinite',
+        'scroll-down': 'scroll-down 2s ease-out infinite',
       },
       typography: ({ theme }: { theme: (path: string) => string }) => ({
         DEFAULT: {
