@@ -14,7 +14,7 @@ const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), 
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden">
         <Image
           src="https://wgl-dsites.net/genesisauto/wp-content/uploads/2024/05/h3-1.webp"
           alt="Hero background image of a car"
@@ -24,7 +24,7 @@ export function Hero() {
           data-ai-hint="car"
         />
       <div className="absolute inset-0 bg-black/60" />
-      <div className="relative z-10 flex h-full min-h-screen flex-col items-center justify-center text-center text-white px-4">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
         <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
           Find Your Next Car & Service
         </h1>
