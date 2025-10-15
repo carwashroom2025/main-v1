@@ -126,7 +126,7 @@ export function FaqPageClient() {
             <Card key={q.id} className="flex flex-col">
                 <CardHeader>
                     <CardTitle className="text-xl">
-                        <Link href={`/faq/${q.id}`} className="hover:text-primary transition-colors">
+                        <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
                             {q.title}
                         </Link>
                     </CardTitle>

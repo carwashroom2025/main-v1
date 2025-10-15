@@ -163,7 +163,7 @@ export function AdminDashboard() {
         case 'blog':
              return `/blog/${activity.relatedId}`;
         case 'question':
-            return `/faq/${activity.relatedId}`;
+            return `/forum/${activity.relatedId}`;
         default:
             return '/admin/activity';
     }
