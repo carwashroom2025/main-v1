@@ -130,8 +130,8 @@ export function FaqPageClient() {
                             {q.title}
                         </Link>
                     </CardTitle>
-                     <p className="text-sm text-muted-foreground pt-1">
-                        asked {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })} by <span className="font-medium text-foreground">{q.author}</span>
+                    <p className="text-sm text-muted-foreground pt-1">
+                        by <span className="font-medium text-foreground">{q.author}</span> <i className="italic">posted {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</i>
                     </p>
                 </CardHeader>
                 <CardContent className="flex-grow">
