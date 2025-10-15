@@ -132,7 +132,6 @@ export function FaqPageClient() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                    <p className="text-muted-foreground line-clamp-2">{q.body}</p>
                      <div className="flex flex-wrap gap-2 mt-4">
                         {q.tags.slice(0, 4).map(tag => (
                             <Badge key={tag} variant="secondary">#{tag}</Badge>
