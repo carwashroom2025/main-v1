@@ -27,7 +27,6 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
   const { user } = useAuth();
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
-  const [showAllTags, setShowAllTags] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -69,9 +68,6 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
 
   const hasUpvoted = user && (question.upvotedBy || []).includes(user.id);
   const hasDownvoted = user && (question.downvotedBy || []).includes(user.id);
-  
-  const visibleTags = showAllTags ? question.tags : question.tags.slice(0, 4);
-  const remainingTagsCount = question.tags.length - 4;
 
   return (
     <div className="container py-12 md:py-16 max-w-4xl">
@@ -99,18 +95,9 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
             <h2 className="text-2xl font-semibold mb-2">{question.title}</h2>
             <p className="text-muted-foreground mb-4">{question.body}</p>
             <div className="flex flex-wrap gap-2 mb-4">
-              {visibleTags.map(tag => (
+              {question.tags.map(tag => (
                 <Badge key={tag} variant="secondary">#{tag}</Badge>
               ))}
-              {remainingTagsCount > 0 && (
-                <Badge 
-                    variant="outline" 
-                    className="cursor-pointer"
-                    onClick={() => setShowAllTags(true)}
-                >
-                    +{remainingTagsCount} more
-                </Badge>
-              )}
             </div>
             <div className="text-sm text-muted-foreground">
               {isClient ? (
