@@ -130,9 +130,12 @@ export function FaqPageClient() {
                             {q.title}
                         </Link>
                     </CardTitle>
+                     <p className="text-sm text-muted-foreground pt-1">
+                        asked {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })} by <span className="font-medium text-foreground">{q.author}</span>
+                    </p>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                     <div className="flex flex-wrap gap-2 mt-4">
+                     <div className="flex flex-wrap gap-2 mt-2">
                         {q.tags.slice(0, 4).map(tag => (
                             <Badge key={tag} variant="secondary">#{tag}</Badge>
                         ))}
@@ -141,19 +144,13 @@ export function FaqPageClient() {
                         )}
                     </div>
                 </CardContent>
-                <CardFooter className="flex-col items-start gap-4">
-                    <div className="flex justify-between w-full text-sm text-muted-foreground">
-                        <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-1.5"><ArrowBigUp className="h-4 w-4" /> {q.votes}</span>
-                            <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
-                                <MessageSquare className="h-4 w-4" /> {q.answers.length}
-                            </span>
-                            <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views}</span>
-                        </div>
-                    </div>
-                     <div className="text-sm text-muted-foreground text-right w-full">
-                        <p>asked {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</p>
-                        <p>by <span className="font-medium text-foreground">{q.author}</span></p>
+                <CardFooter className="flex justify-between w-full text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-1.5"><ArrowBigUp className="h-4 w-4" /> {q.votes}</span>
+                        <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
+                            <MessageSquare className="h-4 w-4" /> {q.answers.length}
+                        </span>
+                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views}</span>
                     </div>
                 </CardFooter>
             </Card>
