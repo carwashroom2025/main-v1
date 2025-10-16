@@ -56,7 +56,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="text-lg font-bold uppercase mb-2">Location</h3>
-              <p className="text-muted-foreground">27 Division St, New York, NY 10002, USA</p>
+              <p className="text-muted-foreground">202 Delma House Building, King Faisal Street, Sharjah, UAE</p>
             </div>
             <div>
               <h3 className="text-lg font-bold uppercase mb-2">Contacts</h3>

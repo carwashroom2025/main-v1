@@ -53,7 +53,7 @@ export function Footer() {
               <div className="space-y-2">
                 <p className="text-3xl font-bold text-primary">+1 234 567 890</p>
                 <p className="text-xl text-primary">contact@carwashroom.com</p>
-                <p className="flex items-center text-muted-foreground"><MapPin className="h-5 w-5 mr-2 text-primary"/>27 Division St, New York, NY 10002, USA</p>
+                <p className="flex items-center text-muted-foreground"><MapPin className="h-5 w-5 mr-2 text-primary"/>202 Delma House Building, King Faisal Street, Sharjah, UAE</p>
               </div>
               <div className="flex space-x-6 items-center">
                 <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
