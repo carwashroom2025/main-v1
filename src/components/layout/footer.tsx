@@ -60,6 +60,7 @@ export function Footer() {
                   </div>
                 </div>
               )}
+              {isClient && (
               <div className="flex space-x-6 items-center">
                 <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
                   <ArrowRight className="h-4 w-4 mr-2" /> INSTAGRAM
@@ -74,6 +75,7 @@ export function Footer() {
                   <ArrowRight className="h-4 w-4 mr-2" /> LINKEDIN
                 </Link>
               </div>
+              )}
             </div>
             
             <div className="md:col-span-1"></div>
