@@ -50,11 +50,13 @@ export function Footer() {
               <h3 className="text-xl font-bold uppercase tracking-wider">
                 Unleash The Road Ahead;<br/> Your Next Car Awaits
               </h3>
-              <div className="space-y-2">
-                <p className="text-3xl font-bold text-primary">+1 234 567 890</p>
-                <p className="text-xl text-primary">contact@carwashroom.com</p>
-                <p className="flex items-center text-muted-foreground"><MapPin className="h-5 w-5 mr-2 text-primary"/>202 Delma House Building, King Faisal Street, Sharjah, UAE</p>
-              </div>
+              {isClient && (
+                <div className="space-y-2">
+                  <p className="text-3xl font-bold text-primary">+1 234 567 890</p>
+                  <p className="text-xl text-primary">contact@carwashroom.com</p>
+                  <p className="flex items-center text-muted-foreground"><MapPin className="h-5 w-5 mr-2 text-primary"/>202 Delma House Building, King Faisal Street, Sharjah, UAE</p>
+                </div>
+              )}
               <div className="flex space-x-6 items-center">
                 <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
                   <ArrowRight className="h-4 w-4 mr-2" /> INSTAGRAM
