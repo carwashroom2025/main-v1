@@ -53,7 +53,7 @@ export function Footer() {
               {isClient && (
                 <div className="space-y-2">
                   <p className="text-3xl font-bold text-primary">0552405099</p>
-                  <p className="text-xl text-primary">contact@carwashroom.com</p>
+                  <p className="text-xl text-primary">ask@carwashroom.net</p>
                   <p className="flex items-center text-muted-foreground"><MapPin className="h-5 w-5 mr-2 text-primary"/>202 Delma House Building, King Faisal Street, Sharjah, UAE</p>
                 </div>
               )}

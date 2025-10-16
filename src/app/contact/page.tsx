@@ -60,7 +60,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="text-lg font-bold uppercase mb-2">Contacts</h3>
-              <p className="text-muted-foreground">contact@carwashroom.com</p>
+              <p className="text-muted-foreground">ask@carwashroom.net</p>
               <p className="text-muted-foreground">0552405099</p>
             </div>
             <div className="flex space-x-4">
