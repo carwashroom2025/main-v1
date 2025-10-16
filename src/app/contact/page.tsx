@@ -61,7 +61,7 @@ export default function ContactPage() {
             <div>
               <h3 className="text-lg font-bold uppercase mb-2">Contacts</h3>
               <p className="text-muted-foreground">contact@carwashroom.com</p>
-              <p className="text-muted-foreground">+1 (800) 123 456 78</p>
+              <p className="text-muted-foreground">0552405099</p>
             </div>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary"><Twitter /></a>
