@@ -12,10 +12,6 @@ export function Footer() {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
-  
-  useEffect(() => {
-    if (!isClient) return;
 
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
@@ -24,17 +20,16 @@ export function Footer() {
         setIsVisible(false);
       }
     };
-    
+
     window.addEventListener('scroll', toggleVisibility);
     toggleVisibility(); // Set initial state
 
     return () => {
       window.removeEventListener('scroll', toggleVisibility);
     };
-  }, [isClient]);
+  }, []);
 
   const scrollToTop = () => {
-    if (!isClient) return;
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
@@ -51,30 +46,30 @@ export function Footer() {
                 Unleash The Road Ahead;<br/> Your Next Car Awaits
               </h3>
               {isClient && (
-                <div className="space-y-2">
-                  <p className="text-3xl font-bold text-primary">0552405099</p>
-                  <p className="text-xl text-primary">ask@carwashroom.net</p>
-                  <div className="flex items-start text-muted-foreground pt-2">
-                    <MapPin className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-1"/>
-                    <span>202 Delma House Building, King Faisal Street, Sharjah, UAE</span>
+                <>
+                  <div className="space-y-2">
+                    <p className="text-3xl font-bold text-primary">0552405099</p>
+                    <p className="text-xl text-primary">ask@carwashroom.net</p>
+                    <div className="flex items-start text-muted-foreground pt-2">
+                      <MapPin className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-1"/>
+                      <span>202 Delma House Building, King Faisal Street, Sharjah, UAE</span>
+                    </div>
                   </div>
-                </div>
-              )}
-              {isClient && (
-              <div className="flex space-x-6 items-center">
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                  <ArrowRight className="h-4 w-4 mr-2" /> INSTAGRAM
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                  <ArrowRight className="h-4 w-4 mr-2" /> FACEBOOK
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                  <ArrowRight className="h-4 w-4 mr-2" /> TWITTER
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                  <ArrowRight className="h-4 w-4 mr-2" /> LINKEDIN
-                </Link>
-              </div>
+                  <div className="flex space-x-6 items-center">
+                    <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
+                      <ArrowRight className="h-4 w-4 mr-2" /> INSTAGRAM
+                    </Link>
+                    <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
+                      <ArrowRight className="h-4 w-4 mr-2" /> FACEBOOK
+                    </Link>
+                    <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
+                      <ArrowRight className="h-4 w-4 mr-2" /> TWITTER
+                    </Link>
+                    <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
+                      <ArrowRight className="h-4 w-4 mr-2" /> LINKEDIN
+                    </Link>
+                  </div>
+                </>
               )}
             </div>
             
