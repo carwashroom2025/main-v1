@@ -33,6 +33,8 @@ export function Header() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchCategories() {
@@ -74,12 +76,14 @@ export function Header() {
     }
     return pathname.startsWith(href);
   };
+  
+  const closeSheet = () => setIsSheetOpen(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="lg:hidden">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
@@ -92,40 +96,24 @@ export function Header() {
                     <SheetDescription>Main navigation and user account links</SheetDescription>
                 </SheetHeader>
               <div className="flex flex-col p-4">
-                <div onClick={() => router.push('/')} className="mb-8 flex items-center space-x-2 cursor-pointer">
+                <div onClick={() => {router.push('/'); closeSheet();}} className="mb-8 flex items-center space-x-2 cursor-pointer">
                     <span className="text-2xl font-bold uppercase">Car<span className="text-destructive">washroom</span></span>
                 </div>
                 <nav className="flex flex-col space-y-4">
                   {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="text-lg font-medium uppercase transition-colors hover:text-primary">
+                    <Link key={link.href} href={link.href} onClick={closeSheet} className="text-lg font-medium uppercase transition-colors hover:text-primary">
                       {link.label}
                     </Link>
                   ))}
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="categories" className="border-none">
-                        <AccordionTrigger className="text-lg font-medium transition-colors hover:text-primary hover:no-underline">
-                            CATEGORIES
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <div className="flex flex-col space-y-2 pl-4">
-                                {categories.map((category) => (
-                                    <Link key={category.id} href={`/services?categories=${encodeURIComponent(category.name)}`} className="text-muted-foreground hover:text-primary">
-                                        {category.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
                 </nav>
                 <div className="mt-8 flex flex-col space-y-2">
                   {!loading && !user ? (
                     <>
                       <Button asChild variant="outline">
-                          <Link href="/login">Login</Link>
+                          <Link href="/login" onClick={closeSheet}>Login</Link>
                       </Button>
                       <Button asChild>
-                          <Link href="/register">Register</Link>
+                          <Link href="/register" onClick={closeSheet}>Register</Link>
                       </Button>
                     </>
                   ) : user && (
