@@ -112,15 +112,17 @@ export function Footer() {
             )}
           </div>
         </div>
-        <div 
-          className="absolute inset-0 z-0 text-[180px] font-black uppercase text-foreground/5 flex items-center select-none pointer-events-none whitespace-nowrap"
-          style={{ letterSpacing: '0.2em' }}
-        >
-          <div className="animate-marquee flex w-max">
-            <span className="mx-4 flex-shrink-0">Carwashroom</span>
-            <span className="mx-4 flex-shrink-0">Carwashroom</span>
+        {isClient && (
+          <div 
+            className="absolute inset-0 z-0 text-[180px] font-black uppercase text-foreground/5 flex items-center select-none pointer-events-none whitespace-nowrap"
+            style={{ letterSpacing: '0.2em' }}
+          >
+            <div className="animate-marquee flex w-max">
+              <span className="mx-4 flex-shrink-0">Carwashroom</span>
+              <span className="mx-4 flex-shrink-0">Carwashroom</span>
+            </div>
           </div>
-        </div>
+        )}
       </footer>
       {isClient && isVisible && (
         <div className="fixed bottom-4 right-4 z-50">
