@@ -11,9 +11,7 @@ import { logOut } from '@/lib/firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { NotificationBell } from './notification-bell';
-import { getCategories } from '@/lib/firebase/firestore';
 import type { Category } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from './theme-toggle';
@@ -32,25 +30,8 @@ export function Header() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const { toast } = useToast();
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-
-  useEffect(() => {
-    async function fetchCategories() {
-        const categoriesFromDb = await getCategories();
-        const otherServicesCategory = categoriesFromDb.find(c => c.name === 'Other Services');
-        const sortedCategories = categoriesFromDb
-            .filter(c => c.name !== 'Other Services')
-            .sort((a, b) => a.name.localeCompare(b.name));
-
-        if (otherServicesCategory) {
-            sortedCategories.push(otherServicesCategory);
-        }
-        setCategories(sortedCategories);
-    }
-    fetchCategories();
-  }, []);
 
   const handleLogout = async () => {
     try {
@@ -82,7 +63,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -117,7 +98,7 @@ export function Header() {
                       </Button>
                     </>
                   ) : user && (
-                     <Button onClick={handleLogout}>
+                     <Button onClick={() => { handleLogout(); closeSheet(); }}>
                         <LogOut className="mr-2" />
                         Logout
                     </Button>
@@ -128,7 +109,7 @@ export function Header() {
           </Sheet>
         </div>
         
-        <div className="flex-1 flex items-center justify-start">
+        <div className="flex-1 flex items-center justify-start lg:justify-center">
            <div onClick={() => router.push('/')} className="flex items-center space-x-2 cursor-pointer">
             <span className="text-2xl font-bold uppercase">Car<span className="text-destructive">washroom</span></span>
           </div>
@@ -151,7 +132,7 @@ export function Header() {
             })}
           </nav>
 
-        <div className="hidden md:flex items-center justify-end space-x-2 flex-1">
+        <div className="flex items-center justify-end space-x-2 flex-1">
             {loading ? (
               <div className="flex items-center space-x-2">
                 <div className="h-8 w-20 animate-pulse rounded-md bg-muted"></div>
@@ -188,14 +169,14 @@ export function Header() {
                 </DropdownMenu>
               </>
             ) : (
-                <>
+                <div className="hidden md:flex">
                     <Button asChild variant="ghost">
                         <Link href="/login">Login</Link>
                     </Button>
                     <Button asChild>
                         <Link href="/register">Register</Link>
                     </Button>
-                </>
+                </div>
             )}
             <ThemeToggle />
         </div>
