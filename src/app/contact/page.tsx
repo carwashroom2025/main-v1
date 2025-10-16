@@ -27,7 +27,7 @@ export default function ContactPage() {
       </div>
       <div className="container mx-auto py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-start">
-          <div className="bg-secondary p-8 rounded-lg shadow-lg">
+          <div className="bg-card p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold uppercase tracking-wider mb-2">Drop Us a Line</h2>
             <p className="text-muted-foreground mb-8 text-sm">
               Your email address will not be published. Required fields are marked *
