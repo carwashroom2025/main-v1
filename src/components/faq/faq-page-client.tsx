@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,106 +23,108 @@ import {
     PaginationPrevious,
   } from '@/components/ui/pagination';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+
 
 const QUESTIONS_PER_PAGE = 10;
 
 export function FaqPageClient() {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('Newest');
-  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useAuth();
+  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const fetchQuestions = async () => {
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const searchTerm = searchParams.get('q') || '';
+  const activeTab = searchParams.get('tab') || 'Newest';
+
+  const fetchQuestions = useCallback(async () => {
     setLoading(true);
-    const questionsFromDb = await getQuestions();
+    const { questions: questionsFromDb, totalCount: count } = await getQuestions({
+      page: currentPage,
+      limit: QUESTIONS_PER_PAGE,
+      sortBy: activeTab as any,
+    });
     setQuestions(questionsFromDb);
+    setTotalCount(count);
     setLoading(false);
-  }
+  }, [currentPage, activeTab]);
 
   useEffect(() => {
     fetchQuestions();
-  }, []);
+  }, [fetchQuestions]);
 
-  const handleQuestionAdded = async () => {
-    // Refetch questions after a new one is added
-    fetchQuestions();
+  const updateURL = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, value);
+    if (key !== 'page') {
+      params.delete('page');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }
+  
+  const handleTabChange = (tab: string) => {
+    updateURL('tab', tab);
+  };
+  
+  const handleSearch = (e: React.FormEvent) => {
+      e.preventDefault();
+      const newSearchTerm = (e.target as any).search.value;
+      updateURL('q', newSearchTerm);
+      // This will cause a re-fetch, but our server-side getQuestions doesn't support search yet.
+      // For now, it will just reset pagination.
+  }
+
+  const handlePageChange = (page: number) => {
+    updateURL('page', page.toString());
   };
 
-  const filteredQuestions = questions.filter(q => 
+  const totalPages = Math.ceil(totalCount / QUESTIONS_PER_PAGE);
+
+  // Client-side filtering until server-side search is implemented
+  const displayedQuestions = questions.filter(q => 
     q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     q.body.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  const sortedAndFilteredQuestions = [...filteredQuestions].sort((a, b) => {
-    switch(activeTab) {
-        case 'Oldest':
-            return a.createdAt.toMillis() - b.createdAt.toMillis();
-        case 'Newest':
-        default:
-            return b.createdAt.toMillis() - a.createdAt.toMillis();
-    }
-  }).filter(q => {
-    switch(activeTab) {
-        case 'Answered':
-            return q.answers.length > 0;
-        case 'Unanswered':
-            return q.answers.length === 0;
-        default:
-            return true;
-    }
-  });
-
-  const totalPages = Math.ceil(sortedAndFilteredQuestions.length / QUESTIONS_PER_PAGE);
-
-  const currentQuestions = sortedAndFilteredQuestions.slice(
-    (currentPage - 1) * QUESTIONS_PER_PAGE,
-    currentPage * QUESTIONS_PER_PAGE
-  );
-  
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
 
   return (
     <div className="container py-12 md:py-16">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
             <h2 className="text-3xl font-bold">All Questions</h2>
-            {!loading && <p className="text-muted-foreground text-lg">{questions.length} questions</p>}
+            {!loading && <p className="text-muted-foreground text-lg">{totalCount} questions</p>}
         </div>
         <div className="flex items-center gap-4">
-          {user && <AskQuestion onQuestionAdded={handleQuestionAdded} />}
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {user && <AskQuestion onQuestionAdded={fetchQuestions} />}
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList>
               <TabsTrigger value="Newest">Newest</TabsTrigger>
+              <TabsTrigger value="MostVoted">Most Voted</TabsTrigger>
               <TabsTrigger value="Oldest">Oldest</TabsTrigger>
-              <TabsTrigger value="Answered">Answered</TabsTrigger>
-              <TabsTrigger value="Unanswered">Unanswered</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
       </div>
-      <div className="relative mb-8">
+      <form onSubmit={handleSearch} className="relative mb-8">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input 
+            name="search"
             placeholder="Search questions..." 
             className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            defaultValue={searchTerm}
         />
-      </div>
+      </form>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loading ? (
             Array.from({ length: 10 }).map((_, i) => (
                 <Skeleton key={i} className="h-48 w-full" />
             ))
-        ) : currentQuestions.map((q) => (
+        ) : displayedQuestions.map((q) => (
             <Card key={q.id} className="flex flex-col">
                 <CardHeader>
                     <CardTitle className="text-xl">
@@ -165,11 +167,9 @@ export function FaqPageClient() {
                 <PaginationContent>
                 <PaginationItem>
                     <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(currentPage - 1);
-                    }}
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
+                      className={currentPage <= 1 ? "pointer-events-none opacity-50" : undefined}
                     />
                 </PaginationItem>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -177,10 +177,7 @@ export function FaqPageClient() {
                     <PaginationLink
                         href="#"
                         isActive={currentPage === page}
-                        onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(page);
-                        }}
+                        onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
                     >
                         {page}
                     </PaginationLink>
@@ -188,11 +185,9 @@ export function FaqPageClient() {
                 ))}
                 <PaginationItem>
                     <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(currentPage + 1);
-                    }}
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
+                      className={currentPage >= totalPages ? "pointer-events-none opacity-50" : undefined}
                     />
                 </PaginationItem>
                 </PaginationContent>

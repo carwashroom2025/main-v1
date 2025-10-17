@@ -696,11 +696,48 @@ export async function deleteVehicle(id: string): Promise<void> {
 
 
 // Questions (FAQ)
-export async function getQuestions(): Promise<Question[]> {
+export async function getQuestions(
+    options: { 
+        page?: number, 
+        limit?: number, 
+        sortBy?: 'Newest' | 'Oldest' | 'MostVoted'
+    } = {}
+): Promise<{ questions: Question[], totalCount: number }> {
+    const { page = 1, limit = 10, sortBy = 'Newest' } = options;
     const questionsCol = collection(db, 'questions');
-    const q = query(questionsCol, orderBy('createdAt', 'desc'));
+    let q = query(questionsCol);
+
+    let orderByField: 'createdAt' | 'votes' = 'createdAt';
+    let orderByDirection: 'desc' | 'asc' = 'desc';
+
+    if (sortBy === 'Oldest') {
+        orderByDirection = 'asc';
+    } else if (sortBy === 'MostVoted') {
+        orderByField = 'votes';
+    }
+
+    // For total count
+    const countSnapshot = await getCountFromServer(questionsCol);
+    const totalCount = countSnapshot.data().count;
+
+    q = query(q, orderBy(orderByField, orderByDirection));
+
+    // Pagination
+    if (page > 1) {
+        const lastVisibleDocQuery = query(questionsCol, orderBy(orderByField, orderByDirection), limit((page - 1) * limit));
+        const lastVisibleDocSnapshot = await getDocs(lastVisibleDocQuery);
+        const lastVisible = lastVisibleDocSnapshot.docs[lastVisibleDocSnapshot.docs.length - 1];
+        if (lastVisible) {
+            q = query(q, startAfter(lastVisible));
+        }
+    }
+
+    q = query(q, limit(limit));
+    
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Question));
+    const questions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Question));
+    
+    return { questions, totalCount };
 }
 
 export async function getQuestion(id: string): Promise<Question | null> {
