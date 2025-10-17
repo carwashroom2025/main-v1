@@ -703,7 +703,7 @@ export async function getQuestions(
         sortBy?: 'Newest' | 'Oldest' | 'MostVoted'
     } = {}
 ): Promise<{ questions: Question[], totalCount: number }> {
-    const { page = 1, limit = 10, sortBy = 'Newest' } = options;
+    const { page = 1, limit: itemsPerPage = 10, sortBy = 'Newest' } = options;
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
@@ -724,7 +724,7 @@ export async function getQuestions(
 
     // Pagination
     if (page > 1) {
-        const lastVisibleDocQuery = query(questionsCol, orderBy(orderByField, orderByDirection), limit((page - 1) * limit));
+        const lastVisibleDocQuery = query(questionsCol, orderBy(orderByField, orderByDirection), limit((page - 1) * itemsPerPage));
         const lastVisibleDocSnapshot = await getDocs(lastVisibleDocQuery);
         const lastVisible = lastVisibleDocSnapshot.docs[lastVisibleDocSnapshot.docs.length - 1];
         if (lastVisible) {
@@ -732,7 +732,7 @@ export async function getQuestions(
         }
     }
 
-    q = query(q, limit(limit));
+    q = query(q, limit(itemsPerPage));
     
     const snapshot = await getDocs(q);
     const questions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Question));
