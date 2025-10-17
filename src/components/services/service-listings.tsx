@@ -73,11 +73,13 @@ export function ServiceListings({
       if (sortBy === 'name-desc') {
         return b.title.localeCompare(a.title);
       }
-      if (sortBy === 'date-desc') {
-        return new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime();
-      }
-      if (sortBy === 'date-asc') {
-          return new Date(a.createdAt as string).getTime() - new Date(b.createdAt as string).getTime();
+      if (a.createdAt && b.createdAt) {
+        if (sortBy === 'date-desc') {
+            return new Date(b.createdAt as string).getTime() - new Date(a.createdAt as string).getTime();
+        }
+        if (sortBy === 'date-asc') {
+            return new Date(a.createdAt as string).getTime() - new Date(b.createdAt as string).getTime();
+        }
       }
       return 0;
     });
