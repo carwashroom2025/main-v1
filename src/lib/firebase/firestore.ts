@@ -524,21 +524,25 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
     if (!currentUser) {
         throw new Error('You must be logged in to add a business.');
     }
-     if (!['Member', 'Admin', 'Owner'].includes(currentUser.role)) {
-        throw new Error('Only members can add businesses.');
+     if (!['Member', 'Admin', 'Owner', 'Author'].includes(currentUser.role)) {
+        throw new Error('Only members, authors, or admins can add businesses.');
     }
 
+    const isAdmin = ['Admin', 'Owner', 'Author'].includes(currentUser.role);
     const businessesCol = collection(db, 'businesses');
-    const docRef = await addDoc(businessesCol, {
+    
+    const newBusinessData = {
       ...businessData,
       ownerId: currentUser.id,
       ownerName: currentUser.name,
-      status: 'pending',
-      verified: false,
+      status: isAdmin ? 'approved' : 'pending',
+      verified: isAdmin,
       createdAt: serverTimestamp(),
-    });
+    };
     
-    await logActivity(`Member "${currentUser.name}" submitted a new business listing for "${businessData.title}".`, 'listing', docRef.id, currentUser.id);
+    const docRef = await addDoc(businessesCol, newBusinessData);
+    
+    await logActivity(`User "${currentUser.name}" submitted a new business listing for "${businessData.title}".`, 'listing', docRef.id, currentUser.id);
 
     return docRef.id;
 }
