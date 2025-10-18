@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { auth } from '@/lib/firebase/firebase';
 import { verifyPasswordResetCode, confirmPasswordReset } from '@/lib/firebase/auth';
 
@@ -27,6 +27,7 @@ export default function ActionHandler() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'resetting'>('loading');
   const [message, setMessage] = useState('Processing your request...');
   const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!mode || !oobCode) {
@@ -144,13 +145,24 @@ export default function ActionHandler() {
             <form onSubmit={handleConfirmPasswordReset} className="space-y-4 text-left">
               <div>
                 <Label htmlFor="password">New Password</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required 
-                />
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required 
+                  />
+                  <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                      onClick={() => setShowPassword(prev => !prev)}
+                  >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
               </div>
               <Button type="submit" className="w-full">Set New Password</Button>
             </form>

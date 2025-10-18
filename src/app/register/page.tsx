@@ -17,6 +17,7 @@ import { getSettings } from '@/lib/firebase/firestore';
 import type { SecuritySettings } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
 
 const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters long.'),
@@ -31,6 +32,7 @@ export default function RegisterPage() {
   const { toast } = useToast();
   const [securitySettings, setSecuritySettings] = useState<SecuritySettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     async function fetchSettings() {
@@ -154,11 +156,22 @@ export default function RegisterPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" {...field} />
-                          </FormControl>
-                          <FormMessage />
+                            <FormLabel>Password</FormLabel>
+                            <div className="relative">
+                                <FormControl>
+                                    <Input type={showPassword ? 'text' : 'password'} {...field} />
+                                </FormControl>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                >
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                            </div>
+                            <FormMessage />
                         </FormItem>
                       )}
                     />

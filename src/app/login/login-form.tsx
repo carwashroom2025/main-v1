@@ -12,7 +12,7 @@ import { signIn, resendVerificationEmail } from '@/lib/firebase/auth';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import React, { useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { Terminal, Eye, EyeOff } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 
@@ -29,6 +29,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [showResend, setShowResend] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
   
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -129,16 +130,27 @@ export default function LoginForm() {
                 name="password"
                 render={({ field }) => (
                     <FormItem>
-                    <div className="flex items-center">
-                        <FormLabel>Password</FormLabel>
-                        <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
-                            Forgot your password?
-                        </Link>
-                    </div>
-                    <FormControl>
-                        <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
+                        <div className="flex items-center">
+                            <FormLabel>Password</FormLabel>
+                            <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                                Forgot your password?
+                            </Link>
+                        </div>
+                        <div className="relative">
+                            <FormControl>
+                                <Input type={showPassword ? 'text' : 'password'} {...field} />
+                            </FormControl>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                                onClick={() => setShowPassword(prev => !prev)}
+                            >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </Button>
+                        </div>
+                        <FormMessage />
                     </FormItem>
                 )}
                 />

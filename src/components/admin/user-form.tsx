@@ -22,6 +22,7 @@ import { createUserAsAdmin } from '@/lib/firebase/auth';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useAuth } from '@/context/auth-context';
+import { Eye, EyeOff } from 'lucide-react';
 
 const allRoles = ['Owner', 'Admin', 'Author', 'Member', 'User'];
 
@@ -50,6 +51,7 @@ export function UserForm({ isOpen, setIsOpen, user, onDataChange }: UserFormProp
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
   const isEditMode = !!user;
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof createUserSchema>>({
     resolver: zodResolver(isEditMode ? updateUserSchema : createUserSchema),
@@ -180,9 +182,20 @@ export function UserForm({ isOpen, setIsOpen, user, onDataChange }: UserFormProp
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Password</FormLabel>
-                            <FormControl>
-                            <Input type="password" {...field} />
-                            </FormControl>
+                            <div className="relative">
+                              <FormControl>
+                                <Input type={showPassword ? 'text' : 'password'} {...field} />
+                              </FormControl>
+                              <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                                  onClick={() => setShowPassword(prev => !prev)}
+                              >
+                                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            </div>
                             <FormMessage />
                         </FormItem>
                         )}
