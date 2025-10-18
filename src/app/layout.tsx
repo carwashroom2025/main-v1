@@ -8,6 +8,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from '@/context/providers';
 import { getSettings } from '@/lib/firebase/firestore';
 import type { SeoSettings } from '@/lib/types';
+import { ScrollToTop } from '@/components/shared/scroll-to-top';
+import { Suspense } from 'react';
 
 
 const spaceGrotesk = Space_Grotesk({
@@ -45,6 +47,9 @@ export default async function RootLayout({
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <Providers>
+          <Suspense>
+            <ScrollToTop />
+          </Suspense>
           <div className="flex min-h-screen flex-col">
             <Header />
             <main className="flex-grow">{children}</main>
