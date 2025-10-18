@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import type { Business } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Timestamp } from 'firebase/firestore';
 
 export async function FeaturedBusinesses() {
   const featuredBusinesses: Business[] = await getFeaturedBusinesses(3);
@@ -22,6 +23,12 @@ export async function FeaturedBusinesses() {
     );
   }
 
+  const serializableBusinesses = featuredBusinesses.map(business => ({
+    ...business,
+    createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
+  }));
+
+
   return (
     <section className="container py-12 md:py-24">
       <div className="flex flex-col items-center text-center">
@@ -31,8 +38,8 @@ export async function FeaturedBusinesses() {
         </p>
       </div>
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {featuredBusinesses.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
+        {serializableBusinesses.map((listing) => (
+          <ListingCard key={listing.id} listing={listing as Business} />
         ))}
       </div>
        <div className="mt-12 text-center">
