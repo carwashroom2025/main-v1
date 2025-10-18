@@ -22,17 +22,10 @@ import {
   Scaling,
   Box,
   ShieldCheck,
-  FileText,
-  Heart,
-  Share2,
-  Star,
-  Disc,
-  CircleDot,
   Thermometer,
   Wind,
   DoorOpen,
   GitBranch,
-  Info,
   DollarSign
 } from 'lucide-react';
 import type { Vehicle, Review } from '@/lib/types';
@@ -40,9 +33,7 @@ import { CarDetailGallery } from '@/components/cars/car-detail-gallery';
 import { Separator } from '@/components/ui/separator';
 import { getCars, getReviews } from '@/lib/firebase/firestore';
 import { ReviewSection } from '@/components/services/review-section';
-import { VehicleCard } from '@/components/cars/vehicle-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { CarDetailHeader } from '@/components/cars/car-detail-header';
 import { Timestamp } from 'firebase/firestore';
 
@@ -81,11 +72,11 @@ const iconMap: { [key: string]: React.ElementType } = {
     engine: Settings,
     transmission: GitPullRequest,
     displacement: Scaling,
-    cylinders: CircleDot,
+    cylinders: GitPullRequest,
     horsepower: Zap,
     torque: Gauge,
-    brakeSpec: Disc,
-    tireSpec: Disc,
+    brakeSpec: GitPullRequest,
+    tireSpec: GitPullRequest,
     airbags: ShieldCheck,
     acceleration: Zap,
     topSpeed: Zap,
@@ -171,12 +162,9 @@ export default async function CarDetailPage({ params }: { params: { id: string }
   const toISODate = (date: Timestamp | string | undefined) => {
     if (!date) return undefined;
     if (typeof date === 'string') return date;
-    // Check if it's a Firestore Timestamp
     if (typeof date === 'object' && 'toDate' in date && typeof date.toDate === 'function') {
       return date.toDate().toISOString();
     }
-    // If it's some other object or just not what we expect, we can't convert it.
-    // Depending on requirements, you might want to return a default or throw an error.
     return undefined;
   };
 
@@ -184,11 +172,6 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     ...vehicle,
     createdAt: toISODate(vehicle.createdAt),
   };
-  
-  const serializableSimilarCars = similarCars.map(car => ({
-      ...car,
-      createdAt: toISODate(car.createdAt),
-  }));
 
   const overview = [
     { label: "Make", value: vehicle.make, icon: iconMap.make },

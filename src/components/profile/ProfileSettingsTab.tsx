@@ -9,10 +9,8 @@ import { Label } from '@/components/ui/label';
 import { useState, useEffect } from 'react';
 import { updateUser } from '@/lib/firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Separator } from '@/components/ui/separator';
 import { sendPasswordReset } from '@/lib/firebase/auth';
 import { ProfileImageUploader } from '@/components/profile/profile-image-uploader';
-import type { User } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 
 export function ProfileSettingsTab() {

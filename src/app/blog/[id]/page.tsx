@@ -1,24 +1,21 @@
 
 'use client';
 
-import { notFound, useRouter, useParams } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { getBlogPost, getRelatedBlogPosts, getCategories } from '@/lib/firebase/firestore';
+import { getBlogPost, getRelatedBlogPosts } from '@/lib/firebase/firestore';
 import { blogAuthors } from '@/lib/blog-data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { Clock, MessageCircle, Calendar, Edit, ImageIcon } from 'lucide-react';
+import { Clock, Calendar, ImageIcon } from 'lucide-react';
 import { CommentSection } from '@/components/shared/comment-section';
 import { Separator } from '@/components/ui/separator';
 import { ShareButtons } from '@/components/blog/share-buttons';
 import { AuthorBio } from '@/components/blog/author-bio';
-import type { BlogPost, Category } from '@/lib/types';
+import type { BlogPost } from '@/lib/types';
 import { RelatedPosts } from '@/components/blog/related-posts';
-import { useAuth } from '@/context/auth-context';
-import { Button } from '@/components/ui/button';
-import { BlogPostForm } from '@/components/admin/blog-post-form';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -28,8 +25,6 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
-  const router = useRouter();
 
   const fetchPostData = async () => {
     if (!postId) {
@@ -165,5 +160,3 @@ export default function BlogPostPage() {
     </>
   );
 }
-
-    

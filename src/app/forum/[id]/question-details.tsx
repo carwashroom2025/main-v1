@@ -9,7 +9,7 @@ import type { Question, Answer } from '@/lib/types';
 import Link from 'next/link';
 import { AnswerSection } from '@/components/faq/answer-section';
 import { formatDistanceToNow } from 'date-fns';
-import { getQuestion, voteOnQuestion, getQuestionWithoutIncrementingViews } from '@/lib/firebase/firestore';
+import { voteOnQuestion, getQuestionWithoutIncrementingViews } from '@/lib/firebase/firestore';
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';

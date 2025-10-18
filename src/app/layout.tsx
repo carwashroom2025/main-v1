@@ -38,8 +38,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   
-  const seoSettings = await getSettings('seo') as SeoSettings;
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

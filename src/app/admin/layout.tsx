@@ -5,7 +5,6 @@ import { AdminNav } from '@/components/admin/admin-nav';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
 import Loading from '../loading';
 
 export default function AdminLayout({

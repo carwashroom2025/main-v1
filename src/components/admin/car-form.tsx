@@ -171,8 +171,6 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
         ...prev,
         imageUrls: prev.imageUrls.filter(url => url !== urlToRemove)
     }));
-    // Note: This does not delete the image from storage. 
-    // For a production app, you would add a call to a `deleteFile` function here.
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

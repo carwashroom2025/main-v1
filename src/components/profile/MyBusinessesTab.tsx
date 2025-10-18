@@ -12,7 +12,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BusinessForm } from '@/components/admin/business-form';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
-import { Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import {
     AlertDialog,

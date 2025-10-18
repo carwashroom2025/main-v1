@@ -21,9 +21,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import type { Vehicle } from '@/lib/types';
-import { getCars } from '@/lib/firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toISODate } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -36,8 +34,8 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  const [allVehicles, setAllVehicles] = useState<Vehicle[]>(initialVehicles);
-  const [loading, setLoading] = useState(false);
+  const [allVehicles] = useState<Vehicle[]>(initialVehicles);
+  const [loading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   
   const brand = searchParams.get('brand') || 'all';

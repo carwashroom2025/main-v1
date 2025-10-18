@@ -119,12 +119,6 @@ export default function ManageBusinessPage() {
         }
     }
     
-    const handleFilterChange = () => {
-        setCurrentPage(1);
-        fetchAllBusinesses();
-    }
-
-
     return (
         <div className="space-y-8">
             <Card>

@@ -12,8 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { NotificationBell } from './notification-bell';
-import type { Category } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ThemeToggle } from './theme-toggle';
 
 const navLinks = [
