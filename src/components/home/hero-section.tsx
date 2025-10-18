@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,6 +21,7 @@ export function Hero() {
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check on initial load
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
