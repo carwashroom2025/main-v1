@@ -52,8 +52,8 @@ export type Vehicle = {
     infotainment: string[];
     // Technical Specification
     length: number;
-    height: number;
     width: number;
+    height: number;
     wheelbase: number;
     groundClearance: number;
     vehicleWeight: number; 
@@ -63,8 +63,6 @@ export type Vehicle = {
     // Media
     imageUrls: string[];
     
-    // Legacy fields for compatibility
-    averageRating?: number;
     createdAt?: Timestamp;
 };
 

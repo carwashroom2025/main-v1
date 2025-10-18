@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { getCars } from '@/lib/firebase/firestore';
 import type { Vehicle } from '@/lib/types';
@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 import { vehicleBrands, vehicleTypes, vehicleYears } from '@/lib/car-data';
-import { Button } from '@/components/ui/button';
 import {
     Pagination,
     PaginationContent,
@@ -77,11 +76,6 @@ export default function ManageCarsPage() {
         }
     }
     
-    const handleFilterChange = () => {
-        setCurrentPage(1);
-        fetchVehicles();
-    }
-
     return (
         <Card>
             <CardHeader>

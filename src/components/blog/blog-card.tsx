@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import type { BlogPost } from '@/lib/types';
 import { format } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
