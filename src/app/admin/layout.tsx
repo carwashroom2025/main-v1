@@ -1,7 +1,7 @@
 
 'use client';
 
-import { AdminNav } from '@/components/layout/admin-nav';
+import { AdminNav } from '@/components/admin/admin-nav';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
