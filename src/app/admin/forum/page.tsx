@@ -14,7 +14,7 @@ export default function ManageForumPage() {
 
     const fetchQuestions = async () => {
         setLoading(true);
-        const questionsFromDb = await getQuestions();
+        const { questions: questionsFromDb } = await getQuestions();
         setQuestions(questionsFromDb);
         setLoading(false);
     }
