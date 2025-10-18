@@ -13,6 +13,7 @@ import {
   Facebook,
   Instagram,
   Calendar,
+  Clock,
 } from 'lucide-react';
 import { ReviewSection } from '@/components/services/review-section';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -103,6 +104,15 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                                 <p className="font-semibold">{format((business.createdAt as Timestamp).toDate(), 'PPP')}</p>
                             </div>
                         </div>
+                        {(business.openingHours || business.closingHours) && (
+                            <div className="flex items-start text-sm">
+                                <Clock className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
+                                <div>
+                                    <p className="text-muted-foreground">Hours</p>
+                                    <p className="font-semibold">{business.openingHours || 'N/A'} - {business.closingHours || 'N/A'}</p>
+                                </div>
+                            </div>
+                        )}
                         { (business.socials.twitter || business.socials.facebook || business.socials.instagram) &&
                             <div className="flex items-center text-sm pt-2">
                                 <div className="flex space-x-2">

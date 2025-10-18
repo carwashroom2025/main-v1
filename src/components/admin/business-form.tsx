@@ -61,6 +61,8 @@ const initialFormData: Partial<Omit<Business, 'id' | 'createdAt'>> = {
   status: 'pending',
   mainImageUrl: '',
   galleryImageUrls: [],
+  openingHours: '',
+  closingHours: '',
 };
 
 export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featuredCount = 0, categories }: BusinessFormProps) {
@@ -270,6 +272,14 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                 <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="website">Website</Label>
                     <Input id="website" name="website" value={formData.contact?.website || ''} onChange={handleContactChange} placeholder="example.com" />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="openingHours">Opening Hours</Label>
+                    <Input id="openingHours" name="openingHours" type="time" value={formData.openingHours || ''} onChange={handleChange} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="closingHours">Closing Hours</Label>
+                    <Input id="closingHours" name="closingHours" type="time" value={formData.closingHours || ''} onChange={handleChange} />
                 </div>
             </div>
              <div className="space-y-4">
