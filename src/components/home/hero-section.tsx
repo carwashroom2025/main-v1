@@ -1,10 +1,11 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '../ui/skeleton';
-import { Mouse } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), {
   ssr: false,
@@ -13,6 +14,20 @@ const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), 
 
 
 export function Hero() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
         <Image
@@ -35,7 +50,10 @@ export function Hero() {
           <HeroTabs />
         </div>
       </div>
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white">
+      <div className={cn(
+        "absolute bottom-16 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-white transition-opacity duration-500",
+        scrolled ? "opacity-0" : "opacity-100"
+      )}>
           <span className="text-sm tracking-widest uppercase">Scroll</span>
           <div className="relative h-10 w-6 rounded-full border-2 border-white">
               <div className="absolute left-1/2 top-2 h-2 w-1 -translate-x-1/2 rounded-full bg-white animate-scroll-down"></div>
