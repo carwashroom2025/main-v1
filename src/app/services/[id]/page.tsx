@@ -14,6 +14,7 @@ import {
   Instagram,
   Calendar,
   Clock,
+  User,
 } from 'lucide-react';
 import { ReviewSection } from '@/components/services/review-section';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -104,6 +105,15 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                                 <p className="font-semibold">{format((business.createdAt as Timestamp).toDate(), 'PPP')}</p>
                             </div>
                         </div>
+                        {business.ownerName && (
+                            <div className="flex items-start text-sm">
+                                <User className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
+                                <div>
+                                    <p className="text-muted-foreground">Listed by</p>
+                                    <p className="font-semibold">{business.ownerName}</p>
+                                </div>
+                            </div>
+                        )}
                         {(business.openingHours || business.closingHours) && (
                             <div className="flex items-start text-sm">
                                 <Clock className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
