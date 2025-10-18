@@ -585,7 +585,7 @@ export async function deleteBusiness(id: string): Promise<void> {
 
 
 // Cars / Vehicles
-export async function getCars({ page = 1, limit = 9, sortBy = 'createdAt-desc', brandFilter = 'all', typeFilter = 'all', yearFilter = 'all', searchTerm = '', all = false } = {}): Promise<{ vehicles: Vehicle[], totalCount: number }> {
+export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'createdAt-desc', brandFilter = 'all', typeFilter = 'all', yearFilter = 'all', searchTerm = '', all = false } = {}): Promise<{ vehicles: Vehicle[], totalCount: number }> {
     const carsCol = collection(db, 'cars');
     let q = query(carsCol);
 
@@ -626,8 +626,8 @@ export async function getCars({ page = 1, limit = 9, sortBy = 'createdAt-desc', 
     const totalCount = allCars.length;
     
     // Client-side pagination
-    const startIndex = (page - 1) * limit;
-    const paginatedCars = allCars.slice(startIndex, startIndex + limit);
+    const startIndex = (page - 1) * itemsPerPage;
+    const paginatedCars = allCars.slice(startIndex, startIndex + itemsPerPage);
 
     return { vehicles: paginatedCars, totalCount };
 }
