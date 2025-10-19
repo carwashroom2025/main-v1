@@ -1,0 +1,217 @@
+
+import { db } from '../firebase';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc } from 'firebase/firestore';
+import type { Business } from '../../types';
+import { getCurrentUser } from '../auth';
+import { logActivity } from './activity';
+
+// Businesses
+export async function getBusinesses(options: { ids?: string[] } = {}): Promise<Business[]> {
+    const businessesCol = collection(db, 'businesses');
+    let q;
+    if (options.ids && options.ids.length > 0) {
+        q = query(businessesCol, where(documentId(), 'in', options.ids));
+    } else {
+        q = query(businessesCol, where('status', '==', 'approved'));
+    }
+    const businessesSnapshot = await getDocs(q);
+    const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        // Handle plain objects that look like Timestamps after serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+    
+    return businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+}
+
+export async function getAllBusinessesForAdmin(options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    categoryFilter?: string;
+    countryFilter?: string;
+    searchTerm?: string;
+}): Promise<{ businesses: Business[], totalCount: number }> {
+    const businessesCol = collection(db, 'businesses');
+    let q = query(businessesCol);
+
+    // Apply filters
+    if (options?.categoryFilter && options.categoryFilter !== 'all') {
+        q = query(q, where('category', '==', options.categoryFilter));
+    }
+    if (options?.countryFilter && options.countryFilter !== 'all') {
+        q = query(q, where('country', '==', options.countryFilter));
+    }
+    // Search term filtering will be done in-memory after fetching because Firestore doesn't support partial text search well.
+
+    const totalSnapshot = await getDocs(q);
+    let allMatchingDocs = totalSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+
+    if (options?.searchTerm) {
+        allMatchingDocs = allMatchingDocs.filter(business =>
+            business.title.toLowerCase().includes(options.searchTerm!.toLowerCase())
+        );
+    }
+    
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        // Handle plain objects that look like Timestamps after serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+
+    // Apply sorting
+    if (options?.sortBy === 'createdAt-asc') {
+        allMatchingDocs.sort((a, b) => getTime(a.createdAt) - getTime(b.createdAt));
+    } else {
+        allMatchingDocs.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+    }
+
+    const totalCount = allMatchingDocs.length;
+
+    // Apply pagination
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const startIndex = (page - 1) * limit;
+    const paginatedBusinesses = allMatchingDocs.slice(startIndex, startIndex + limit);
+
+    return { businesses: paginatedBusinesses, totalCount };
+}
+
+export async function getPendingBusinesses(): Promise<Business[]> {
+    const businessesCol = collection(db, 'businesses');
+    const q = query(businessesCol, where('status', 'in', ['pending', 'edit-pending']));
+    const businessesSnapshot = await getDocs(q);
+    const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+    // Sort in-memory to avoid needing a composite index
+    return businessesList.sort((a, b) => ((b.createdAt as Timestamp)?.toMillis() || 0) - ((a.createdAt as Timestamp)?.toMillis() || 0));
+}
+
+export async function getFeaturedBusinesses(count?: number): Promise<Business[]> {
+    const businessesCol = collection(db, 'businesses');
+    let q = query(businessesCol, where('featured', '==', true), where('verified', '==', true));
+
+    const businessesSnapshot = await getDocs(q);
+    let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+    
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+    
+    // Sort in-memory and apply limit
+    businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+
+    if (count) {
+        return businessesList.slice(0, count);
+    }
+    
+    return businessesList;
+}
+
+export async function getBusinessesByOwner(ownerId: string): Promise<Business[]> {
+    const businessesCol = collection(db, 'businesses');
+    const q = query(businessesCol, where('ownerId', '==', ownerId));
+    const businessesSnapshot = await getDocs(q);
+    const businesses = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+    // Sort in memory to avoid composite index
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+    return businesses.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+}
+
+export async function getBusiness(id: string): Promise<Business | null> {
+    const businessDocRef = doc(db, 'businesses', id);
+    const businessDoc = await getDoc(businessDocRef);
+    if (businessDoc.exists()) {
+        return { id: businessDoc.id, ...businessDoc.data() } as Business;
+    }
+    return null;
+}
+
+export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<string> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+        throw new Error('You must be logged in to add a business.');
+    }
+    
+    const isAdminOrAuthor = ['Moderator', 'Administrator', 'Author'].includes(currentUser.role);
+    
+    const newBusinessData = {
+      ...businessData,
+      ownerId: currentUser.id,
+      ownerName: currentUser.name,
+      status: businessData.status || (isAdminOrAuthor ? 'approved' : 'pending'),
+      verified: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    
+    const businessesCol = collection(db, 'businesses');
+    const docRef = await addDoc(businessesCol, newBusinessData);
+    
+    await logActivity(`User "${currentUser.name}" submitted a new business listing for "${businessData.title}".`, 'listing', docRef.id, currentUser.id);
+
+    return docRef.id;
+}
+  
+export async function updateBusiness(id: string, businessData: Partial<Omit<Business, 'id'>>): Promise<void> {
+    const businessDocRef = doc(db, 'businesses', id);
+    const dataToUpdate: { [key: string]: any } = { ...businessData };
+    
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error("Not authenticated");
+
+    const originalDoc = await getDoc(businessDocRef);
+    const originalData = originalDoc.data() as Business;
+
+    // A non-admin owner is editing their approved listing, so it must be re-approved.
+    if (currentUser.id === originalData.ownerId && originalData.status === 'approved' && !['Moderator', 'Administrator'].includes(currentUser.role)) {
+        dataToUpdate.status = 'edit-pending';
+        dataToUpdate.verified = false;
+    }
+
+    if (dataToUpdate.mainImageUrl === undefined) {
+        dataToUpdate.mainImageUrl = '';
+    }
+    if (dataToUpdate.galleryImageUrls === undefined) {
+        dataToUpdate.galleryImageUrls = [];
+    }
+
+    dataToUpdate.updatedAt = serverTimestamp();
+
+    await updateDoc(businessDocRef, dataToUpdate);
+}
+
+export async function deleteBusiness(id: string): Promise<void> {
+    const businessToDelete = await getBusiness(id);
+    if (!businessToDelete) {
+        throw new Error("Business not found");
+    }
+
+    const businessDocRef = doc(db, 'businesses', id);
+    await deleteDoc(businessDocRef);
+}
