@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { BusinessForm } from '@/components/admin/business-form';
 import { ClaimBusinessButton } from './claim-business-button';
+import { StarRating } from '../shared/star-rating';
 
 
 type BusinessDetailHeaderProps = {
@@ -103,21 +103,7 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
                 <p className="mt-1 text-muted-foreground">{business.category}</p>
             </div>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
-                <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger>
-                    <div className="flex items-center gap-1 text-yellow-500">
-                        <Star className="h-5 w-5" />
-                        <span className="font-bold text-lg text-foreground">
-                        {averageRating.toFixed(1)}
-                        </span>
-                    </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                    <p>{reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}</p>
-                    </TooltipContent>
-                </Tooltip>
-                </TooltipProvider>
+                <StarRating rating={averageRating} reviewCount={reviewCount} />
 
                 {business.verified ? (
                     <Button variant="outline" disabled>
