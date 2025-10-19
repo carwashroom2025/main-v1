@@ -428,8 +428,9 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
         if (!date) return 0;
         if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date.seconds && typeof date.seconds === 'number') {
-            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
+        // Handle plain objects that look like Timestamps after serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
         }
         return 0;
     };
@@ -470,8 +471,9 @@ export async function getAllBusinessesForAdmin(options?: {
         if (!date) return 0;
         if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date.seconds && typeof date.seconds === 'number') {
-            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
+        // Handle plain objects that look like Timestamps after serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
         }
         return 0;
     };
@@ -514,8 +516,8 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
         if (!date) return 0;
         if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date.seconds && typeof date.seconds === 'number') {
-            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
         }
         return 0;
     };
@@ -536,7 +538,16 @@ export async function getBusinessesByOwner(ownerId: string): Promise<Business[]>
     const businessesSnapshot = await getDocs(q);
     const businesses = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
     // Sort in memory to avoid composite index
-    return businesses.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+    return businesses.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 }
 
 export async function getBusiness(id: string): Promise<Business | null> {
@@ -567,6 +578,7 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
       status: isAdmin ? 'approved' : 'pending',
       verified: isAdmin,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     };
     
     const docRef = await addDoc(businessesCol, newBusinessData);
@@ -643,10 +655,21 @@ export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'cre
         allCars = allCars.filter(car => car.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
 
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        // Handle plain objects that look like Timestamps after serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+
     // Client-side sorting
     allCars.sort((a, b) => {
-        const timeA = a.createdAt ? (a.createdAt as Timestamp).toMillis() : 0;
-        const timeB = b.createdAt ? (b.createdAt as Timestamp).toMillis() : 0;
+        const timeA = getTime(a.createdAt);
+        const timeB = getTime(b.createdAt);
 
         if (sortBy === 'createdAt-asc') {
             return timeA - timeB;
@@ -1292,3 +1315,5 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
+
+    
