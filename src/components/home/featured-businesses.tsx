@@ -4,8 +4,6 @@ import { ListingCard } from '@/components/services/listing-card';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import type { Business } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { Timestamp } from 'firebase/firestore';
 import { toISODate } from '@/lib/utils';
 
 export async function FeaturedBusinesses() {
@@ -27,6 +25,7 @@ export async function FeaturedBusinesses() {
   const serializableBusinesses = featuredBusinesses.map(business => ({
     ...business,
     createdAt: toISODate(business.createdAt),
+    updatedAt: toISODate(business.updatedAt),
   }));
 
 
