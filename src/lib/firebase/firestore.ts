@@ -424,15 +424,12 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
     const businessesSnapshot = await getDocs(q);
     const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
 
-    const getTime = (date: Timestamp | string | undefined): number => {
+    const getTime = (date: any): number => {
         if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date instanceof Timestamp) {
-            return date.toMillis();
-        }
-        // Handle cases where it might be a plain object from serialization
-        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-            return new Timestamp((date as any).seconds, (date as any).nanoseconds).toMillis();
+        if (date.seconds && typeof date.seconds === 'number') {
+            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
         }
         return 0;
     };
@@ -503,14 +500,12 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
     const businessesSnapshot = await getDocs(q);
     let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
     
-    const getTime = (date: Timestamp | string | undefined): number => {
+    const getTime = (date: any): number => {
         if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date instanceof Timestamp) {
-            return date.toMillis();
-        }
-        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-            return new Timestamp((date as any).seconds, (date as any).nanoseconds).toMillis();
+        if (date.seconds && typeof date.seconds === 'number') {
+            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
         }
         return 0;
     };
