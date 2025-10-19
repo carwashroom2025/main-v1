@@ -140,30 +140,34 @@ export function FaqPageClient() {
                         <AvatarImage src={q.authorAvatarUrl} alt={q.author} />
                         <AvatarFallback>{q.author.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-grow">
-                        <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
-                            <h3 className="font-semibold text-lg">{q.title}</h3>
-                        </Link>
-                        <div className="text-sm text-muted-foreground mt-1">
-                            Asked by <span className="font-medium text-foreground">{q.author}</span>
-                            <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+                    <div className="flex flex-col flex-grow">
+                        <div className="flex-grow">
+                            <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
+                                <h3 className="font-semibold text-lg">{q.title}</h3>
+                            </Link>
+                            <div className="text-sm text-muted-foreground mt-1">
+                                Asked by <span className="font-medium text-foreground">{q.author}</span>
+                                <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+                            </div>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 mt-3">
-                            {displayedTags.map(tag => (
-                                <Badge key={tag} variant="secondary">{tag}</Badge>
-                            ))}
-                            {remainingTagsCount > 0 && (
-                                <Badge variant="secondary">+{remainingTagsCount} more</Badge>
-                            )}
+                        <div className="flex justify-between items-end mt-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                                {displayedTags.map(tag => (
+                                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                                ))}
+                                {remainingTagsCount > 0 && (
+                                    <Badge variant="secondary">+{remainingTagsCount} more</Badge>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-shrink-0">
+                                <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
+                                <span className="flex items-center gap-1.5">
+                                    <MessageSquare className="h-4 w-4" /> {q.answers.length}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2 flex-shrink-0">
-                        <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
-                        <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
-                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
-                        <span className="flex items-center gap-1.5">
-                            <MessageSquare className="h-4 w-4" /> {q.answers.length}
-                        </span>
                     </div>
                 </div>
             );
