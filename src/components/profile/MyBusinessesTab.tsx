@@ -43,9 +43,16 @@ export function MyBusinessesTab() {
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const businessesFromDb = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
         businessesFromDb.sort((a, b) => {
-            const timeA = a.createdAt ? (a.createdAt as Timestamp).toMillis() : 0;
-            const timeB = b.createdAt ? (b.createdAt as Timestamp).toMillis() : 0;
-            return timeB - timeA;
+            const getTime = (date: any): number => {
+                if (!date) return 0;
+                if (date instanceof Timestamp) return date.toMillis();
+                if (date.seconds && typeof date.seconds === 'number') {
+                    return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
+                }
+                if (typeof date === 'string') return new Date(date).getTime();
+                return 0;
+            };
+            return getTime(b.createdAt) - getTime(a.createdAt);
         });
         setMyBusinesses(businessesFromDb);
         setLoading(false);
@@ -106,6 +113,16 @@ export function MyBusinessesTab() {
     }
   };
 
+  const getCreationDate = (createdAt: any) => {
+    if (createdAt instanceof Timestamp) {
+        return createdAt.toDate();
+    }
+    if (createdAt && typeof createdAt.seconds === 'number') {
+        return new Timestamp(createdAt.seconds, createdAt.nanoseconds).toDate();
+    }
+    return new Date(); // fallback
+  }
+
   return (
     <>
       <Card>
@@ -127,7 +144,7 @@ export function MyBusinessesTab() {
                     <h3 className="font-semibold">{business.title}</h3>
                     <p className="text-sm text-muted-foreground">{business.category}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Submitted: {format((business.createdAt as Timestamp).toDate(), 'PPP')}
+                      Submitted: {format(getCreationDate(business.createdAt), 'PPP')}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
