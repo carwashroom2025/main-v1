@@ -43,11 +43,6 @@ export function ClaimBusinessButton({ business }: ClaimBusinessButtonProps) {
     }
     checkExistingClaim();
   }, [user, business]);
-  
-  if (business.ownerId && business.ownerId !== '') {
-    return null; // Business is already owned
-  }
-
 
   const handleClaimClick = () => {
     if (!user) {
