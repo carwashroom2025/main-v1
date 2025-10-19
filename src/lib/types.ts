@@ -106,8 +106,9 @@ export type Business = {
     };
     mainImageUrl: string;
     galleryImageUrls: string[];
+    servicesOffered?: string[];
     createdAt: Timestamp | string;
-    verified: boolean; // Is it visible to the public?
+    verified: boolean;
     featured: boolean;
     status: 'pending' | 'approved' | 'rejected' | 'edit-pending';
     openingHours?: string;
@@ -207,5 +208,5 @@ export type Category = {
     id: string;
     name: string;
     imageUrl?: string;
-    createdAt?: Timestamp;
+    createdAt?: Timestamp | string;
 }

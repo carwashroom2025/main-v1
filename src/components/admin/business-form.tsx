@@ -25,8 +25,9 @@ import { locations } from '@/lib/car-data';
 import { Timestamp } from 'firebase/firestore';
 import { uploadFile } from '@/lib/firebase/storage';
 import { Progress } from '../ui/progress';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, PlusCircle } from 'lucide-react';
 import Image from 'next/image';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
 type BusinessFormProps = {
   isOpen: boolean;
@@ -61,6 +62,7 @@ const initialFormData: Partial<Omit<Business, 'id' | 'createdAt'>> = {
   status: 'pending',
   mainImageUrl: '',
   galleryImageUrls: [],
+  servicesOffered: [],
   openingHours: '',
   closingHours: '',
 };
@@ -129,6 +131,30 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  
+  const handleServiceChange = (index: number, value: string) => {
+    const newServices = [...(formData.servicesOffered || [])];
+    newServices[index] = value;
+    setFormData(prev => ({ ...prev, servicesOffered: newServices }));
+  }
+
+  const handleAddService = () => {
+    const services = formData.servicesOffered || [];
+    if (services.length < 6) {
+        setFormData(prev => ({...prev, servicesOffered: [...services, '']}));
+    } else {
+        toast({
+            title: "Limit Reached",
+            description: "You can add a maximum of 6 services.",
+            variant: "destructive"
+        });
+    }
+  }
+  
+  const handleRemoveService = (index: number) => {
+      const newServices = (formData.servicesOffered || []).filter((_, i) => i !== index);
+      setFormData(prev => ({...prev, servicesOffered: newServices}));
+  }
 
   const handleFeatureChange = (checked: boolean) => {
     if (checked && !business?.featured && featuredCount >= FEATURED_LIMIT) {
@@ -222,85 +248,135 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="py-4 space-y-6">
-            <div className="space-y-2">
-                <Label htmlFor="title">Business Name</Label>
-                <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)}>
-                    <SelectTrigger id="category">
-                        <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {sortedCategories.map(cat => (
-                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" value={formData.description || ''} onChange={handleChange} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Accordion type="multiple" defaultValue={['basic-info']} className="w-full">
+            <AccordionItem value="basic-info">
+              <AccordionTrigger>Basic Information</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
                 <div className="space-y-2">
-                    <Label htmlFor="location">Country</Label>
-                    <Select name="location" value={formData.location || ''} onValueChange={(value) => handleSelectChange('location', value)}>
-                        <SelectTrigger id="location">
-                            <SelectValue placeholder="Select country" />
+                    <Label htmlFor="title">Business Name</Label>
+                    <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)}>
+                        <SelectTrigger id="category">
+                            <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                            {locations.map(loc => (
-                                <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                            {sortedCategories.map(cat => (
+                                <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="address">Full Address</Label>
-                    <Input id="address" name="address" value={formData.address || ''} onChange={handleChange} />
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea id="description" name="description" value={formData.description || ''} onChange={handleChange} />
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" name="phone" value={formData.contact?.phone || ''} onChange={handleContactChange} />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" value={formData.contact?.email || ''} onChange={handleContactChange} />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="website">Website</Label>
-                    <Input id="website" name="website" value={formData.contact?.website || ''} onChange={handleContactChange} placeholder="example.com" />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="openingHours">Opening Hours</Label>
-                    <Input id="openingHours" name="openingHours" type="time" value={formData.openingHours || ''} onChange={handleChange} />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="closingHours">Closing Hours</Label>
-                    <Input id="closingHours" name="closingHours" type="time" value={formData.closingHours || ''} onChange={handleChange} />
-                </div>
-            </div>
-             <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Social Media (Optional)</h3>
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="location-contact">
+              <AccordionTrigger>Location & Contact</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="twitter">Twitter URL</Label>
-                        <Input id="twitter" name="twitter" value={formData.socials?.twitter || ''} onChange={handleSocialsChange} placeholder="https://twitter.com/yourhandle" />
+                        <Label htmlFor="location">Country</Label>
+                        <Select name="location" value={formData.location || ''} onValueChange={(value) => handleSelectChange('location', value)}>
+                            <SelectTrigger id="location">
+                                <SelectValue placeholder="Select country" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {locations.map(loc => (
+                                    <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="facebook">Facebook URL</Label>
-                        <Input id="facebook" name="facebook" value={formData.socials?.facebook || ''} onChange={handleSocialsChange} placeholder="https://facebook.com/yourpage" />
+                        <Label htmlFor="address">Full Address</Label>
+                        <Input id="address" name="address" value={formData.address || ''} onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="instagram">Instagram URL</Label>
-                        <Input id="instagram" name="instagram" value={formData.socials?.instagram || ''} onChange={handleSocialsChange} placeholder="https://instagram.com/yourhandle" />
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input id="phone" name="phone" value={formData.contact?.phone || ''} onChange={handleContactChange} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" value={formData.contact?.email || ''} onChange={handleContactChange} />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="website">Website</Label>
+                        <Input id="website" name="website" value={formData.contact?.website || ''} onChange={handleContactChange} placeholder="example.com" />
                     </div>
                  </div>
-            </div>
-            <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Images</h3>
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="hours-socials">
+              <AccordionTrigger>Hours & Socials</AccordionTrigger>
+              <AccordionContent className="space-y-6 pt-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="openingHours">Opening Hours</Label>
+                        <Input id="openingHours" name="openingHours" type="time" value={formData.openingHours || ''} onChange={handleChange} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="closingHours">Closing Hours</Label>
+                        <Input id="closingHours" name="closingHours" type="time" value={formData.closingHours || ''} onChange={handleChange} />
+                    </div>
+                 </div>
+                 <div className="space-y-4">
+                    <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Social Media (Optional)</h3>
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="twitter">Twitter URL</Label>
+                            <Input id="twitter" name="twitter" value={formData.socials?.twitter || ''} onChange={handleSocialsChange} placeholder="https://twitter.com/yourhandle" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="facebook">Facebook URL</Label>
+                            <Input id="facebook" name="facebook" value={formData.socials?.facebook || ''} onChange={handleSocialsChange} placeholder="https://facebook.com/yourpage" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="instagram">Instagram URL</Label>
+                            <Input id="instagram" name="instagram" value={formData.socials?.instagram || ''} onChange={handleSocialsChange} placeholder="https://instagram.com/yourhandle" />
+                        </div>
+                     </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="services-offered">
+                <AccordionTrigger>Services Offered</AccordionTrigger>
+                <AccordionContent className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                        <Label>Services (up to 6)</Label>
+                        <div className="space-y-2">
+                            {(formData.servicesOffered || []).map((service, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        value={service}
+                                        onChange={(e) => handleServiceChange(index, e.target.value)}
+                                        placeholder={`Service #${index + 1}`}
+                                    />
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveService(index)}>
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                        {(formData.servicesOffered?.length || 0) < 6 && (
+                            <Button type="button" variant="outline" onClick={handleAddService} className="mt-2">
+                                <PlusCircle className="mr-2 h-4 w-4" /> Add Service
+                            </Button>
+                        )}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="images">
+              <AccordionTrigger>Images</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
                 <div className="space-y-2">
                     <Label>Main Image</Label>
                     {formData.mainImageUrl ? (
@@ -336,7 +412,9 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                         <Progress value={progress} />
                     </div>
                 ))}
-            </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
             {isAdmin && (
                 <div className="space-y-4">
@@ -371,5 +449,3 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
     </Dialog>
   );
 }
-
-    

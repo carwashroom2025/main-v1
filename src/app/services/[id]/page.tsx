@@ -15,6 +15,7 @@ import {
   Calendar,
   Clock,
   User,
+  Check,
 } from 'lucide-react';
 import { ReviewSection } from '@/components/services/review-section';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -57,8 +58,8 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
   } as unknown as Business;
 
   const serializableCategories = categories.map(category => ({
-    ...category,
-    createdAt: category.createdAt ? (category.createdAt as Timestamp).toDate().toISOString() : undefined,
+      ...category,
+      createdAt: toISODate(category.createdAt),
   })) as Category[];
 
 
@@ -174,6 +175,26 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                 </CardContent>
             </Card>
         </div>
+        
+        {business.servicesOffered && business.servicesOffered.length > 0 && (
+            <div className="mt-12">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Services Offered</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-muted-foreground">
+                            {business.servicesOffered.map((service, index) => (
+                                <li key={index} className="flex items-center">
+                                    <Check className="h-4 w-4 text-primary mr-2" />
+                                    <span>{service}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+        )}
 
         <div className="mt-12">
             <Card>
