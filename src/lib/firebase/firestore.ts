@@ -423,8 +423,18 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
     }
     const businessesSnapshot = await getDocs(q);
     let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
-    // Sort in memory to avoid needing a composite index
-    businessesList = businessesList.sort((a, b) => (b.createdAt as Timestamp).toMillis() - (a.createdAt as Timestamp).toMillis());
+
+    const getTime = (date: Timestamp | string | undefined): number => {
+        if (!date) return 0;
+        if (typeof date === 'string') return new Date(date).getTime();
+        // Check if it's a Firestore Timestamp
+        if (typeof date === 'object' && 'toMillis' in date && typeof (date as any).toMillis === 'function') {
+            return (date as Timestamp).toMillis();
+        }
+        return 0;
+    };
+    
+    businessesList = businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
     return businessesList;
 }
 
