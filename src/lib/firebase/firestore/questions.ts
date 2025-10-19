@@ -212,7 +212,7 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
                 newUpvotedBy.push(userId);
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             }
-        } else {
+        } else { // voteType is 'down'
             if (isDownvoted) {
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             } else {
@@ -263,7 +263,7 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
                 newUpvotedBy.push(userId);
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             }
-        } else {
+        } else { // voteType is 'down'
             if (isDownvoted) {
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             } else {
