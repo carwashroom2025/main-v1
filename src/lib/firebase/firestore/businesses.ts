@@ -1,9 +1,11 @@
 
+
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc } from 'firebase/firestore';
-import type { Business } from '../../types';
+import type { Business, Review } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
+import { getAllReviews } from './reviews';
 
 // Businesses
 
@@ -95,10 +97,30 @@ export async function getPendingBusinesses(): Promise<Business[]> {
 
 export async function getFeaturedBusinesses(count?: number): Promise<Business[]> {
     const businessesCol = collection(db, 'businesses');
-    let q = query(businessesCol, where('featured', '==', true), where('verified', '==', true));
+    let q = query(businessesCol, where('featured', '==', true), where('status', '==', 'approved'));
 
     const businessesSnapshot = await getDocs(q);
     let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+
+    const allReviews = await getAllReviews();
+    const reviewsByItem = allReviews.reduce((acc, review) => {
+        if (review.itemType === 'business') {
+            if (!acc[review.itemId]) {
+                acc[review.itemId] = [];
+            }
+            acc[review.itemId].push(review);
+        }
+        return acc;
+    }, {} as Record<string, Review[]>);
+
+    const businessesWithRatings = businessesList.map(business => {
+        const businessReviews = reviewsByItem[business.id] || [];
+        const reviewCount = businessReviews.length;
+        const averageRating = reviewCount > 0 
+            ? businessReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
+            : 0;
+        return { ...business, averageRating, reviewCount };
+    });
     
     const getTime = (date: any): number => {
         if (!date) return 0;
@@ -110,13 +132,13 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
         return 0;
     };
     
-    businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+    businessesWithRatings.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 
     if (count) {
-        return businessesList.slice(0, count);
+        return businessesWithRatings.slice(0, count);
     }
     
-    return businessesList;
+    return businessesWithRatings;
 }
 
 export async function getBusinessesByOwner(ownerId: string): Promise<Business[]> {

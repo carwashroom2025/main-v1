@@ -1,4 +1,5 @@
 
+
 import { getFeaturedBusinesses } from '@/lib/firebase/firestore';
 import { ListingCard } from '@/components/services/listing-card';
 import Link from 'next/link';

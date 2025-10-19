@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -14,13 +15,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Phone, Mail, ArrowRight, ImageIcon } from 'lucide-react';
 import type { Business } from '@/lib/types';
+import { StarRating } from '../shared/star-rating';
 
 type ListingCardProps = {
-  listing: Business;
+  listing: Business & { averageRating?: number; reviewCount?: number };
 };
 
 export function ListingCard({ listing }: ListingCardProps) {
   const image = listing.mainImageUrl;
+  const averageRating = listing.averageRating || 0;
+  const reviewCount = listing.reviewCount || 0;
 
   return (
     <Card className="group overflow-hidden flex flex-col">
@@ -43,7 +47,10 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
       <div className="p-6 flex flex-col flex-grow">
         <CardHeader className="p-0">
-          <CardDescription className="text-primary font-semibold">{listing.category}</CardDescription>
+          <div className="flex items-center justify-between mb-2">
+            <CardDescription className="text-primary font-semibold">{listing.category}</CardDescription>
+            <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
+          </div>
           <CardTitle className="hover:text-primary leading-tight text-xl pt-1">
             <Link href={`/services/${listing.id}`}>{listing.title}</Link>
           </CardTitle>

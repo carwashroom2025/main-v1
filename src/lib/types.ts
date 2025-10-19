@@ -1,4 +1,5 @@
 
+
 import type { Timestamp } from 'firebase/firestore';
 
 export type User = {
@@ -113,6 +114,8 @@ export type Business = {
     status: 'pending' | 'approved' | 'rejected' | 'edit-pending';
     openingHours?: string;
     closingHours?: string;
+    averageRating?: number;
+    reviewCount?: number;
 };
 
 export type Activity = {
