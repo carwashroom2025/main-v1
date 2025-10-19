@@ -153,19 +153,17 @@ export function FaqPageClient() {
                                 <Badge key={tag} variant="secondary">#{tag}</Badge>
                             ))}
                             {remainingTagsCount > 0 && (
-                                <Badge variant="outline">+{remainingTagsCount}</Badge>
+                                <Badge variant="outline">+{remainingTagsCount} more</Badge>
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-col items-end justify-end flex-shrink-0">
-                         <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                            <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
-                            <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
-                            <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
-                             <span className="flex items-center gap-1.5">
-                                <MessageSquare className="h-4 w-4" /> {q.answers.length}
-                            </span>
-                        </div>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2 flex-shrink-0">
+                        <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
+                        <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
+                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
+                        <span className="flex items-center gap-1.5">
+                            <MessageSquare className="h-4 w-4" /> {q.answers.length}
+                        </span>
                     </div>
                 </div>
             );
