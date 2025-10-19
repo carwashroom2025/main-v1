@@ -145,7 +145,6 @@ export function FaqPageClient() {
                             <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
                                 <h3 className="font-semibold text-lg">{q.title}</h3>
                             </Link>
-                             <p className="text-muted-foreground mt-1 line-clamp-1">{q.body}</p>
                             <div className="text-sm text-muted-foreground mt-1">
                                 Asked by <span className="font-medium text-foreground">{q.author}</span>
                                 <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
