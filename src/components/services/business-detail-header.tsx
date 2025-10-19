@@ -12,6 +12,7 @@ import { useAuth } from '@/context/auth-context';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { BusinessForm } from '@/components/admin/business-form';
+import { ClaimBusinessButton } from './claim-business-button';
 
 
 type BusinessDetailHeaderProps = {
@@ -29,6 +30,8 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
     const [isFormOpen, setIsFormOpen] = useState(false);
     
     const canEdit = user && (['Author', 'Moderator', 'Administrator'].includes(user.role) || user.id === business.ownerId);
+    const isOwned = !!business.ownerId;
+
 
     const handleShare = async () => {
         const shareData = {
@@ -118,6 +121,7 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
                     </TooltipContent>
                 </Tooltip>
                 </TooltipProvider>
+                {!isOwned && <ClaimBusinessButton business={business} />}
                 <Button variant="outline" size="icon" onClick={handleFavoriteClick} disabled={loading}>
                     <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
                 </Button>

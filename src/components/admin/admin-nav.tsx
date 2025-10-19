@@ -18,12 +18,14 @@ import {
   HelpCircle,
   Shapes,
   Image as ImageIcon,
+  Award,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/listings', label: 'Approve Listings', icon: CheckCircle },
+  { href: '/admin/claims', label: 'Approve Claims', icon: Award },
   { href: '/admin/business', label: 'Manage Business', icon: Briefcase },
   { href: '/admin/cars', label: 'Manage Cars', icon: Car },
   { href: '/admin/categories', label: 'Manage Categories', icon: Shapes },

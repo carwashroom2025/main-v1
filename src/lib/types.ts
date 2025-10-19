@@ -119,7 +119,7 @@ export type Business = {
 export type Activity = {
     id: string;
     description: string;
-    type: 'user' | 'business' | 'listing' | 'review' | 'data' | 'blog' | 'question' | 'category';
+    type: 'user' | 'business' | 'listing' | 'review' | 'data' | 'blog' | 'question' | 'category' | 'claim';
     timestamp: Timestamp;
     userId?: string;
     relatedId?: string;
@@ -211,3 +211,17 @@ export type Category = {
     imageUrl?: string;
     createdAt?: Timestamp | string;
 }
+
+export type BusinessClaim = {
+  id: string;
+  businessId: string;
+  businessName: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  verificationDetails: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: Timestamp;
+  reviewedAt?: Timestamp;
+  reviewedBy?: string;
+};
