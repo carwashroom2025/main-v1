@@ -129,7 +129,7 @@ export function FaqPageClient() {
       <div className="space-y-4">
         {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full" />
+                <Skeleton key={i} className="h-40 w-full" />
             ))
         ) : displayedQuestions.map((q) => {
             const displayedTags = q.tags.slice(0, 3);
@@ -151,7 +151,7 @@ export function FaqPageClient() {
                                 <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
                             </div>
                         </div>
-                         <div className="flex justify-between items-end mt-3">
+                        <div className="flex justify-between items-end mt-3">
                             <div className="space-y-2">
                                 <div className="flex flex-wrap items-center gap-2">
                                     {displayedTags.map(tag => (
@@ -162,8 +162,8 @@ export function FaqPageClient() {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-destructive" /> {q.views || 0} views</span>
-                                    <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4 text-destructive" /> {q.answers.length} answers</span>
+                                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-blue-600" /> {q.views || 0} views</span>
+                                    <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4 text-blue-600" /> {q.answers.length} answers</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground flex-shrink-0">
