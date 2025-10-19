@@ -55,6 +55,7 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
   const serializableBusiness = {
     ...business,
     createdAt: toISODate(business.createdAt),
+    updatedAt: toISODate(business.updatedAt),
   } as unknown as Business;
 
   const serializableCategories = categories.map(category => ({
