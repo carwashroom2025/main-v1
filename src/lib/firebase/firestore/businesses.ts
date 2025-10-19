@@ -21,23 +21,12 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
     const businessesSnapshot = await getDocs(q);
     let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
 
-    // Fetch all reviews to calculate ratings
     const allReviews = await getAllReviews();
-    const reviewsByItem = allReviews.reduce((acc, review) => {
-        if (review.itemType === 'business') {
-            if (!acc[review.itemId]) {
-                acc[review.itemId] = [];
-            }
-            acc[review.itemId].push(review);
-        }
-        return acc;
-    }, {} as Record<string, Review[]>);
-
-    // Attach averageRating and reviewCount to each business
+    
     businessesList = businessesList.map(business => {
-        const businessReviews = reviewsByItem[business.id] || [];
+        const businessReviews = allReviews.filter(review => review.itemType === 'business' && review.itemId === business.id);
         const reviewCount = businessReviews.length;
-        const averageRating = reviewCount > 0 
+        const averageRating = reviewCount > 0
             ? businessReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
             : 0;
         return { ...business, averageRating, reviewCount };
