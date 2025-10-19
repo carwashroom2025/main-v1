@@ -124,7 +124,7 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
             <h2 className="text-2xl font-semibold mb-2">{question.title}</h2>
              <div className="text-sm text-muted-foreground mb-4">
                 {isClient ? (
-                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span> {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })}</span>
+                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span> &bull; {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })}</span>
                 ) : (
                     <span>Asked by <span className="font-medium text-foreground">{question.author}</span>...</span>
                 )}
