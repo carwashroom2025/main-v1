@@ -26,6 +26,11 @@ export function ListingCard({ listing }: ListingCardProps) {
   const averageRating = listing.averageRating || 0;
   const reviewCount = listing.reviewCount || 0;
 
+  const truncatedDescription =
+    listing.description.length > 120
+      ? `${listing.description.substring(0, 120)}...`
+      : listing.description;
+
   return (
     <Card className="group overflow-hidden flex flex-col shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <div className="relative aspect-[16/10]">
@@ -54,7 +59,14 @@ export function ListingCard({ listing }: ListingCardProps) {
         <div className="pt-2">
             <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
         </div>
-        <CardDescription className="line-clamp-2 mt-2 flex-grow text-sm">{listing.description}</CardDescription>
+        <div className="mt-2 flex-grow text-sm text-muted-foreground">
+            <p>
+                &ldquo;{truncatedDescription}&rdquo;
+                <Link href={`/services/${listing.id}`} className="text-primary font-semibold ml-1 hover:underline">
+                    more
+                </Link>
+            </p>
+        </div>
         
         <div className="mt-4 pt-4 border-t space-y-2">
             <div className="flex items-center text-xs text-muted-foreground w-full">
