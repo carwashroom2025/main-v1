@@ -131,38 +131,45 @@ export function FaqPageClient() {
             Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 w-full" />
             ))
-        ) : displayedQuestions.map((q) => (
-            <div key={q.id} className="flex items-start gap-4 rounded-lg border bg-card p-4">
-                <Avatar>
-                    <AvatarImage src={q.authorAvatarUrl} alt={q.author} />
-                    <AvatarFallback>{q.author.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-grow">
-                    <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
-                        <h3 className="font-semibold text-lg">{q.title}</h3>
-                    </Link>
-                    <div className="text-sm text-muted-foreground mt-1">
-                        Asked by <span className="font-medium text-foreground">{q.author}</span>
-                        <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+        ) : displayedQuestions.map((q) => {
+            const displayedTags = q.tags.slice(0, 3);
+            const remainingTagsCount = q.tags.length - 3;
+            return (
+                <div key={q.id} className="flex items-start gap-4 rounded-lg border bg-card p-4">
+                    <Avatar>
+                        <AvatarImage src={q.authorAvatarUrl} alt={q.author} />
+                        <AvatarFallback>{q.author.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-grow">
+                        <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
+                            <h3 className="font-semibold text-lg">{q.title}</h3>
+                        </Link>
+                        <div className="text-sm text-muted-foreground mt-1">
+                            Asked by <span className="font-medium text-foreground">{q.author}</span>
+                            <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                            {displayedTags.map(tag => (
+                                <Badge key={tag} variant="secondary">#{tag}</Badge>
+                            ))}
+                            {remainingTagsCount > 0 && (
+                                <Badge variant="outline">+{remainingTagsCount}</Badge>
+                            )}
+                        </div>
                     </div>
-                    <div className="flex flex-wrap gap-2 mt-3">
-                        {q.tags.map(tag => (
-                            <Badge key={tag} variant="secondary">#{tag}</Badge>
-                        ))}
+                    <div className="flex flex-col items-end justify-between self-stretch">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
+                            <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
+                            <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
+                        </div>
+                         <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                            <MessageSquare className="h-4 w-4" /> comments: {q.answers.length}
+                        </span>
                     </div>
                 </div>
-                <div className="flex flex-col items-end justify-between self-stretch">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
-                        <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
-                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
-                    </div>
-                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <MessageSquare className="h-4 w-4" /> comments: {q.answers.length}
-                    </span>
-                </div>
-            </div>
-        ))}
+            );
+        })}
       </div>
       {totalPages > 1 && (
         <div className="mt-8">
