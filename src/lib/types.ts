@@ -149,6 +149,7 @@ export type Question = {
   tags: string[];
   author: string;
   authorId: string;
+  authorAvatarUrl?: string;
   createdAt: Timestamp;
   views: number;
   upvotes: number;

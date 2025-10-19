@@ -1,4 +1,5 @@
 
+
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import type { Question, Answer } from '../../types';
@@ -99,6 +100,7 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
         ...questionData,
         author: currentUser.name,
         authorId: currentUser.id,
+        authorAvatarUrl: currentUser.avatarUrl || '',
         createdAt: Timestamp.now(),
         views: 0,
         upvotes: 0,

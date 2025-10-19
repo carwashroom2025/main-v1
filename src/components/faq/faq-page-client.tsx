@@ -25,6 +25,7 @@ import {
   } from '@/components/ui/pagination';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 
 const QUESTIONS_PER_PAGE = 10;
@@ -61,7 +62,11 @@ export function FaqPageClient() {
 
   const updateURL = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
+    if (value) {
+        params.set(key, value);
+    } else {
+        params.delete(key);
+    }
     if (key !== 'page') {
       params.delete('page');
     }
@@ -76,8 +81,6 @@ export function FaqPageClient() {
       e.preventDefault();
       const newSearchTerm = (e.target as any).search.value;
       updateURL('q', newSearchTerm);
-      // This will cause a re-fetch, but our server-side getQuestions doesn't support search yet.
-      // For now, it will just reset pagination.
   }
 
   const handlePageChange = (page: number) => {
@@ -123,47 +126,42 @@ export function FaqPageClient() {
         />
       </form>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-4">
         {loading ? (
-            Array.from({ length: 10 }).map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full" />
+            Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-28 w-full" />
             ))
         ) : displayedQuestions.map((q) => (
-            <Card key={q.id} className="flex flex-col">
-                <CardHeader>
-                    <CardTitle className="text-xl">
-                        <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
-                            {q.title}
-                        </Link>
-                    </CardTitle>
-                     <div className="text-sm text-muted-foreground pt-1">
+            <div key={q.id} className="flex items-start gap-4 rounded-lg border bg-card p-4">
+                <Avatar>
+                    <AvatarImage src={q.authorAvatarUrl} alt={q.author} />
+                    <AvatarFallback>{q.author.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex-grow">
+                    <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
+                        <h3 className="font-semibold text-lg">{q.title}</h3>
+                    </Link>
+                    <div className="text-sm text-muted-foreground mt-1">
                         Asked by <span className="font-medium text-foreground">{q.author}</span>
-                        <span className="italic"> {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+                        <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
                     </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                     <div className="flex flex-wrap gap-2 mt-2">
-                        {q.tags.slice(0, 4).map(tag => (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                        {q.tags.map(tag => (
                             <Badge key={tag} variant="secondary">#{tag}</Badge>
                         ))}
-                        {q.tags.length > 4 && (
-                            <Badge variant="outline">+{q.tags.length - 4} more</Badge>
-                        )}
                     </div>
-                </CardContent>
-                <CardFooter className="flex justify-between w-full text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
-                         <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
-                            <MessageSquare className="h-4 w-4" /> {q.answers.length} Answers
-                        </span>
-                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views} Views</span>
-                    </div>
-                    <div className="flex items-center gap-4">
+                </div>
+                <div className="flex flex-col items-end justify-between self-stretch">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
                         <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
+                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
                     </div>
-                </CardFooter>
-            </Card>
+                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <MessageSquare className="h-4 w-4" /> comments: {q.answers.length}
+                    </span>
+                </div>
+            </div>
         ))}
       </div>
       {totalPages > 1 && (
