@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Star, Share2, Heart, Edit } from 'lucide-react';
+import { Star, Share2, Heart, Edit, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Business, Category } from '@/lib/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
@@ -118,8 +118,15 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
                     </TooltipContent>
                 </Tooltip>
                 </TooltipProvider>
-                
-                <ClaimBusinessButton business={business} />
+
+                {business.verified ? (
+                    <Button variant="outline" disabled>
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                        Verified
+                    </Button>
+                ) : (
+                    <ClaimBusinessButton business={business} />
+                )}
 
                 {canEdit && (
                     <Button variant="outline" size="icon" onClick={() => setIsFormOpen(true)}>
