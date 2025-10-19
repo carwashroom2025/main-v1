@@ -90,7 +90,7 @@ export function BlogTable({ posts, onDataChange }: BlogTableProps) {
 
     const canManagePost = (post: BlogPost) => {
       if (!user) return false;
-      if (['Admin', 'Owner'].includes(user.role)) return true;
+      if (user.role === 'Administrator' || user.role === 'Moderator') return true;
       if (user.role === 'Author' && user.id === post.authorId) return true;
       return false;
     }
