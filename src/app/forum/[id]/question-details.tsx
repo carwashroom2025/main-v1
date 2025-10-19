@@ -81,16 +81,7 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
       </div>
 
       <Card className="mb-8">
-        <CardContent className="p-6 flex gap-4">
-            <div className="flex flex-col items-center text-center text-sm">
-                <Button variant="ghost" onClick={() => handleVote('up')} className={cn("h-auto p-2", hasUpvoted && 'text-primary')}>
-                    <ThumbsUp className="h-6 w-6" />
-                </Button>
-                <span className="text-2xl font-bold my-1">{question.votes}</span>
-                 <Button variant="ghost" onClick={() => handleVote('down')} className={cn("h-auto p-2", hasDownvoted && 'text-destructive')}>
-                    <ThumbsDown className="h-6 w-6" />
-                </Button>
-            </div>
+        <CardContent className="p-6">
           <div className="flex-1">
             <h2 className="text-2xl font-semibold mb-2">{question.title}</h2>
             <p className="text-muted-foreground mb-4">{question.body}</p>
@@ -99,12 +90,28 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
                 <Badge key={tag} variant="secondary">#{tag}</Badge>
               ))}
             </div>
-            <div className="text-sm text-muted-foreground">
-              {isClient ? (
-                  <span>Asked {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
-              ) : (
-                  <span>Asked... &bull; {question.views} views</span>
-              )}
+            <div className="flex justify-between items-center">
+                <div className="text-sm text-muted-foreground">
+                {isClient ? (
+                    <span>Asked {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
+                ) : (
+                    <span>Asked... &bull; {question.views} views</span>
+                )}
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleVote('up')} className={cn("h-8 w-8", hasUpvoted && 'text-primary')}>
+                            <ThumbsUp className="h-5 w-5" />
+                        </Button>
+                        <span className="font-medium">{question.upvotes || 0}</span>
+                    </div>
+                     <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleVote('down')} className={cn("h-8 w-8", hasDownvoted && 'text-destructive')}>
+                            <ThumbsDown className="h-5 w-5" />
+                        </Button>
+                        <span className="font-medium">{question.downvotes || 0}</span>
+                    </div>
+                </div>
             </div>
           </div>
         </CardContent>
