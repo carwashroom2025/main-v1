@@ -133,17 +133,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
           const hasDownvoted = user && (answer.downvotedBy || []).includes(user.id);
           return (
             <Card key={answer.id} className={answer.accepted ? "border-green-500" : ""}>
-                <CardContent className="p-6 flex gap-4">
-                    <div className="flex flex-col items-center text-center text-sm">
-                         <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'up')} className={cn("h-auto p-2", hasUpvoted && 'text-primary')}>
-                            <ThumbsUp className="h-6 w-6" />
-                         </Button>
-                        <span className="text-xl font-bold my-1">{answer.votes}</span>
-                        <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'down')} className={cn("h-auto p-2", hasDownvoted && 'text-destructive')}>
-                            <ThumbsDown className="h-6 w-6" />
-                        </Button>
-                    </div>
-                <div className="flex-1">
+                <CardContent className="p-6">
                     {answer.accepted && (
                     <div className="flex items-center text-green-600 mb-2">
                         <CheckCircle className="h-5 w-5 mr-2" />
@@ -151,12 +141,24 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
                     </div>
                     )}
                     <p className="text-muted-foreground">{answer.body}</p>
-                    <div className="text-sm text-muted-foreground mt-4">
-                        {isClient ? (
-                            <span>By {answer.author} &bull; {formatDistanceToNow(new Date(answer.createdAt), { addSuffix: true })}</span>
-                        ) : (
-                            <span>By {answer.author} &bull; ...</span>
-                        )}
+                    <div className="flex justify-between items-center mt-4">
+                        <div className="text-sm text-muted-foreground">
+                            {isClient ? (
+                                <span>By {answer.author} &bull; {formatDistanceToNow(new Date(answer.createdAt), { addSuffix: true })}</span>
+                            ) : (
+                                <span>By {answer.author} &bull; ...</span>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'up')} className={cn("h-8 w-8", hasUpvoted && 'text-primary')}>
+                                <ThumbsUp className="h-5 w-5" />
+                            </Button>
+                            <span className="font-medium">{answer.upvotes || 0}</span>
+                            <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'down')} className={cn("h-8 w-8", hasDownvoted && 'text-destructive')}>
+                                <ThumbsDown className="h-5 w-5" />
+                            </Button>
+                            <span className="font-medium">{answer.downvotes || 0}</span>
+                        </div>
                     </div>
                     {user && user.id === question.authorId && (
                     <Button 
@@ -168,7 +170,6 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
                         {answer.accepted ? 'Unmark as Accepted' : 'Mark as Accepted'}
                     </Button>
                     )}
-                </div>
                 </CardContent>
             </Card>
             )

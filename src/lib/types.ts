@@ -136,6 +136,8 @@ export type Answer = {
   authorAvatarUrl?: string;
   createdAt: Timestamp;
   votes: number;
+  upvotes: number;
+  downvotes: number;
   accepted: boolean;
   upvotedBy: string[];
   downvotedBy: string[];

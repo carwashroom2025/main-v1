@@ -21,7 +21,7 @@ export async function getQuestions(
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
-    let orderByField: 'createdAt' | 'answerCount' | 'votes' = 'createdAt';
+    let orderByField: 'createdAt' | 'answerCount' | 'votes' | 'upvotes' = 'createdAt';
     let orderByDirection: 'desc' | 'asc' = 'desc';
 
     if (sortBy === 'Oldest') {
@@ -133,6 +133,8 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
       authorAvatarUrl: currentUser.avatarUrl || '',
       createdAt: Timestamp.now(),
       votes: 0,
+      upvotes: 0,
+      downvotes: 0,
       accepted: false,
       upvotedBy: [],
       downvotedBy: [],
@@ -289,7 +291,11 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
 
         answer.upvotedBy = newUpvotedBy;
         answer.downvotedBy = newDownvotedBy;
-        answer.votes = newUpvotedBy.length - newDownvotedBy.length;
+        const newUpvotes = newUpvotedBy.length;
+        const newDownvotes = newDownvotedBy.length;
+        answer.votes = newUpvotes - newDownvotes;
+        answer.upvotes = newUpvotes;
+        answer.downvotes = newDownvotes;
         
         const newAnswers = [...answers];
         newAnswers[answerIndex] = answer;
