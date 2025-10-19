@@ -16,7 +16,7 @@ export default function NotFoundPage() {
 
       <div className="mt-8">
         <h2 className="text-2xl font-bold uppercase tracking-wider md:text-3xl">
-          Page Not Found
+          404 CARWASHROOM: U-TURN REQUIRED
         </h2>
         <p className="mt-2 text-muted-foreground">
           The page you are looking for was moved, removed, renamed or never existed.
