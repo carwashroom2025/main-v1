@@ -422,7 +422,7 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
         q = query(businessesCol, where('verified', '==', true));
     }
     const businessesSnapshot = await getDocs(q);
-    let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+    const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
 
     const getTime = (date: Timestamp | string | undefined): number => {
         if (!date) return 0;
@@ -434,8 +434,7 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
         return 0;
     };
     
-    businessesList = businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
-    return businessesList;
+    return businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 }
 
 export async function getAllBusinessesForAdmin(options?: {
@@ -504,7 +503,9 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
     const getTime = (date: Timestamp | string | undefined): number => {
         if (!date) return 0;
         if (typeof date === 'string') return new Date(date).getTime();
-        if (date.toMillis) return date.toMillis();
+        if (typeof date === 'object' && 'toMillis' in date && typeof date.toMillis === 'function') {
+            return date.toMillis();
+        }
         return 0;
     };
     
