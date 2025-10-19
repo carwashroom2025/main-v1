@@ -156,6 +156,7 @@ export type Question = {
   answers: Answer[];
   upvotedBy: string[];
   downvotedBy: string[];
+  answerCount: number;
 };
 
 export type SecuritySettings = {

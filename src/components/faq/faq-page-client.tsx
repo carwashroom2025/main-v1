@@ -92,7 +92,7 @@ export function FaqPageClient() {
     q.body.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  const pageTitle = activeTab === 'MostVoted' ? "Most Voted Questions" : activeTab === 'TopRated' ? "Top Rated Questions" : "All Questions";
+  const pageTitle = activeTab === 'TopAnswers' ? "Top Answered Questions" : activeTab === 'TopRated' ? "Top Rated Questions" : "All Questions";
 
   return (
     <div className="container py-12 md:py-16">
@@ -106,7 +106,7 @@ export function FaqPageClient() {
           <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList>
               <TabsTrigger value="Newest">Newest</TabsTrigger>
-              <TabsTrigger value="MostVoted">Most Voted</TabsTrigger>
+              <TabsTrigger value="TopAnswers">Top Answers</TabsTrigger>
               <TabsTrigger value="TopRated">Top Rated</TabsTrigger>
               <TabsTrigger value="Oldest">Oldest</TabsTrigger>
             </TabsList>

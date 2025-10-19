@@ -1,7 +1,7 @@
 
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import type { Question, Answer } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -14,20 +14,20 @@ export async function getQuestions(
     options: { 
         page?: number, 
         limit?: number, 
-        sortBy?: 'Newest' | 'Oldest' | 'MostVoted' | 'TopRated'
+        sortBy?: 'Newest' | 'Oldest' | 'TopAnswers' | 'TopRated'
     } = {}
 ): Promise<{ questions: Question[], totalCount: number }> {
     const { page = 1, limit: itemsPerPage = 10, sortBy = 'Newest' } = options;
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
-    let orderByField: 'createdAt' | 'upvotes' | 'votes' = 'createdAt';
+    let orderByField: 'createdAt' | 'answerCount' | 'votes' = 'createdAt';
     let orderByDirection: 'desc' | 'asc' = 'desc';
 
     if (sortBy === 'Oldest') {
         orderByDirection = 'asc';
-    } else if (sortBy === 'MostVoted') {
-        orderByField = 'upvotes';
+    } else if (sortBy === 'TopAnswers') {
+        orderByField = 'answerCount';
     } else if (sortBy === 'TopRated') {
         orderByField = 'votes';
     }
@@ -88,7 +88,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
 }
 
 // ADD
-export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes'>): Promise<string> {
+export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to ask a question.');
@@ -107,6 +107,7 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
         answers: [],
         upvotedBy: [],
         downvotedBy: [],
+        answerCount: 0,
     });
 
     await logActivity(`User "${currentUser.name}" asked a new question: "${questionData.title}".`, 'question', docRef.id, currentUser.id);
@@ -138,6 +139,7 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
   
     await updateDoc(questionRef, {
       answers: arrayUnion(newAnswer),
+      answerCount: increment(1)
     });
 }
 
@@ -301,4 +303,24 @@ export async function deleteQuestion(id: string): Promise<void> {
     const questionDocRef = doc(db, 'questions', id);
     await deleteDoc(questionDocRef);
     await logActivity(`Moderator "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
+}
+
+export async function deleteAnswer(questionId: string, answerId: string): Promise<void> {
+    const questionRef = doc(db, 'questions', questionId);
+    
+    await runTransaction(db, async (transaction) => {
+        const questionDoc = await transaction.get(questionRef);
+        if (!questionDoc.exists()) {
+            throw new Error("Question not found");
+        }
+        
+        const questionData = questionDoc.data() as Question;
+        const answers = questionData.answers || [];
+        const updatedAnswers = answers.filter(a => a.id !== answerId);
+        
+        transaction.update(questionRef, {
+            answers: updatedAnswers,
+            answerCount: increment(-1)
+        });
+    });
 }
