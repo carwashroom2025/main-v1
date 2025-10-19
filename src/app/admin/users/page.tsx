@@ -29,7 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 const ITEMS_PER_PAGE = 10;
-const roles = ['Owner', 'Admin', 'Author', 'Member', 'User'];
+const roles = ['Administrator', 'Moderator', 'Author', 'Business Owner', 'User'];
 const statuses = ['Active', 'Suspended'];
 const verifiedStatuses = ['Verified', 'Unverified'];
 
@@ -56,7 +56,7 @@ export default function ManageUsersPage() {
     }, []);
     
     const adminUsers = useMemo(() => {
-        return users.filter(user => ['Admin', 'Owner'].includes(user.role));
+        return users.filter(user => ['Moderator', 'Administrator'].includes(user.role));
     }, [users]);
 
     const filteredAndSortedUsers = useMemo(() => {

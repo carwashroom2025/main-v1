@@ -22,7 +22,7 @@ export function ListCarButton({ onCarListed }: ListCarButtonProps) {
     return <Skeleton className="h-10 w-32" />;
   }
 
-  const canListCar = user && ['Author', 'Admin', 'Owner'].includes(user.role);
+  const canListCar = user && ['Author', 'Moderator', 'Administrator'].includes(user.role);
 
   if (!canListCar) {
     return null;

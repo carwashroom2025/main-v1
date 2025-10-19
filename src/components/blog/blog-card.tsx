@@ -46,7 +46,7 @@ export function BlogCard({ post, priority = false }: BlogCardProps) {
   const router = useRouter();
   const { toast } = useToast();
 
-  const canManagePost = user && (user.id === post.authorId || ['Admin', 'Owner'].includes(user.role));
+  const canManagePost = user && (user.id === post.authorId || ['Moderator', 'Administrator'].includes(user.role));
 
   const handleDataChange = () => {
     // A bit of a hack to force a server component reload.

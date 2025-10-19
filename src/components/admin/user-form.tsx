@@ -24,20 +24,20 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/context/auth-context';
 import { Eye, EyeOff } from 'lucide-react';
 
-const allRoles = ['Owner', 'Admin', 'Author', 'Member', 'User'];
+const allRoles = ['Administrator', 'Moderator', 'Author', 'Business Owner', 'User'];
 
 const createUserSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters long.'),
   email: z.string().email('Please enter a valid email address.'),
   password: z.string().min(6, 'Password must be at least 6 characters long.'),
-  role: z.enum(['Owner', 'Admin', 'Author', 'Member', 'User']),
+  role: z.enum(['Administrator', 'Moderator', 'Author', 'Business Owner', 'User']),
 });
 
 const updateUserSchema = z.object({
     name: z.string().min(3, 'Name must be at least 3 characters long.'),
     email: z.string().email('Email cannot be changed.'),
     password: z.string().optional(),
-    role: z.enum(['Owner', 'Admin', 'Author', 'Member', 'User']),
+    role: z.enum(['Administrator', 'Moderator', 'Author', 'Business Owner', 'User']),
 });
 
 type UserFormProps = {
@@ -84,16 +84,16 @@ export function UserForm({ isOpen, setIsOpen, user, onDataChange }: UserFormProp
   const onSubmit: SubmitHandler<z.infer<typeof createUserSchema>> = async (data) => {
     try {
       if (isEditMode && user) {
-        if (currentUser?.role !== 'Owner' && data.role === 'Owner') {
-            toast({ title: 'Permission Denied', description: "Only an Owner can assign the 'Owner' role.", variant: 'destructive' });
+        if (currentUser?.role !== 'Administrator' && data.role === 'Administrator') {
+            toast({ title: 'Permission Denied', description: "Only an Administrator can assign the 'Administrator' role.", variant: 'destructive' });
             return;
         }
-        if (currentUser?.role === 'Admin' && user.role === 'Owner') {
-          toast({ title: 'Permission Denied', description: 'Admins cannot edit an Owner.', variant: 'destructive' });
+        if (currentUser?.role === 'Moderator' && user.role === 'Administrator') {
+          toast({ title: 'Permission Denied', description: 'Moderators cannot edit an Administrator.', variant: 'destructive' });
           return;
         }
-        if (currentUser?.role === 'Admin' && (data.role === 'Admin' || user.role === 'Admin')) {
-            toast({ title: 'Permission Denied', description: 'Admins cannot assign or revoke the Admin role.', variant: 'destructive' });
+        if (currentUser?.role === 'Moderator' && (data.role === 'Moderator' || user.role === 'Moderator')) {
+            toast({ title: 'Permission Denied', description: 'Moderators cannot assign or revoke the Moderator role.', variant: 'destructive' });
             return;
         }
         await updateUser(user.id, { name: data.name, role: data.role });
@@ -102,12 +102,12 @@ export function UserForm({ isOpen, setIsOpen, user, onDataChange }: UserFormProp
           description: `${data.name}'s details have been updated.`,
         });
       } else {
-        if (data.role === 'Owner' && currentUser?.role !== 'Owner') {
-            toast({ title: 'Permission Denied', description: "You cannot create a new user with the 'Owner' role.", variant: 'destructive' });
+        if (data.role === 'Administrator' && currentUser?.role !== 'Administrator') {
+            toast({ title: 'Permission Denied', description: "You cannot create a new user with the 'Administrator' role.", variant: 'destructive' });
             return;
         }
-        if (data.role === 'Admin' && currentUser?.role !== 'Owner') {
-            toast({ title: 'Permission Denied', description: "You cannot create a new user with the 'Admin' role.", variant: 'destructive' });
+        if (data.role === 'Moderator' && currentUser?.role !== 'Administrator') {
+            toast({ title: 'Permission Denied', description: "You cannot create a new user with the 'Moderator' role.", variant: 'destructive' });
             return;
         }
         await createUserAsAdmin(data.email, data.password, data.name, data.role);
@@ -128,13 +128,13 @@ export function UserForm({ isOpen, setIsOpen, user, onDataChange }: UserFormProp
     }
   };
   
-  const canEditRole = currentUser?.role === 'Owner' || (user?.role !== 'Owner' && user?.role !== 'Admin');
+  const canEditRole = currentUser?.role === 'Administrator' || (user?.role !== 'Administrator' && user?.role !== 'Moderator');
 
   const availableRoles = allRoles.filter(role => {
-    if (currentUser?.role === 'Owner') {
+    if (currentUser?.role === 'Administrator') {
         return true;
     }
-    return role !== 'Owner' && role !== 'Admin';
+    return role !== 'Administrator' && role !== 'Moderator';
   });
 
 

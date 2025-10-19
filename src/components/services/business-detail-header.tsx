@@ -28,7 +28,7 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
     const isFavorite = user?.favoriteBusinesses?.includes(business.id);
     const [isFormOpen, setIsFormOpen] = useState(false);
     
-    const canEdit = user && (['Author', 'Admin', 'Owner'].includes(user.role) || user.id === business.ownerId);
+    const canEdit = user && (['Author', 'Moderator', 'Administrator'].includes(user.role) || user.id === business.ownerId);
 
     const handleShare = async () => {
         const shareData = {

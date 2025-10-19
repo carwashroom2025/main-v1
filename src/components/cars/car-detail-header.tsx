@@ -26,7 +26,7 @@ export function CarDetailHeader({ vehicle, averageRating, reviewCount }: CarDeta
     const [isFormOpen, setIsFormOpen] = useState(false);
     const router = useRouter();
 
-    const canEdit = user && ['Author', 'Admin', 'Owner'].includes(user.role);
+    const canEdit = user && ['Author', 'Moderator', 'Administrator'].includes(user.role);
 
     const handleShare = async () => {
         const shareData = {

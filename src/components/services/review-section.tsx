@@ -140,7 +140,7 @@ export function ReviewSection({ itemId, itemType, itemTitle, initialReviews }: R
   const canDelete = (review: Review) => {
     if (!user) return false;
     if (user.id === review.userId) return true;
-    if (['Admin', 'Owner'].includes(user.role)) return true;
+    if (['Moderator', 'Administrator'].includes(user.role)) return true;
     return false;
   }
   

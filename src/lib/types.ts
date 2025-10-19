@@ -7,7 +7,7 @@ export type User = {
     name: string;
     email: string;
     avatarUrl?: string;
-    role: 'Owner' | 'Admin' | 'Author' | 'User' | 'Member';
+    role: 'Administrator' | 'Moderator' | 'Author' | 'User' | 'Business Owner';
     status: 'Active' | 'Suspended';
     verified: boolean;
     createdAt: Timestamp;
@@ -156,7 +156,7 @@ export type Question = {
 
 export type SecuritySettings = {
     allowRegistration: boolean;
-    defaultUserRole: 'User' | 'Member' | 'Author';
+    defaultUserRole: 'User' | 'Business Owner' | 'Author';
 };
 
 export type SeoSettings = {

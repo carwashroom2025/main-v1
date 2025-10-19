@@ -59,7 +59,7 @@ export async function clearAllActivities(): Promise<void> {
 
     const currentUser = await getCurrentUser();
     if (currentUser) {
-        await logActivity(`Admin "${currentUser.name}" cleared the activity log.`, 'data', undefined, currentUser.id);
+        await logActivity(`Moderator "${currentUser.name}" cleared the activity log.`, 'data', undefined, currentUser.id);
     }
 }
 
@@ -335,7 +335,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export async function addBlogPost(postData: Omit<BlogPost, 'id'>): Promise<string> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Author', 'Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Author', 'Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to add blog posts.');
     }
     const postsCol = collection(db, 'blogPosts');
@@ -358,7 +358,7 @@ export async function updateBlogPost(id: string, postData: Partial<BlogPost>): P
 
     const originalPost = postDoc.data() as BlogPost;
 
-    const isAdmin = ['Admin', 'Owner'].includes(currentUser.role);
+    const isAdmin = ['Moderator', 'Administrator'].includes(currentUser.role);
     const isAuthor = currentUser.id === originalPost.authorId;
 
     if (!isAdmin && !isAuthor) {
@@ -382,7 +382,7 @@ export async function deleteBlogPost(id: string): Promise<void> {
     
     const originalPost = postDoc.data() as BlogPost;
 
-    const isAdmin = ['Admin', 'Owner'].includes(currentUser.role);
+    const isAdmin = ['Moderator', 'Administrator'].includes(currentUser.role);
     const isAuthor = currentUser.id === originalPost.authorId;
 
     if (!isAdmin && !isAuthor) {
@@ -553,11 +553,11 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
     if (!currentUser) {
         throw new Error('You must be logged in to add a business.');
     }
-     if (!['Member', 'Admin', 'Owner', 'Author'].includes(currentUser.role)) {
-        throw new Error('Only members, authors, or admins can add businesses.');
+     if (!['Business Owner', 'Moderator', 'Administrator', 'Author'].includes(currentUser.role)) {
+        throw new Error('Only Business Owners, authors, or admins can add businesses.');
     }
 
-    const isAdmin = ['Admin', 'Owner', 'Author'].includes(currentUser.role);
+    const isAdmin = ['Moderator', 'Administrator', 'Author'].includes(currentUser.role);
     const businessesCol = collection(db, 'businesses');
     
     const newBusinessData = {
@@ -586,8 +586,8 @@ export async function updateBusiness(id: string, businessData: Partial<Omit<Busi
     const originalDoc = await getDoc(businessDocRef);
     const originalData = originalDoc.data() as Business;
 
-    // Member is editing their approved listing
-    if (currentUser.id === originalData.ownerId && originalData.status === 'approved' && !['Admin', 'Owner'].includes(currentUser.role)) {
+    // Business Owner is editing their approved listing
+    if (currentUser.id === originalData.ownerId && originalData.status === 'approved' && !['Moderator', 'Administrator'].includes(currentUser.role)) {
         dataToUpdate.status = 'edit-pending';
         dataToUpdate.verified = false;
     }
@@ -645,8 +645,8 @@ export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'cre
 
     // Client-side sorting
     allCars.sort((a, b) => {
-        const timeA = a.createdAt ? (a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : new Date(a.createdAt).getTime()) : 0;
-        const timeB = b.createdAt ? (b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : new Date(b.createdAt).getTime()) : 0;
+        const timeA = a.createdAt ? (a.createdAt as Timestamp).toMillis() : 0;
+        const timeB = b.createdAt ? (b.createdAt as Timestamp).toMillis() : 0;
 
         if (sortBy === 'createdAt-asc') {
             return timeA - timeB;
@@ -692,7 +692,7 @@ export async function getRecentCars(count: number): Promise<Vehicle[]> {
 
 export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>): Promise<string> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner', 'Author'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator', 'Author'].includes(currentUser.role)) {
         throw new Error('You do not have permission to add vehicles.');
     }
     
@@ -708,7 +708,7 @@ export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>)
 
 export async function updateVehicle(id: string, vehicleData: Partial<Omit<Vehicle, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to update vehicles.');
     }
     const vehicleDocRef = doc(db, 'cars', id);
@@ -717,7 +717,7 @@ export async function updateVehicle(id: string, vehicleData: Partial<Omit<Vehicl
 
 export async function deleteVehicle(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to delete vehicles.');
     }
     const vehicleDocRef = doc(db, 'cars', id);
@@ -833,24 +833,24 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
 
 export async function updateQuestion(id: string, questionData: Partial<Omit<Question, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to update questions.');
     }
     const questionDocRef = doc(db, 'questions', id);
     await updateDoc(questionDocRef, {
         ...questionData,
     });
-    await logActivity(`Admin "${currentUser.name}" updated the question: "${questionData.title}".`, 'question', id, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" updated the question: "${questionData.title}".`, 'question', id, currentUser.id);
 }
 
 export async function deleteQuestion(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to delete questions.');
     }
     const questionDocRef = doc(db, 'questions', id);
     await deleteDoc(questionDocRef);
-    await logActivity(`Admin "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
 }
 
 export async function addAnswer(questionId: string, body: string): Promise<void> {
@@ -1135,8 +1135,8 @@ export async function deleteReview(reviewId: string): Promise<void> {
     if (reviewSnap.exists()) {
         const reviewData = reviewSnap.data() as Review;
 
-        // Check permissions: Admin/Owner or the user who wrote the review
-        if (!['Admin', 'Owner'].includes(currentUser.role) && currentUser.id !== reviewData.userId) {
+        // Check permissions: Moderator/Administrator or the user who wrote the review
+        if (!['Moderator', 'Administrator'].includes(currentUser.role) && currentUser.id !== reviewData.userId) {
             throw new Error("You don't have permission to delete this review.");
         }
 
@@ -1155,7 +1155,7 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function addCategory(categoryData: Omit<Category, 'id' | 'createdAt'>): Promise<string> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to add categories.');
     }
     const categoriesCol = collection(db, 'categories');
@@ -1163,13 +1163,13 @@ export async function addCategory(categoryData: Omit<Category, 'id' | 'createdAt
         ...categoryData,
         createdAt: Timestamp.now(),
     });
-    await logActivity(`Admin "${currentUser.name}" added a new category: "${categoryData.name}".`, 'category', docRef.id, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" added a new category: "${categoryData.name}".`, 'category', docRef.id, currentUser.id);
     return docRef.id;
 }
 
 export async function seedInitialCategories(): Promise<{count: number, message: string}> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to seed categories.');
     }
 
@@ -1219,29 +1219,29 @@ export async function seedInitialCategories(): Promise<{count: number, message: 
 
     await batch.commit();
     const count = initialCategories.length;
-    await logActivity(`Admin "${currentUser.name}" seeded ${count} initial categories.`, 'data', undefined, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" seeded ${count} initial categories.`, 'data', undefined, currentUser.id);
 
     return { count, message: `Successfully seeded ${count} categories.` };
 }
 
 export async function updateCategory(id: string, categoryData: Partial<Omit<Category, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to update categories.');
     }
     const categoryDocRef = doc(db, 'categories', id);
     await updateDoc(categoryDocRef, categoryData);
-    await logActivity(`Admin "${currentUser.name}" updated a category: "${categoryData.name}".`, 'category', id, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" updated a category: "${categoryData.name}".`, 'category', id, currentUser.id);
 }
 
 export async function deleteCategory(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
         throw new Error('You do not have permission to delete categories.');
     }
     const categoryDocRef = doc(db, 'categories', id);
     await deleteDoc(categoryDocRef);
-    await logActivity(`Admin "${currentUser.name}" deleted a category.`, 'category', id, currentUser.id);
+    await logActivity(`Moderator "${currentUser.name}" deleted a category.`, 'category', id, currentUser.id);
 }
 
 

@@ -18,12 +18,12 @@ export default function AdminLayout({
   useEffect(() => {
     if (!loading && !user) {
         router.push('/login?redirect=/admin');
-    } else if (!loading && user && !['Admin', 'Owner'].includes(user.role)) {
+    } else if (!loading && user && !['Moderator', 'Administrator'].includes(user.role)) {
       router.push('/');
     }
   }, [user, loading, router]);
 
-  if (loading || !user || !['Admin', 'Owner'].includes(user.role)) {
+  if (loading || !user || !['Moderator', 'Administrator'].includes(user.role)) {
     return <Loading />;
   }
 

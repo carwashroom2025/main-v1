@@ -155,7 +155,7 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link href="/profile"><User className="mr-2" />Profile</Link>
                     </DropdownMenuItem>
-                    {['Admin', 'Owner'].includes(user.role) && (
+                    {['Moderator', 'Administrator'].includes(user.role) && (
                       <DropdownMenuItem asChild>
                         <Link href="/admin"><ShieldCheck className="mr-2" />Admin</Link>
                       </DropdownMenuItem>

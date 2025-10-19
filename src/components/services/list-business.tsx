@@ -50,7 +50,7 @@ export function ListBusiness({ onBusinessListed }: ListBusinessProps) {
             return;
         }
 
-        if (['Member', 'Admin', 'Owner', 'Author'].includes(user.role)) {
+        if (['Business Owner', 'Moderator', 'Administrator', 'Author'].includes(user.role)) {
             setIsFormOpen(true);
         } else {
             setIsAlertOpen(true);
@@ -86,7 +86,7 @@ export function ListBusiness({ onBusinessListed }: ListBusinessProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Upgrade Required</AlertDialogTitle>
                         <AlertDialogDescription>
-                            You need to be a "Member" to list a business. Please upgrade your account to access this feature.
+                            You need to be a "Business Owner" to list a business. Please upgrade your account to access this feature.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

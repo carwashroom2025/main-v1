@@ -61,7 +61,7 @@ function CommentWithReplies({
 
     const isTopLevelComment = 'replies' in comment;
     const canDelete = currentUser && (
-        ['Admin', 'Owner', 'Author'].includes(currentUser.role) ||
+        ['Moderator', 'Administrator', 'Author'].includes(currentUser.role) ||
         currentUser.id === comment.authorId
     );
 

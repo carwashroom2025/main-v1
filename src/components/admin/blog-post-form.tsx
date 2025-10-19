@@ -54,7 +54,7 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
   const { toast } = useToast();
   const { user } = useAuth();
   const isEditMode = !!post;
-  const isAdmin = user && ['Admin', 'Owner'].includes(user.role);
+  const isAdmin = user && ['Moderator', 'Administrator'].includes(user.role);
   const [tagsString, setTagsString] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   
@@ -62,7 +62,7 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
     async function fetchAuthors() {
       if (isOpen) {
         const allUsers = await getUsers();
-        const authorUsers = allUsers.filter(u => ['Author', 'Admin', 'Owner'].includes(u.role));
+        const authorUsers = allUsers.filter(u => ['Author', 'Moderator', 'Administrator'].includes(u.role));
         setAuthors(authorUsers);
       }
     }
@@ -269,5 +269,3 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
     </Dialog>
   );
 }
-
-    

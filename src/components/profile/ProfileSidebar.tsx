@@ -12,7 +12,7 @@ export function ProfileSidebar() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
 
-  const isMember = user && ['Member', 'Admin', 'Owner', 'Author'].includes(user.role);
+  const isMember = user && ['Business Owner', 'Moderator', 'Administrator', 'Author'].includes(user.role);
 
   const navLinks = [
     { value: 'profile', label: 'Profile Settings', icon: Settings },

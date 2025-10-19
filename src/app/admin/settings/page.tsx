@@ -232,7 +232,7 @@ export default function SecuritySeoSettingsPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="User">User</SelectItem>
-                                    <SelectItem value="Member">Member</SelectItem>
+                                    <SelectItem value="Business Owner">Business Owner</SelectItem>
                                     <SelectItem value="Author">Author</SelectItem>
                                 </SelectContent>
                             </Select>

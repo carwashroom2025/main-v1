@@ -72,7 +72,7 @@ export function UserTable({ users, onDataChange }: UserTableProps) {
         const newStatus = userToSuspend.status === 'Active' ? 'Suspended' : 'Active';
         try {
             await updateUser(userToSuspend.id, { status: newStatus });
-            await logActivity(`Admin "${currentUser.name}" ${newStatus.toLowerCase()} user: "${userToSuspend.name}".`, 'user', userToSuspend.id, currentUser.id);
+            await logActivity(`Moderator "${currentUser.name}" ${newStatus.toLowerCase()} user: "${userToSuspend.name}".`, 'user', userToSuspend.id, currentUser.id);
             toast({
                 title: `User ${newStatus}`,
                 description: `"${userToSuspend.name}" has been successfully ${newStatus.toLowerCase()}.`
@@ -93,7 +93,7 @@ export function UserTable({ users, onDataChange }: UserTableProps) {
     
     const handleVerifyUser = async (user: User) => {
         if (user.verified) return;
-         if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+         if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
             toast({ title: "Permission Denied", description: "You don't have permission to verify users.", variant: "destructive" });
             return;
         }
@@ -116,7 +116,7 @@ export function UserTable({ users, onDataChange }: UserTableProps) {
 
     const handleUnverifyUser = async (user: User) => {
         if (!user.verified) return;
-        if (!currentUser || !['Admin', 'Owner'].includes(currentUser.role)) {
+        if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
             toast({ title: "Permission Denied", description: "You don't have permission to unverify users.", variant: "destructive" });
             return;
         }
@@ -140,9 +140,9 @@ export function UserTable({ users, onDataChange }: UserTableProps) {
     const canManageUser = (user: User) => {
         if (!currentUser) return false;
         if (currentUser.id === user.id) return false; // Can't manage self
-        if (currentUser.role === 'Owner') return true;
-        if (user.role === 'Owner') return false; // Admins can't manage Owners
-        if (user.role === 'Admin') return false; // Admins can't manage other Admins
+        if (currentUser.role === 'Administrator') return true;
+        if (user.role === 'Administrator') return false; // Moderators can't manage Administrators
+        if (user.role === 'Moderator') return false; // Moderators can't manage other Moderators
         return true;
     }
 

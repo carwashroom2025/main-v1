@@ -72,7 +72,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const isAdmin = user && ['Admin', 'Owner', 'Author'].includes(user.role);
+  const isAdmin = user && ['Moderator', 'Administrator', 'Author'].includes(user.role);
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
   const [uploadProgress, setUploadProgress] = useState<{[key: string]: number} | null>(null);
 
