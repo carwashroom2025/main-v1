@@ -107,7 +107,7 @@ export default function ManageUsersPage() {
                 <CardHeader>
                     <div className="flex items-center gap-2">
                         <ShieldCheck className="h-6 w-6 text-primary" />
-                        <CardTitle>Administrators</CardTitle>
+                        <CardTitle>Admin List</CardTitle>
                     </div>
                     <CardDescription>
                         These users have elevated privileges to manage the platform.
