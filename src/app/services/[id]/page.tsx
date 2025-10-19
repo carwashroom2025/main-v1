@@ -25,6 +25,7 @@ import { BusinessDetailHeader } from '@/components/services/business-detail-head
 import type { Business, Review, Category } from '@/lib/types';
 import { Timestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
+import { toISODate } from '@/lib/utils';
 
 export default async function BusinessDetailPage({ params }: { params: { id: string } }) {
   const business = await getBusiness(params.id);
@@ -45,14 +46,14 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
   
   const serializableReviews = reviews.map(review => ({
     ...review,
-    createdAt: review.createdAt.toDate().toISOString(),
+    createdAt: (review.createdAt as Timestamp).toDate().toISOString(),
   }));
 
   const mapImage = PlaceHolderImages.find((img) => img.id === 'map-placeholder');
 
   const serializableBusiness = {
     ...business,
-    createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
+    createdAt: toISODate(business.createdAt),
   } as unknown as Business;
 
   const serializableCategories = categories.map(category => ({
@@ -111,7 +112,7 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                             <Calendar className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
                             <div>
                                 <p className="text-muted-foreground">Date Listed</p>
-                                <p className="font-semibold">{format((business.createdAt as Timestamp).toDate(), 'PPP')}</p>
+                                <p className="font-semibold">{format(new Date(serializableBusiness.createdAt as string), 'PPP')}</p>
                             </div>
                         </div>
                         {business.ownerName && (
