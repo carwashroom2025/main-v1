@@ -1,6 +1,7 @@
 
 'use client';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -14,7 +15,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { vehicleBrands, vehicleTypes } from '@/lib/car-data';
-import { Send } from 'lucide-react';
 
 export function HeroTabs() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -75,47 +75,49 @@ export function HeroTabs() {
   }
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 sm:flex-row p-4 border rounded-md">
-            <h3 className="font-bold text-lg text-card-foreground">Search Services</h3>
-            <div className="relative w-full">
-                <Select name="categories">
-                    <SelectTrigger className="w-full text-card-foreground bg-white">
-                        <SelectValue placeholder="All Categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-            <div className="relative w-full sm:w-auto">
-                <Select name="country">
-                    <SelectTrigger id="country-select" className="w-full sm:w-[180px] text-card-foreground bg-white">
-                        <SelectValue placeholder="Country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="USA">USA</SelectItem>
-                        <SelectItem value="UK">UK</SelectItem>
-                        <SelectItem value="UAE">UAE</SelectItem>
-                        <SelectItem value="CANADA">CANADA</SelectItem>
-                        <SelectItem value="INDIA">INDIA</SelectItem>
-                        <SelectItem value="CHINA">CHINA</SelectItem>
-                        <SelectItem value="JAPAN">JAPAN</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-            <Button size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/80" type="submit">
-                <Send className="h-5 w-5" />
-            </Button>
+    <Tabs defaultValue="services" className="w-full">
+      <TabsList className="grid w-full grid-cols-2 bg-transparent/20 backdrop-blur-sm">
+        <TabsTrigger value="services">Services</TabsTrigger>
+        <TabsTrigger value="cars">Cars</TabsTrigger>
+      </TabsList>
+      <TabsContent value="services">
+        <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tr-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
+          <div className="relative w-full">
+              <Select name="categories">
+                  <SelectTrigger className="w-full text-card-foreground">
+                      <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                      ))}
+                  </SelectContent>
+              </Select>
+          </div>
+          <div className="relative w-full sm:w-auto">
+              <Select name="country">
+                  <SelectTrigger id="country-select" className="w-full sm:w-[180px] text-card-foreground">
+                      <SelectValue placeholder="Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="USA">USA</SelectItem>
+                      <SelectItem value="UK">UK</SelectItem>
+                      <SelectItem value="UAE">UAE</SelectItem>
+                      <SelectItem value="CANADA">CANADA</SelectItem>
+                      <SelectItem value="INDIA">INDIA</SelectItem>
+                      <SelectItem value="CHINA">CHINA</SelectItem>
+                      <SelectItem value="JAPAN">JAPAN</SelectItem>
+                  </SelectContent>
+              </Select>
+          </div>
+          <Button size="lg" className="w-full sm:w-auto" type="submit">Search</Button>
         </form>
-        <form onSubmit={handleCarSearch} className="flex w-full flex-col items-center gap-4 sm:flex-row p-4 border rounded-md">
-            <h3 className="font-bold text-lg text-card-foreground">Search Cars</h3>
+      </TabsContent>
+      <TabsContent value="cars">
+          <form onSubmit={handleCarSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tl-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
               <div className="relative w-full">
                   <Select name="brand">
-                      <SelectTrigger className="w-full text-card-foreground bg-white">
+                      <SelectTrigger className="w-full text-card-foreground">
                           <SelectValue placeholder="All Brands" />
                       </SelectTrigger>
                       <SelectContent>
@@ -127,7 +129,7 @@ export function HeroTabs() {
               </div>
               <div className="relative w-full">
                     <Select name="type">
-                      <SelectTrigger className="w-full text-card-foreground bg-white">
+                      <SelectTrigger className="w-full text-card-foreground">
                           <SelectValue placeholder="All Types" />
                       </SelectTrigger>
                       <SelectContent>
@@ -137,11 +139,9 @@ export function HeroTabs() {
                       </SelectContent>
                   </Select>
               </div>
-              <Button size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/80" type="submit">
-                   <Send className="h-5 w-5" />
-              </Button>
+              <Button size="lg" className="w-full sm:w-auto" type="submit">Search</Button>
           </form>
-      </div>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }
