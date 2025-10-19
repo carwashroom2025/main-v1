@@ -21,13 +21,13 @@ export async function getQuestions(
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
-    let orderByField: 'createdAt' | 'votes' = 'createdAt';
+    let orderByField: 'createdAt' | 'upvotes' = 'createdAt';
     let orderByDirection: 'desc' | 'asc' = 'desc';
 
     if (sortBy === 'Oldest') {
         orderByDirection = 'asc';
     } else if (sortBy === 'MostVoted') {
-        orderByField = 'votes';
+        orderByField = 'upvotes';
     }
 
     const countSnapshot = await getCountFromServer(questionsCol);
@@ -224,14 +224,16 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
             }
         }
         
-        const newVoteCount = newUpvotedBy.length - newDownvotedBy.length;
+        const newUpvotes = newUpvotedBy.length;
+        const newDownvotes = newDownvotedBy.length;
+        const newVoteCount = newUpvotes - newDownvotes;
         
         transaction.update(questionRef, {
             upvotedBy: newUpvotedBy,
             downvotedBy: newDownvotedBy,
             votes: newVoteCount,
-            upvotes: newUpvotedBy.length,
-            downvotes: newDownvotedBy.length,
+            upvotes: newUpvotes,
+            downvotes: newDownvotes,
         });
     });
 }
