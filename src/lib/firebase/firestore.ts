@@ -1395,5 +1395,3 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
-
-    

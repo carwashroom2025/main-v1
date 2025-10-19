@@ -47,7 +47,7 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
   
   const serializableReviews = reviews.map(review => ({
     ...review,
-    createdAt: (review.createdAt as Timestamp).toDate().toISOString(),
+    createdAt: toISODate(review.createdAt),
   }));
 
   const mapImage = PlaceHolderImages.find((img) => img.id === 'map-placeholder');
