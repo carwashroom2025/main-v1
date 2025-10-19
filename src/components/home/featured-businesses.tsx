@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import type { Business } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Timestamp } from 'firebase/firestore';
+import { toISODate } from '@/lib/utils';
 
 export async function FeaturedBusinesses() {
   const featuredBusinesses: Business[] = await getFeaturedBusinesses(3);
@@ -25,7 +26,7 @@ export async function FeaturedBusinesses() {
 
   const serializableBusinesses = featuredBusinesses.map(business => ({
     ...business,
-    createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
+    createdAt: toISODate(business.createdAt),
   }));
 
 
