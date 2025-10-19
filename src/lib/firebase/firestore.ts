@@ -572,7 +572,7 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
       ownerId: currentUser.id,
       ownerName: currentUser.name,
       status: businessData.status || (isAdminOrAuthor ? 'approved' : 'pending'),
-      verified: false,
+      verified: false, // Always false on creation
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
