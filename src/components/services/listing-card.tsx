@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Image from 'next/image';
@@ -16,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Phone, Mail, ArrowRight, ImageIcon } from 'lucide-react';
 import type { Business } from '@/lib/types';
 import { StarRating } from '../shared/star-rating';
+import { Badge } from '../ui/badge';
 
 type ListingCardProps = {
   listing: Business & { averageRating?: number; reviewCount?: number };
@@ -27,55 +27,53 @@ export function ListingCard({ listing }: ListingCardProps) {
   const reviewCount = listing.reviewCount || 0;
 
   return (
-    <Card className="group overflow-hidden flex flex-col">
-      <div className="relative aspect-video">
+    <Card className="group overflow-hidden flex flex-col shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <div className="relative aspect-[16/10]">
         <Link href={`/services/${listing.id}`} className="block h-full w-full">
           {image ? (
             <Image
               src={image}
               alt={listing.title}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-110"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div className="flex items-center justify-center h-full bg-muted">
-                <ImageIcon className="h-10 w-10 text-muted-foreground" />
+                <ImageIcon className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+           <Badge variant="secondary" className="absolute top-3 left-3">{listing.category}</Badge>
         </Link>
       </div>
-      <div className="p-6 flex flex-col flex-grow">
-        <CardHeader className="p-0">
-          <CardDescription className="text-primary font-semibold">{listing.category}</CardDescription>
-          <CardTitle className="hover:text-primary leading-tight text-xl pt-1">
+      <CardContent className="p-4 flex flex-col flex-grow">
+        <CardTitle className="leading-tight text-lg pt-1 group-hover:text-primary transition-colors">
             <Link href={`/services/${listing.id}`}>{listing.title}</Link>
-          </CardTitle>
-           <div className="pt-2">
+        </CardTitle>
+        <div className="pt-2">
             <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
-          </div>
-        </CardHeader>
-        <CardContent className="flex-grow p-0 mt-3">
-          <CardDescription className="line-clamp-2">{listing.description}</CardDescription>
-        </CardContent>
-        <CardFooter className="flex flex-col items-start space-y-3 p-0 mt-4 pt-4 border-t">
-          <div className="flex items-center text-sm text-muted-foreground w-full">
-            <Phone className="h-4 w-4 mr-3 flex-shrink-0" />
-            <span className="truncate">{listing.contact.phone}</span>
-          </div>
-          <div className="flex items-center text-sm text-muted-foreground w-full">
-            <Mail className="h-4 w-4 mr-3 flex-shrink-0" />
-            <span className="truncate">{listing.contact.email}</span>
-          </div>
-          <div className="w-full text-right mt-2">
-            <Button asChild variant="default" size="sm">
-                  <Link href={`/services/${listing.id}`}>
-                      View Details <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-            </Button>
-          </div>
-        </CardFooter>
-      </div>
+        </div>
+        <CardDescription className="line-clamp-2 mt-2 flex-grow text-sm">{listing.description}</CardDescription>
+        
+        <div className="mt-4 pt-4 border-t space-y-2">
+            <div className="flex items-center text-xs text-muted-foreground w-full">
+                <Phone className="h-3 w-3 mr-2 flex-shrink-0" />
+                <span className="truncate">{listing.contact.phone}</span>
+            </div>
+            <div className="flex items-center text-xs text-muted-foreground w-full">
+                <Mail className="h-3 w-3 mr-2 flex-shrink-0" />
+                <span className="truncate">{listing.contact.email}</span>
+            </div>
+        </div>
+      </CardContent>
+       <CardFooter className="p-4 pt-0">
+          <Button asChild size="sm" className="w-full">
+                <Link href={`/services/${listing.id}`}>
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+          </Button>
+       </CardFooter>
     </Card>
   );
 }
