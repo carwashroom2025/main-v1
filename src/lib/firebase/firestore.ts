@@ -491,8 +491,15 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
     const businessesSnapshot = await getDocs(q);
     let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
     
+    const getTime = (date: Timestamp | string | undefined): number => {
+        if (!date) return 0;
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (date.toMillis) return date.toMillis();
+        return 0;
+    };
+    
     // Sort in-memory and apply limit
-    businessesList.sort((a, b) => ((b.createdAt as Timestamp)?.toMillis() || 0) - ((a.createdAt as Timestamp)?.toMillis() || 0));
+    businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 
     if (count) {
         return businessesList.slice(0, count);
