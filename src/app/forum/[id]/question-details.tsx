@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ThumbsUp, ThumbsDown, ArrowLeft, Trash2 } from 'lucide-react';
+import { ThumbsUp, Eye, Trash2, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Question, Answer } from '@/lib/types';
@@ -122,6 +122,13 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
         <CardContent className="p-6">
           <div className="flex-1">
             <h2 className="text-2xl font-semibold mb-2">{question.title}</h2>
+             <div className="text-sm text-muted-foreground mb-4">
+                {isClient ? (
+                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span> {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })}</span>
+                ) : (
+                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span>...</span>
+                )}
+             </div>
             <p className="text-muted-foreground mb-4">{question.body}</p>
             <div className="flex flex-wrap gap-2 mb-4">
               {question.tags.map(tag => (
@@ -129,30 +136,21 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
               ))}
             </div>
             <div className="flex justify-between items-center">
-                <div className="text-sm text-muted-foreground">
-                {isClient ? (
-                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span> {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
-                ) : (
-                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span>... &bull; {question.views} views</span>
-                )}
-                </div>
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => handleVote('up')} className={cn("h-8 w-8", hasUpvoted && 'text-primary')}>
-                            <ThumbsUp className="h-5 w-5" />
+                    {canDelete && (
+                        <Button variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => setIsAlertOpen(true)}>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete Question
                         </Button>
-                        <span className="font-medium">{question.upvotes || 0}</span>
-                    </div>
+                    )}
+                </div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {question.views || 0} views</span>
+                    <button onClick={() => handleVote('up')} className={cn("flex items-center gap-1.5", hasUpvoted && 'text-primary font-bold')}>
+                        <ThumbsUp className="h-4 w-4" /> {question.upvotes || 0}
+                    </button>
                 </div>
             </div>
-             {canDelete && (
-                <div className="mt-4">
-                    <Button variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => setIsAlertOpen(true)}>
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete Question
-                    </Button>
-                </div>
-            )}
           </div>
         </CardContent>
       </Card>
