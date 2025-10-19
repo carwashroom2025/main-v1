@@ -427,9 +427,12 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
     const getTime = (date: Timestamp | string | undefined): number => {
         if (!date) return 0;
         if (typeof date === 'string') return new Date(date).getTime();
-        // Check if it's a Firestore Timestamp
-        if (typeof date === 'object' && 'toMillis' in date && typeof (date as any).toMillis === 'function') {
-            return (date as Timestamp).toMillis();
+        if (date instanceof Timestamp) {
+            return date.toMillis();
+        }
+        // Handle cases where it might be a plain object from serialization
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp((date as any).seconds, (date as any).nanoseconds).toMillis();
         }
         return 0;
     };
@@ -503,8 +506,11 @@ export async function getFeaturedBusinesses(count?: number): Promise<Business[]>
     const getTime = (date: Timestamp | string | undefined): number => {
         if (!date) return 0;
         if (typeof date === 'string') return new Date(date).getTime();
-        if (typeof date === 'object' && 'toMillis' in date && typeof date.toMillis === 'function') {
+        if (date instanceof Timestamp) {
             return date.toMillis();
+        }
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp((date as any).seconds, (date as any).nanoseconds).toMillis();
         }
         return 0;
     };
