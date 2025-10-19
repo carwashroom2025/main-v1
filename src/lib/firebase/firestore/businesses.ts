@@ -1,5 +1,4 @@
 
-
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc } from 'firebase/firestore';
 import type { Business, Review } from '../../types';
@@ -19,12 +18,16 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
         q = query(businessesCol, where('status', '==', 'approved'));
     }
     const businessesSnapshot = await getDocs(q);
-    let businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+    const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
+
+    if (businessesList.length === 0) {
+        return [];
+    }
 
     const allReviews = await getAllReviews();
     
-    businessesList = businessesList.map(business => {
-        const businessReviews = allReviews.filter(review => review.itemType === 'business' && review.itemId === business.id);
+    const businessesWithRatings = businessesList.map(business => {
+        const businessReviews = allReviews.filter(review => review.itemId === business.id && review.itemType === 'business');
         const reviewCount = businessReviews.length;
         const averageRating = reviewCount > 0
             ? businessReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
@@ -42,7 +45,7 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
         return 0;
     };
     
-    return businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
+    return businessesWithRatings.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 }
 
 export async function getAllBusinessesForAdmin(options?: {

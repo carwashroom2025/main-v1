@@ -71,18 +71,18 @@ export async function getRecentCars(count: number): Promise<Vehicle[]> {
             if (!acc[review.itemId]) {
                 acc[review.itemId] = [];
             }
-            acc[review.itemId].push(review.rating);
+            acc[review.itemId].push(review);
         }
         return acc;
-    }, {} as Record<string, number[]>);
+    }, {} as Record<string, Review[]>);
 
     const vehiclesWithRatings = vehicles.map(vehicle => {
-        const ratings = reviewsByItem[vehicle.id];
-        if (ratings && ratings.length > 0) {
-            const averageRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-            return { ...vehicle, averageRating };
-        }
-        return { ...vehicle, averageRating: 0 };
+        const vehicleReviews = reviewsByItem[vehicle.id] || [];
+        const reviewCount = vehicleReviews.length;
+        const averageRating = reviewCount > 0 
+            ? vehicleReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
+            : 0;
+        return { ...vehicle, averageRating, reviewCount };
     });
 
     return vehiclesWithRatings;
