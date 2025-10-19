@@ -564,23 +564,20 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
     if (!currentUser) {
         throw new Error('You must be logged in to add a business.');
     }
-     if (!['Business Owner', 'Moderator', 'Administrator', 'Author'].includes(currentUser.role)) {
-        throw new Error('Only Business Owners, authors, or admins can add businesses.');
-    }
-
-    const isAdmin = ['Moderator', 'Administrator', 'Author'].includes(currentUser.role);
-    const businessesCol = collection(db, 'businesses');
+    
+    const isAdminOrAuthor = ['Moderator', 'Administrator', 'Author'].includes(currentUser.role);
     
     const newBusinessData = {
       ...businessData,
       ownerId: currentUser.id,
       ownerName: currentUser.name,
-      status: businessData.status || (isAdmin ? 'approved' : 'pending'),
-      verified: false, // Always false on creation
+      status: businessData.status || (isAdminOrAuthor ? 'approved' : 'pending'),
+      verified: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
     
+    const businessesCol = collection(db, 'businesses');
     const docRef = await addDoc(businessesCol, newBusinessData);
     
     await logActivity(`User "${currentUser.name}" submitted a new business listing for "${businessData.title}".`, 'listing', docRef.id, currentUser.id);
@@ -598,7 +595,7 @@ export async function updateBusiness(id: string, businessData: Partial<Omit<Busi
     const originalDoc = await getDoc(businessDocRef);
     const originalData = originalDoc.data() as Business;
 
-    // Business Owner is editing their approved listing
+    // A non-admin owner is editing their approved listing, so it must be re-approved.
     if (currentUser.id === originalData.ownerId && originalData.status === 'approved' && !['Moderator', 'Administrator'].includes(currentUser.role)) {
         dataToUpdate.status = 'edit-pending';
         dataToUpdate.verified = false;
@@ -653,17 +650,9 @@ export async function getPendingClaimForBusiness(businessId: string, userId: str
   
 export async function getPendingClaims(): Promise<BusinessClaim[]> {
     const claimsCol = collection(db, 'claims');
-    
-    // Fetch all pending claims
-    const q = query(claimsCol, where('status', '==', 'pending'));
+    const q = query(claimsCol, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
-    
-    // Sort in-memory to avoid composite index requirement
-    const claims = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim))
-        .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
-        
-    return claims;
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim));
 }
 
 
@@ -671,7 +660,6 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
     const claimRef = doc(db, 'claims', claimId);
 
     return runTransaction(db, async (transaction) => {
-        // --- READS ---
         const claimDoc = await transaction.get(claimRef);
         if (!claimDoc.exists() || claimDoc.data().status !== 'pending') {
             throw new Error("Claim not found or already processed.");
@@ -679,35 +667,29 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
 
         const claimData = claimDoc.data() as BusinessClaim;
         const businessRef = doc(db, 'businesses', claimData.businessId);
+        const userRef = doc(db, 'users', claimData.userId);
+
         const businessDoc = await transaction.get(businessRef);
         if (!businessDoc.exists()) {
             throw new Error("Business to be claimed does not exist.");
         }
         
-        const userRef = doc(db, 'users', claimData.userId);
         const userDoc = await transaction.get(userRef);
+        if (userDoc.exists() && userDoc.data().role === 'User') {
+            transaction.update(userRef, { role: 'Business Owner' });
+        }
 
-        // --- WRITES ---
-        // Update claim
         transaction.update(claimRef, { 
             status: 'approved',
             reviewedAt: Timestamp.now(),
             reviewedBy: adminId,
         });
 
-        // Update business owner and verify it
         transaction.update(businessRef, {
             ownerId: claimData.userId,
             ownerName: claimData.userName,
             verified: true,
         });
-
-        // Update user role if they are currently a 'User'
-        if (userDoc.exists() && userDoc.data().role === 'User') {
-             transaction.update(userRef, {
-                role: 'Business Owner'
-            });
-        }
     });
 }
 
@@ -1410,4 +1392,3 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
-
