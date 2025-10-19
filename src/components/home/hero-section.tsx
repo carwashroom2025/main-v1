@@ -41,9 +41,9 @@ export function Hero() {
         />
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
-        <h2 className="text-3xl md:text-4xl font-headline text-primary mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>Find Your Next Car & Service</h2>
+        <h2 className="text-3xl md:text-4xl font-headline text-primary mb-2" style={{ fontFamily: "var(--font-display)" }}>Find Your</h2>
         <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
-          Find Your Next Car & Service
+          Next Cars & Services
         </h1>
         <p className="mt-4 max-w-2xl text-lg md:text-xl">
           The best way to find cars and services from local and trusted businesses.
