@@ -145,6 +145,7 @@ export function FaqPageClient() {
                             <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
                                 <h3 className="font-semibold text-lg">{q.title}</h3>
                             </Link>
+                             <p className="text-muted-foreground mt-1 line-clamp-1">{q.body}</p>
                             <div className="text-sm text-muted-foreground mt-1">
                                 Asked by <span className="font-medium text-foreground">{q.author}</span>
                                 <span className="italic"> &bull; {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
@@ -161,13 +162,13 @@ export function FaqPageClient() {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0} views</span>
-                                    <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4" /> {q.answers.length} answers</span>
+                                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-destructive" /> {q.views || 0} views</span>
+                                    <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4 text-destructive" /> {q.answers.length} answers</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground flex-shrink-0">
-                                <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
-                                <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4 text-destructive" /> {q.upvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4 text-destructive" /> {q.downvotes || 0}</span>
                             </div>
                         </div>
                     </div>
