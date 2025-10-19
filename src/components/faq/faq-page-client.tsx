@@ -159,9 +159,9 @@ export function FaqPageClient() {
                                 )}
                             </div>
                              <div className="flex items-center gap-4 text-sm text-muted-foreground flex-shrink-0">
-                                <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-blue-600" /> {q.views || 0} views</span>
-                                <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4 text-blue-600" /> {q.answers.length} answers</span>
-                                <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4 text-green-500" /> {q.upvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4 text-destructive" /> {q.upvotes || 0}</span>
+                                <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-destructive" /> {q.views || 0} views</span>
+                                <span className="flex items-center gap-1.5"><MessageSquare className="h-4 w-4 text-destructive" /> {q.answers.length} answers</span>
                             </div>
                         </div>
                     </div>
