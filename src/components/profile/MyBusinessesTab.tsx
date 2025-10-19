@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import type { Business } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BusinessForm } from '@/components/admin/business-form';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import { format } from 'date-fns';
 import {
@@ -42,7 +42,11 @@ export function MyBusinessesTab() {
       
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const businessesFromDb = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
-        businessesFromDb.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+        businessesFromDb.sort((a, b) => {
+            const timeA = a.createdAt ? (a.createdAt as Timestamp).toMillis() : 0;
+            const timeB = b.createdAt ? (b.createdAt as Timestamp).toMillis() : 0;
+            return timeB - timeA;
+        });
         setMyBusinesses(businessesFromDb);
         setLoading(false);
       }, (error) => {
@@ -123,7 +127,7 @@ export function MyBusinessesTab() {
                     <h3 className="font-semibold">{business.title}</h3>
                     <p className="text-sm text-muted-foreground">{business.category}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Submitted: {format(business.createdAt.toDate(), 'PPP')}
+                      Submitted: {format((business.createdAt as Timestamp).toDate(), 'PPP')}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
