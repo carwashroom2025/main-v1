@@ -150,10 +150,10 @@ export function FaqPageClient() {
                         </div>
                         <div className="flex flex-wrap items-center gap-2 mt-3">
                             {displayedTags.map(tag => (
-                                <Badge key={tag} variant="secondary">#{tag}</Badge>
+                                <Badge key={tag} variant="secondary">{tag}</Badge>
                             ))}
                             {remainingTagsCount > 0 && (
-                                <Badge variant="outline">+{remainingTagsCount} more</Badge>
+                                <Badge variant="secondary">+{remainingTagsCount} more</Badge>
                             )}
                         </div>
                     </div>
