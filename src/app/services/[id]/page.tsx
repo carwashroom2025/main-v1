@@ -175,7 +175,7 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                 </CardHeader>
                 <CardContent>
                     {mapImage && (
-                        <div className="relative aspect-video rounded-lg overflow-hidden">
+                        <div className="relative aspect-square rounded-lg overflow-hidden">
                             <Image
                                 src={mapImage.imageUrl}
                                 alt="Location map"
