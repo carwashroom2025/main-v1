@@ -419,7 +419,7 @@ export async function getBusinesses(options: { ids?: string[] } = {}): Promise<B
     if (options.ids && options.ids.length > 0) {
         q = query(businessesCol, where(documentId(), 'in', options.ids));
     } else {
-        q = query(businessesCol, where('verified', '==', true));
+        q = query(businessesCol, where('status', '==', 'approved'));
     }
     const businessesSnapshot = await getDocs(q);
     const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
@@ -575,8 +575,8 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
       ...businessData,
       ownerId: currentUser.id,
       ownerName: currentUser.name,
-      status: isAdmin ? 'approved' : 'pending',
-      verified: isAdmin,
+      status: businessData.status || (isAdmin ? 'approved' : 'pending'),
+      verified: false, // Always false on creation
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
@@ -653,11 +653,19 @@ export async function getPendingClaimForBusiness(businessId: string, userId: str
   
 export async function getPendingClaims(): Promise<BusinessClaim[]> {
     const claimsCol = collection(db, 'claims');
-    const q = query(claimsCol, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
+    
+    // Fetch all pending claims
+    const q = query(claimsCol, where('status', '==', 'pending'));
     const snapshot = await getDocs(q);
-    const claims = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim));
+    
+    // Sort in-memory to avoid composite index requirement
+    const claims = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim))
+        .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+        
     return claims;
 }
+
 
 export async function approveClaim(claimId: string, adminId: string): Promise<void> {
     const claimRef = doc(db, 'claims', claimId);
@@ -671,12 +679,12 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
 
         const claimData = claimDoc.data() as BusinessClaim;
         const businessRef = doc(db, 'businesses', claimData.businessId);
-        const userRef = doc(db, 'users', claimData.userId);
-
         const businessDoc = await transaction.get(businessRef);
         if (!businessDoc.exists()) {
             throw new Error("Business to be claimed does not exist.");
         }
+        
+        const userRef = doc(db, 'users', claimData.userId);
         const userDoc = await transaction.get(userRef);
 
         // --- WRITES ---
