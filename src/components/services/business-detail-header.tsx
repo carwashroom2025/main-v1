@@ -29,8 +29,6 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
     const [isFormOpen, setIsFormOpen] = useState(false);
     
     const canEdit = user && (['Author', 'Moderator', 'Administrator'].includes(user.role) || user.id === business.ownerId);
-    const isOwned = business.ownerId && business.ownerId !== '';
-
 
     const handleShare = async () => {
         const shareData = {
@@ -121,14 +119,12 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount, cat
                 </Tooltip>
                 </TooltipProvider>
                 
-                {isOwned ? (
-                    canEdit && (
-                        <Button variant="outline" size="icon" onClick={() => setIsFormOpen(true)}>
-                            <Edit className="h-5 w-5" />
-                        </Button>
-                    )
-                ) : (
-                    <ClaimBusinessButton business={business} />
+                <ClaimBusinessButton business={business} />
+
+                {canEdit && (
+                    <Button variant="outline" size="icon" onClick={() => setIsFormOpen(true)}>
+                        <Edit className="h-5 w-5" />
+                    </Button>
                 )}
 
                 <Button variant="outline" size="icon" onClick={handleFavoriteClick} disabled={loading}>

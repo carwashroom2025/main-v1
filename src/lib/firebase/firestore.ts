@@ -653,11 +653,10 @@ export async function getPendingClaimForBusiness(businessId: string, userId: str
   
 export async function getPendingClaims(): Promise<BusinessClaim[]> {
     const claimsCol = collection(db, 'claims');
-    const q = query(claimsCol, where('status', '==', 'pending'));
+    const q = query(claimsCol, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
     const claims = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim));
-    // Sort in-memory to avoid composite index
-    return claims.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+    return claims;
 }
 
 export async function approveClaim(claimId: string, adminId: string): Promise<void> {
@@ -685,16 +684,20 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
             reviewedBy: adminId,
         });
 
-        // Update business owner
+        // Update business owner and verify it
         transaction.update(businessRef, {
             ownerId: claimData.userId,
-            ownerName: claimData.userName
+            ownerName: claimData.userName,
+            verified: true
         });
 
-        // Update user role
-        transaction.update(userRef, {
-            role: 'Business Owner'
-        });
+        // Update user role if they are currently a 'User'
+        const userDoc = await transaction.get(userRef);
+        if (userDoc.exists() && userDoc.data().role === 'User') {
+             transaction.update(userRef, {
+                role: 'Business Owner'
+            });
+        }
     });
 }
 
