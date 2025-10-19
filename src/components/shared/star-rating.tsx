@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Star } from 'lucide-react';
@@ -34,9 +35,9 @@ export function StarRating({ rating, totalStars = 5, reviewCount, size = 'md', s
           </div>
         ))}
         {hasPartialStar && (
-          <div className={cn(box, "flex items-center justify-center rounded bg-muted text-muted-foreground relative")}>
-             <div className="absolute top-0 left-0 h-full overflow-hidden bg-primary rounded-l" style={{ width: `${partialStarPercentage}%` }}>
-                <div className={cn(box, "flex items-center justify-center text-primary-foreground")}>
+          <div className={cn(box, "relative flex items-center justify-center rounded bg-muted text-muted-foreground")}>
+            <div className="absolute inset-0 overflow-hidden" style={{ width: `${partialStarPercentage}%` }}>
+                <div className={cn(box, "flex items-center justify-center rounded bg-primary text-primary-foreground")}>
                     <Star className={cn(icon, "fill-current")} />
                 </div>
             </div>
