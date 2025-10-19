@@ -101,7 +101,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                 ownerId: user?.id || '',
                 ownerName: user?.name || '',
                 status: isAdmin ? 'approved' : 'pending',
-                verified: isAdmin, // Auto-verify if an admin is creating it
+                verified: isAdmin,
             });
         }
     }
@@ -203,7 +203,14 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
       } else {
           setFormData(prev => ({...prev, galleryImageUrls: prev.galleryImageUrls?.filter(u => u !== url)}));
       }
-      // Note: This does not delete from Firebase Storage. A dedicated "delete" button could be added for that.
+  }
+
+  const handleApprovalChange = (checked: boolean) => {
+    setFormData(prev => ({
+        ...prev, 
+        verified: !!checked,
+        status: checked ? 'approved' : 'pending'
+    }));
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -419,13 +426,13 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
             {isAdmin && (
                 <div className="space-y-4">
                      <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Admin Settings</h3>
-                    <div className="flex items-center space-x-2">
+                     <div className="flex items-center space-x-2">
                         <Checkbox
-                        id="verified"
-                        checked={formData.verified}
-                        onCheckedChange={(checked) => setFormData(prev => ({...prev, verified: !!checked}))}
+                            id="approval"
+                            checked={formData.status === 'approved'}
+                            onCheckedChange={handleApprovalChange}
                         />
-                        <Label htmlFor="verified">Verified Listing</Label>
+                        <Label htmlFor="approval">Approve and Publish Listing</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                         <Checkbox
