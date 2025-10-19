@@ -468,14 +468,10 @@ export async function getAllBusinessesForAdmin(options?: {
     
     const getTime = (date: any): number => {
         if (!date) return 0;
-        if (date instanceof Timestamp) {
-            return date.toMillis();
-        }
-        if (typeof date === 'object' && 'seconds' in date && typeof date.seconds === 'number') {
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (date.seconds && typeof date.seconds === 'number') {
             return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
-        }
-        if (typeof date === 'string') {
-            return new Date(date).getTime();
         }
         return 0;
     };
@@ -582,7 +578,7 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
   
 export async function updateBusiness(id: string, businessData: Partial<Omit<Business, 'id'>>): Promise<void> {
     const businessDocRef = doc(db, 'businesses', id);
-    const dataToUpdate = { ...businessData };
+    const dataToUpdate: { [key: string]: any } = { ...businessData };
     
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error("Not authenticated");
@@ -602,6 +598,8 @@ export async function updateBusiness(id: string, businessData: Partial<Omit<Busi
     if (dataToUpdate.galleryImageUrls === undefined) {
         dataToUpdate.galleryImageUrls = [];
     }
+
+    dataToUpdate.updatedAt = serverTimestamp();
 
     await updateDoc(businessDocRef, dataToUpdate);
 }

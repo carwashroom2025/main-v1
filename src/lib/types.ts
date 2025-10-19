@@ -108,6 +108,7 @@ export type Business = {
     galleryImageUrls: string[];
     servicesOffered?: string[];
     createdAt: Timestamp | string;
+    updatedAt?: Timestamp | string;
     verified: boolean;
     featured: boolean;
     status: 'pending' | 'approved' | 'rejected' | 'edit-pending';
