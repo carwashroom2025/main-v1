@@ -164,14 +164,6 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                 </CardHeader>
                 <CardContent className="space-y-4 text-muted-foreground">
                     <p>{business.description}</p>
-                    <Separator className="my-4" />
-                    <div className="flex items-start text-sm">
-                        <MapPin className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
-                        <div>
-                            <p className="font-semibold text-foreground">Address</p>
-                            <p>{business.address}</p>
-                        </div>
-                    </div>
                 </CardContent>
             </Card>
         </div>
@@ -213,6 +205,14 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
                             />
                         </div>
                     )}
+                    <Separator className="my-4" />
+                    <div className="flex items-start text-sm">
+                        <MapPin className="h-5 w-5 mr-3 text-muted-foreground mt-1" />
+                        <div>
+                            <p className="font-semibold text-foreground">Address</p>
+                            <p className="text-muted-foreground">{business.address}</p>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
         </div>
