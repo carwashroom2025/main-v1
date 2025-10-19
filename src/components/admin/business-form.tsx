@@ -57,7 +57,7 @@ const initialFormData: Partial<Omit<Business, 'id' | 'createdAt'>> = {
     instagram: '',
   },
   ownerId: '',
-  verified: true,
+  verified: false,
   featured: false,
   status: 'pending',
   mainImageUrl: '',
@@ -101,7 +101,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                 ownerId: user?.id || '',
                 ownerName: user?.name || '',
                 status: isAdmin ? 'approved' : 'pending',
-                verified: isAdmin,
+                verified: false,
             });
         }
     }
@@ -208,7 +208,6 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
   const handleApprovalChange = (checked: boolean) => {
     setFormData(prev => ({
         ...prev, 
-        verified: !!checked,
         status: checked ? 'approved' : 'pending'
     }));
   }
