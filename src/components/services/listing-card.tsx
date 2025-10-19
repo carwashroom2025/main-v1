@@ -47,13 +47,13 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
       <div className="p-6 flex flex-col flex-grow">
         <CardHeader className="p-0">
-          <div className="flex items-center justify-between mb-2">
-            <CardDescription className="text-primary font-semibold">{listing.category}</CardDescription>
-            <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
-          </div>
+          <CardDescription className="text-primary font-semibold">{listing.category}</CardDescription>
           <CardTitle className="hover:text-primary leading-tight text-xl pt-1">
             <Link href={`/services/${listing.id}`}>{listing.title}</Link>
           </CardTitle>
+           <div className="pt-2">
+            <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
+          </div>
         </CardHeader>
         <CardContent className="flex-grow p-0 mt-3">
           <CardDescription className="line-clamp-2">{listing.description}</CardDescription>
