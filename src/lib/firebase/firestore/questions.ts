@@ -89,7 +89,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
 }
 
 // ADD
-export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount' | 'author' | 'authorId'>): Promise<string> {
+export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'upvotedBy' | 'upvotes' | 'answerCount' | 'author' | 'authorId'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to ask a question.');
@@ -104,10 +104,8 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
         createdAt: Timestamp.now(),
         views: 0,
         upvotes: 0,
-        downvotes: 0,
         answers: [],
         upvotedBy: [],
-        downvotedBy: [],
         answerCount: 0,
     });
 
@@ -133,10 +131,8 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
       authorAvatarUrl: currentUser.avatarUrl || '',
       createdAt: Timestamp.now(),
       upvotes: 0,
-      downvotes: 0,
       accepted: false,
       upvotedBy: [],
-      downvotedBy: [],
     };
   
     await updateDoc(questionRef, {
@@ -198,7 +194,7 @@ export async function toggleAnswerAccepted(questionId: string, answerId: string)
     });
 }
 
-export async function voteOnQuestion(questionId: string, userId: string, voteType: 'up' | 'down'): Promise<void> {
+export async function voteOnQuestion(questionId: string, userId: string, voteType: 'up'): Promise<void> {
     const questionRef = doc(db, 'questions', questionId);
 
     await runTransaction(db, async (transaction) => {
@@ -209,42 +205,26 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
         const questionData = questionDoc.data() as Question;
 
         const upvotedBy = questionData.upvotedBy || [];
-        const downvotedBy = questionData.downvotedBy || [];
         const isUpvoted = upvotedBy.includes(userId);
-        const isDownvoted = downvotedBy.includes(userId);
 
         let newUpvotedBy = [...upvotedBy];
-        let newDownvotedBy = [...downvotedBy];
 
-        if (voteType === 'up') {
-            if (isUpvoted) {
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
-            } else {
-                newUpvotedBy.push(userId);
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
-            }
-        } else { // voteType is 'down'
-            if (isDownvoted) {
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
-            } else {
-                newDownvotedBy.push(userId);
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
-            }
+        if (isUpvoted) {
+            newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
+        } else {
+            newUpvotedBy.push(userId);
         }
         
         const newUpvotes = newUpvotedBy.length;
-        const newDownvotes = newDownvotedBy.length;
         
         transaction.update(questionRef, {
             upvotedBy: newUpvotedBy,
-            downvotedBy: newDownvotedBy,
             upvotes: newUpvotes,
-            downvotes: newDownvotes,
         });
     });
 }
 
-export async function voteOnAnswer(questionId: string, answerId: string, userId: string, voteType: 'up' | 'down'): Promise<void> {
+export async function voteOnAnswer(questionId: string, answerId: string, userId: string, voteType: 'up'): Promise<void> {
     const questionRef = doc(db, 'questions', questionId);
     
     await runTransaction(db, async (transaction) => {
@@ -262,33 +242,18 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
         
         const answer = { ...answers[answerIndex] };
         const upvotedBy = answer.upvotedBy || [];
-        const downvotedBy = answer.downvotedBy || [];
         const isUpvoted = upvotedBy.includes(userId);
-        const isDownvoted = downvotedBy.includes(userId);
 
         let newUpvotedBy = [...upvotedBy];
-        let newDownvotedBy = [...downvotedBy];
 
-        if (voteType === 'up') {
-            if (isUpvoted) {
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
-            } else {
-                newUpvotedBy.push(userId);
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
-            }
-        } else { // voteType is 'down'
-            if (isDownvoted) {
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
-            } else {
-                newDownvotedBy.push(userId);
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
-            }
+        if (isUpvoted) {
+            newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
+        } else {
+            newUpvotedBy.push(userId);
         }
 
         answer.upvotedBy = newUpvotedBy;
-        answer.downvotedBy = newDownvotedBy;
         answer.upvotes = newUpvotedBy.length;
-        answer.downvotes = newDownvotedBy.length;
         
         const newAnswers = [...answers];
         newAnswers[answerIndex] = answer;
@@ -350,4 +315,3 @@ export async function deleteAnswer(questionId: string, answerId: string): Promis
     });
     await logActivity(`User "${currentUser.name}" deleted an answer.`, 'question', questionId, currentUser.id);
 }
-

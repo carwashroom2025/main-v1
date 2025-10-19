@@ -136,10 +136,8 @@ export type Answer = {
   authorAvatarUrl?: string;
   createdAt: Timestamp;
   upvotes: number;
-  downvotes: number;
   accepted: boolean;
   upvotedBy: string[];
-  downvotedBy: string[];
 };
 
 export type Question = {
@@ -153,10 +151,8 @@ export type Question = {
   createdAt: Timestamp;
   views: number;
   upvotes: number;
-  downvotes: number;
   answers: Answer[];
   upvotedBy: string[];
-  downvotedBy: string[];
   answerCount: number;
 };
 

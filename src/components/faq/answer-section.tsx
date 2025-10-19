@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -54,7 +55,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
   const sortedAnswers = [...question.answers].sort((a, b) => {
     if (a.accepted && !b.accepted) return -1;
     if (!a.accepted && b.accepted) return 1;
-    if (a.upvotes - a.downvotes !== b.upvotes - b.downvotes) return (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+    if (a.upvotes !== b.upvotes) return (b.upvotes) - (a.upvotes);
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
@@ -125,7 +126,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
     }
   };
 
-  const handleVote = async (answerId: string, type: 'up' | 'down') => {
+  const handleVote = async (answerId: string, type: 'up') => {
     if (!user) {
         router.push(`/login?redirect=/forum/${question.id}`);
         return;
@@ -178,7 +179,6 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
       <div className="space-y-6">
         {sortedAnswers.map(answer => {
           const hasUpvoted = user && (answer.upvotedBy || []).includes(user.id);
-          const hasDownvoted = user && (answer.downvotedBy || []).includes(user.id);
           const canAccept = user && (user.id === question.authorId || ['Moderator', 'Administrator', 'Author'].includes(user.role));
           const canDelete = user && (user.id === answer.authorId || ['Moderator', 'Administrator'].includes(user.role));
 
@@ -205,10 +205,6 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
                                 <ThumbsUp className="h-5 w-5" />
                             </Button>
                             <span className="font-medium">{answer.upvotes || 0}</span>
-                            <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'down')} className={cn("h-8 w-8", hasDownvoted && 'text-destructive')}>
-                                <ThumbsDown className="h-5 w-5" />
-                            </Button>
-                            <span className="font-medium">{answer.downvotes || 0}</span>
                         </div>
                     </div>
                      <div className="flex items-center gap-2 mt-2">

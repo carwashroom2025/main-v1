@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -65,7 +66,7 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
   }
 
 
-  const handleVote = async (type: 'up' | 'down') => {
+  const handleVote = async (type: 'up') => {
     if (!user) {
         router.push(`/login?redirect=/forum/${question.id}`);
         return;
@@ -103,7 +104,6 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
   };
 
   const hasUpvoted = user && (question.upvotedBy || []).includes(user.id);
-  const hasDownvoted = user && (question.downvotedBy || []).includes(user.id);
   const canDelete = user && (user.id === question.authorId || ['Moderator', 'Administrator'].includes(user.role));
 
   return (
@@ -125,7 +125,7 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
             <p className="text-muted-foreground mb-4">{question.body}</p>
             <div className="flex flex-wrap gap-2 mb-4">
               {question.tags.map(tag => (
-                <Badge key={tag} variant="secondary">#{tag}</Badge>
+                <Badge key={tag} variant="secondary">{tag}</Badge>
               ))}
             </div>
             <div className="flex justify-between items-center">
@@ -142,12 +142,6 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
                             <ThumbsUp className="h-5 w-5" />
                         </Button>
                         <span className="font-medium">{question.upvotes || 0}</span>
-                    </div>
-                     <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => handleVote('down')} className={cn("h-8 w-8", hasDownvoted && 'text-destructive')}>
-                            <ThumbsDown className="h-5 w-5" />
-                        </Button>
-                        <span className="font-medium">{question.downvotes || 0}</span>
                     </div>
                 </div>
             </div>

@@ -91,8 +91,7 @@ export function FaqPageClient() {
 
   // Client-side filtering until server-side search is implemented
   const displayedQuestions = questions.filter(q => 
-    q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    q.body.toLowerCase().includes(searchTerm.toLowerCase())
+    q.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   const pageTitle = activeTab === 'TopAnswers' ? "Top Answered Questions" : activeTab === 'TopRated' ? "Top Rated Questions" : "All Questions";
@@ -167,7 +166,6 @@ export function FaqPageClient() {
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground flex-shrink-0">
                                 <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4 text-green-500" /> {q.upvotes || 0}</span>
-                                <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4 text-destructive" /> {q.downvotes || 0}</span>
                             </div>
                         </div>
                     </div>
