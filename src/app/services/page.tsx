@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Timestamp } from 'firebase/firestore';
 import { ServiceFilters } from '@/components/services/service-filters';
+import { toISODate } from '@/lib/utils';
 
 export default async function ServicesPage() {
   const [businessListings, categories] = await Promise.all([
@@ -15,12 +16,12 @@ export default async function ServicesPage() {
 
   const serializableBusinessListings = businessListings.map(business => ({
     ...business,
-    createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
+    createdAt: toISODate(business.createdAt),
   }));
 
   const serializableCategories = categories.map(category => ({
       ...category,
-      createdAt: category.createdAt ? (category.createdAt as Timestamp).toDate().toISOString() : undefined,
+      createdAt: toISODate(category.createdAt),
   }));
 
   const fetchBusinesses = async () => {
@@ -28,7 +29,7 @@ export default async function ServicesPage() {
     const businesses = await getBusinesses();
     return businesses.map(business => ({
         ...business,
-        createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
+        createdAt: toISODate(business.createdAt),
     }));
   };
 
