@@ -4,6 +4,8 @@ import { collection, getDocs, doc, getDoc, query, orderBy, updateDoc, deleteDoc,
 import type { User } from '../../types';
 
 // Users
+
+// GET
 export async function getUsers(): Promise<User[]> {
     const usersCol = collection(db, 'users');
     const q = query(usersCol, orderBy('createdAt', 'desc'));
@@ -12,16 +14,11 @@ export async function getUsers(): Promise<User[]> {
     return usersList;
 }
 
+// UPDATE
 export async function updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<void> {
     const userDocRef = doc(db, 'users', id);
     await updateDoc(userDocRef, userData);
 }
-
-export async function deleteUser(id: string): Promise<void> {
-    const userDocRef = doc(db, 'users', id);
-    await deleteDoc(userDocRef);
-}
-
 
 export async function toggleFavorite(userId: string, carId: string): Promise<void> {
     const userRef = doc(db, 'users', userId);
@@ -35,12 +32,10 @@ export async function toggleFavorite(userId: string, carId: string): Promise<voi
     const favoriteCars = userData.favoriteCars || [];
   
     if (favoriteCars.includes(carId)) {
-      // Remove from favorites
       await updateDoc(userRef, {
         favoriteCars: arrayRemove(carId)
       });
     } else {
-      // Add to favorites
       await updateDoc(userRef, {
         favoriteCars: arrayUnion(carId)
       });
@@ -67,4 +62,10 @@ export async function toggleFavoriteBusiness(userId: string, businessId: string)
             favoriteBusinesses: arrayUnion(businessId)
         });
     }
+}
+
+// DELETE
+export async function deleteUser(id: string): Promise<void> {
+    const userDocRef = doc(db, 'users', id);
+    await deleteDoc(userDocRef);
 }

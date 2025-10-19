@@ -1,11 +1,13 @@
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, query, where, orderBy, addDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, query, where, orderBy, addDoc, deleteDoc, Timestamp, getDoc } from 'firebase/firestore';
 import type { Review } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
 
 // Reviews
+
+// GET
 export async function getReviews(itemId: string): Promise<Review[]> {
     const reviewsCol = collection(db, 'reviews');
     const q = query(reviewsCol, where('itemId', '==', itemId));
@@ -21,6 +23,7 @@ export async function getAllReviews(): Promise<Review[]> {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Review));
 }
 
+// ADD
 export async function addReview(reviewData: Omit<Review, 'id' | 'createdAt' | 'userId' | 'author' | 'authorAvatarUrl'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -40,6 +43,7 @@ export async function addReview(reviewData: Omit<Review, 'id' | 'createdAt' | 'u
     return docRef.id;
 }
 
+// DELETE
 export async function deleteReview(reviewId: string): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -52,7 +56,6 @@ export async function deleteReview(reviewId: string): Promise<void> {
     if (reviewSnap.exists()) {
         const reviewData = reviewSnap.data() as Review;
 
-        // Check permissions: Moderator/Administrator or the user who wrote the review
         if (!['Moderator', 'Administrator'].includes(currentUser.role) && currentUser.id !== reviewData.userId) {
             throw new Error("You don't have permission to delete this review.");
         }

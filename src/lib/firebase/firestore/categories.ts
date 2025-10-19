@@ -7,6 +7,8 @@ import { logActivity } from './activity';
 import { PlaceHolderImages } from '../../placeholder-images';
 
 // Categories
+
+// GET
 export async function getCategories(): Promise<Category[]> {
     const categoriesCol = collection(db, 'categories');
     const q = query(categoriesCol, orderBy('name', 'asc'));
@@ -14,6 +16,7 @@ export async function getCategories(): Promise<Category[]> {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
 }
 
+// ADD
 export async function addCategory(categoryData: Omit<Category, 'id' | 'createdAt'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
@@ -85,6 +88,7 @@ export async function seedInitialCategories(): Promise<{count: number, message: 
     return { count, message: `Successfully seeded ${count} categories.` };
 }
 
+// UPDATE
 export async function updateCategory(id: string, categoryData: Partial<Omit<Category, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
@@ -95,6 +99,7 @@ export async function updateCategory(id: string, categoryData: Partial<Omit<Cate
     await logActivity(`Moderator "${currentUser.name}" updated a category: "${categoryData.name}".`, 'category', id, currentUser.id);
 }
 
+// DELETE
 export async function deleteCategory(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {

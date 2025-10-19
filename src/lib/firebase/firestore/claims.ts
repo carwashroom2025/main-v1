@@ -4,16 +4,8 @@ import { collection, getDocs, doc, getDoc, query, where, orderBy, addDoc, update
 import type { Business, BusinessClaim } from '../../types';
 
 // Business Claims
-export async function submitBusinessClaim(claimData: Omit<BusinessClaim, 'id' | 'status' | 'createdAt'>): Promise<string> {
-    const claimsCol = collection(db, 'claims');
-    const docRef = await addDoc(claimsCol, {
-      ...claimData,
-      status: 'pending',
-      createdAt: Timestamp.now(),
-    });
-    return docRef.id;
-}
-  
+
+// GET
 export async function getPendingClaimForBusiness(businessId: string, userId: string): Promise<BusinessClaim | null> {
     const claimsCol = collection(db, 'claims');
     const q = query(claimsCol, 
@@ -35,7 +27,18 @@ export async function getPendingClaims(): Promise<BusinessClaim[]> {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim));
 }
 
+// ADD
+export async function submitBusinessClaim(claimData: Omit<BusinessClaim, 'id' | 'status' | 'createdAt'>): Promise<string> {
+    const claimsCol = collection(db, 'claims');
+    const docRef = await addDoc(claimsCol, {
+      ...claimData,
+      status: 'pending',
+      createdAt: Timestamp.now(),
+    });
+    return docRef.id;
+}
 
+// UPDATE
 export async function approveClaim(claimId: string, adminId: string): Promise<void> {
     const claimRef = doc(db, 'claims', claimId);
 

@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { logActivity } from './activity';
 
 // Comments
+
+// GET
 export async function getAllComments(): Promise<Comment[]> {
     const commentsCol = collection(db, 'comments');
     const snapshot = await getDocs(commentsCol);
@@ -19,10 +21,10 @@ export async function getComments(postId: string): Promise<Comment[]> {
     const snapshot = await getDocs(q);
     const comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Comment));
     
-    // Sort manually in the client
     return comments.sort((a, b) => b.date.toMillis() - a.date.toMillis());
 }
 
+// ADD
 export async function addComment(postId: string, text: string, parentCommentId?: string): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -30,7 +32,6 @@ export async function addComment(postId: string, text: string, parentCommentId?:
     }
 
     if (parentCommentId) {
-        // This is a reply
         const reply: Reply = {
             id: uuidv4(),
             author: currentUser.name,
@@ -50,7 +51,6 @@ export async function addComment(postId: string, text: string, parentCommentId?:
         }
 
     } else {
-        // This is a top-level comment
         const comment: Omit<Comment, 'id'> = {
             postId,
             author: currentUser.name,
@@ -66,6 +66,7 @@ export async function addComment(postId: string, text: string, parentCommentId?:
     }
 }
 
+// DELETE
 export async function deleteComment(commentId: string): Promise<void> {
     const commentRef = doc(db, 'comments', commentId);
     await deleteDoc(commentRef);

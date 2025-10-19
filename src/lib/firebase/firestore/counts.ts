@@ -3,6 +3,8 @@ import { db } from '../firebase';
 import { collection, query, where, getCountFromServer } from 'firebase/firestore';
 
 // Count Functions
+
+// GET
 export async function getUsersCount(): Promise<number> {
     const usersCol = collection(db, 'users');
     const snapshot = await getCountFromServer(usersCol);

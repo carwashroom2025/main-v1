@@ -3,6 +3,8 @@ import { db } from '../firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 // Analytics
+
+// GET
 export async function getMonthlyUserRegistrations() {
     try {
         const usersCol = collection(db, 'users');
@@ -27,7 +29,6 @@ export async function getMonthlyUserRegistrations() {
             }
         });
 
-        // Get last 6 months of data, including months with 0 users
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const today = new Date();
         const lastSixMonths = [];

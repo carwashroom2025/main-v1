@@ -6,6 +6,8 @@ import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
 
 // Blog Posts
+
+// GET
 export async function getBlogPosts({ category, tag }: { category?: string | null, tag?: string | null } = {}): Promise<BlogPost[]> {
     const postsCol = collection(db, 'blogPosts');
     const q = query(postsCol, orderBy('date', 'desc'));
@@ -29,7 +31,7 @@ export async function getRelatedBlogPosts(currentPost: BlogPost, count: number):
     const postsCol = collection(db, 'blogPosts');
     const allPostsSnapshot = await getDocs(postsCol);
     const allPosts = allPostsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost))
-        .filter(p => p.id !== currentPost.id); // Exclude the current post
+        .filter(p => p.id !== currentPost.id);
 
     const relatedScores: { [postId: string]: number } = {};
 
@@ -79,6 +81,24 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
     return { id: postDoc.id, ...postDoc.data() } as BlogPost;
 }
 
+export async function getPopularTags(count: number): Promise<string[]> {
+    const posts = await getBlogPosts();
+    const tagCounts: { [key: string]: number } = {};
+
+    posts.forEach(post => {
+        post.tags?.forEach(tag => {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+    });
+
+    const sortedTags = Object.entries(tagCounts)
+        .sort(([, countA], [, countB]) => countB - countA)
+        .map(([tag]) => tag);
+
+    return sortedTags.slice(0, count);
+}
+
+// ADD
 export async function addBlogPost(postData: Omit<BlogPost, 'id'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Author', 'Moderator', 'Administrator'].includes(currentUser.role)) {
@@ -94,6 +114,7 @@ export async function addBlogPost(postData: Omit<BlogPost, 'id'>): Promise<strin
     return docRef.id;
 }
 
+// UPDATE
 export async function updateBlogPost(id: string, postData: Partial<BlogPost>): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error('You must be logged in to update a post.');
@@ -118,6 +139,7 @@ export async function updateBlogPost(id: string, postData: Partial<BlogPost>): P
     await logActivity(`User "${currentUser.name}" updated the blog post: "${postData.title}".`, 'blog', id, currentUser.id);
 }
 
+// DELETE
 export async function deleteBlogPost(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error('You must be logged in to delete a post.');
@@ -136,23 +158,5 @@ export async function deleteBlogPost(id: string): Promise<void> {
     }
     
     await deleteDoc(postDocRef);
-    // Note: This does not delete associated images from storage.
     await logActivity(`User "${currentUser.name}" deleted a blog post.`, 'blog', id, currentUser.id);
-}
-
-export async function getPopularTags(count: number): Promise<string[]> {
-    const posts = await getBlogPosts();
-    const tagCounts: { [key: string]: number } = {};
-
-    posts.forEach(post => {
-        post.tags?.forEach(tag => {
-            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
-    });
-
-    const sortedTags = Object.entries(tagCounts)
-        .sort(([, countA], [, countB]) => countB - countA)
-        .map(([tag]) => tag);
-
-    return sortedTags.slice(0, count);
 }

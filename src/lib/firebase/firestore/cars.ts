@@ -7,12 +7,12 @@ import { logActivity } from './activity';
 import { getAllReviews } from './reviews';
 
 // Cars / Vehicles
+
+// GET
 export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'createdAt-desc', brandFilter = 'all', typeFilter = 'all', yearFilter = 'all', searchTerm = '', all = false } = {}): Promise<{ vehicles: Vehicle[], totalCount: number }> {
     const carsCol = collection(db, 'cars');
     let q = query(carsCol);
 
-    // This is not efficient for large datasets. In a real-world scenario,
-    // you would use a dedicated search service like Algolia or Meilisearch.
     const allCarsSnapshot = await getDocs(q);
     let allCars = allCarsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Vehicle));
 
@@ -20,7 +20,6 @@ export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'cre
         return { vehicles: allCars, totalCount: allCars.length };
     }
 
-    // Client-side filtering
     if (brandFilter !== 'all') {
         allCars = allCars.filter(car => car.make === brandFilter);
     }
@@ -38,14 +37,12 @@ export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'cre
         if (!date) return 0;
         if (date instanceof Timestamp) return date.toMillis();
         if (typeof date === 'string') return new Date(date).getTime();
-        // Handle plain objects that look like Timestamps after serialization
         if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
             return new Timestamp(date.seconds, date.nanoseconds).toMillis();
         }
         return 0;
     };
 
-    // Client-side sorting
     allCars.sort((a, b) => {
         const timeA = getTime(a.createdAt);
         const timeB = getTime(b.createdAt);
@@ -58,7 +55,6 @@ export async function getCars({ page = 1, limit: itemsPerPage = 9, sortBy = 'cre
 
     const totalCount = allCars.length;
     
-    // Client-side pagination
     const startIndex = (page - 1) * itemsPerPage;
     const paginatedCars = allCars.slice(startIndex, startIndex + itemsPerPage);
 
@@ -92,6 +88,7 @@ export async function getRecentCars(count: number): Promise<Vehicle[]> {
     return vehiclesWithRatings;
 }
 
+// ADD
 export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator', 'Author'].includes(currentUser.role)) {
@@ -108,6 +105,7 @@ export async function addVehicle(vehicleData: Omit<Vehicle, 'id' | 'createdAt'>)
     return docRef.id;
 }
 
+// UPDATE
 export async function updateVehicle(id: string, vehicleData: Partial<Omit<Vehicle, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
@@ -117,6 +115,7 @@ export async function updateVehicle(id: string, vehicleData: Partial<Omit<Vehicl
     await updateDoc(vehicleDocRef, vehicleData);
 }
 
+// DELETE
 export async function deleteVehicle(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
     if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
@@ -124,5 +123,4 @@ export async function deleteVehicle(id: string): Promise<void> {
     }
     const vehicleDocRef = doc(db, 'cars', id);
     await deleteDoc(vehicleDocRef);
-    // You might want to delete associated images from storage as well
 }

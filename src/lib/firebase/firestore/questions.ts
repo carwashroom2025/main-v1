@@ -7,6 +7,8 @@ import { logActivity } from './activity';
 import { v4 as uuidv4 } from 'uuid';
 
 // Questions (FAQ)
+
+// GET
 export async function getQuestions(
     options: { 
         page?: number, 
@@ -27,13 +29,11 @@ export async function getQuestions(
         orderByField = 'votes';
     }
 
-    // For total count
     const countSnapshot = await getCountFromServer(questionsCol);
     const totalCount = countSnapshot.data().count;
 
     q = query(q, orderBy(orderByField, orderByDirection));
 
-    // Pagination
     if (page > 1) {
         const lastVisibleDocQuery = query(questionsCol, orderBy(orderByField, orderByDirection), limit((page - 1) * itemsPerPage));
         const lastVisibleDocSnapshot = await getDocs(lastVisibleDocQuery);
@@ -60,7 +60,6 @@ export async function getQuestion(id: string): Promise<Question | null> {
             if (!sfDoc.exists()) {
                 return null;
             }
-            // Increment views
             transaction.update(questionDocRef, { views: increment(1) });
             return sfDoc;
         });
@@ -72,7 +71,6 @@ export async function getQuestion(id: string): Promise<Question | null> {
 
     } catch (e) {
         console.error("Transaction failed: ", e);
-        // Fallback to just getting the document if transaction fails
         return getQuestionWithoutIncrementingViews(id);
     }
 }
@@ -86,6 +84,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
     return null;
 }
 
+// ADD
 export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -110,28 +109,6 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
     return docRef.id;
 }
 
-
-export async function updateQuestion(id: string, questionData: Partial<Omit<Question, 'id'>>): Promise<void> {
-    const currentUser = await getCurrentUser();
-    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
-        throw new Error('You do not have permission to update questions.');
-    }
-    const questionDocRef = doc(db, 'questions', id);
-    await updateDoc(questionDocRef, {
-        ...questionData,
-    });
-    await logActivity(`Moderator "${currentUser.name}" updated the question: "${questionData.title}".`, 'question', id, currentUser.id);
-}
-
-export async function deleteQuestion(id: string): Promise<void> {
-    const currentUser = await getCurrentUser();
-    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
-        throw new Error('You do not have permission to delete questions.');
-    }
-    const questionDocRef = doc(db, 'questions', id);
-    await deleteDoc(questionDocRef);
-    await logActivity(`Moderator "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
-}
 
 export async function addAnswer(questionId: string, body: string): Promise<void> {
     const currentUser = await getCurrentUser();
@@ -159,6 +136,19 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
     });
 }
 
+// UPDATE
+export async function updateQuestion(id: string, questionData: Partial<Omit<Question, 'id'>>): Promise<void> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
+        throw new Error('You do not have permission to update questions.');
+    }
+    const questionDocRef = doc(db, 'questions', id);
+    await updateDoc(questionDocRef, {
+        ...questionData,
+    });
+    await logActivity(`Moderator "${currentUser.name}" updated the question: "${questionData.title}".`, 'question', id, currentUser.id);
+}
+
 export async function toggleAnswerAccepted(questionId: string, answerId: string): Promise<void> {
     const currentUser = await getCurrentUser();
     const questionRef = doc(db, 'questions', questionId);
@@ -180,19 +170,17 @@ export async function toggleAnswerAccepted(questionId: string, answerId: string)
         if (answer.id === answerId) {
           if (answer.accepted) {
             isAlreadyAccepted = true;
-            return { ...answer, accepted: false }; // Un-accept if already accepted
+            return { ...answer, accepted: false };
           } else {
-            return { ...answer, accepted: true }; // Accept it
+            return { ...answer, accepted: true };
           }
         }
-        return { ...answer, accepted: false }; // Un-accept all others
+        return { ...answer, accepted: false };
       });
   
-      // If we are un-accepting, just update with the new array
       if (isAlreadyAccepted) {
         transaction.update(questionRef, { answers: newAnswers });
       } else {
-        // If we are accepting, ensure only one is accepted
         const finalAnswers = newAnswers.map(a => a.id === answerId ? a : {...a, accepted: false});
         transaction.update(questionRef, { answers: finalAnswers });
       }
@@ -219,17 +207,17 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
 
         if (voteType === 'up') {
             if (isUpvoted) {
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId); // Remove upvote
+                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
             } else {
-                newUpvotedBy.push(userId); // Add upvote
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId); // Remove downvote if exists
+                newUpvotedBy.push(userId);
+                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             }
-        } else { // downvote
+        } else {
             if (isDownvoted) {
-                newDownvotedBy = newDownvotedBy.filter(id => id !== userId); // Remove downvote
+                newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             } else {
-                newDownvotedBy.push(userId); // Add downvote
-                newUpvotedBy = newUpvotedBy.filter(id => id !== userId); // Remove upvote if exists
+                newDownvotedBy.push(userId);
+                newUpvotedBy = newUpvotedBy.filter(id => id !== userId);
             }
         }
         
@@ -275,7 +263,7 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
                 newUpvotedBy.push(userId);
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             }
-        } else { // downvote
+        } else {
             if (isDownvoted) {
                 newDownvotedBy = newDownvotedBy.filter(id => id !== userId);
             } else {
@@ -293,4 +281,15 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
 
         transaction.update(questionRef, { answers: newAnswers });
     });
+}
+
+// DELETE
+export async function deleteQuestion(id: string): Promise<void> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
+        throw new Error('You do not have permission to delete questions.');
+    }
+    const questionDocRef = doc(db, 'questions', id);
+    await deleteDoc(questionDocRef);
+    await logActivity(`Moderator "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
 }
