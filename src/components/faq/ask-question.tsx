@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -71,8 +72,6 @@ export function AskQuestion({ onQuestionAdded }: AskQuestionProps) {
                 title,
                 body,
                 tags: tags.split(',').map(t => t.trim()).filter(t => t),
-                authorId: user.id,
-                author: user.name,
             };
 
             await addQuestion(questionData as any);

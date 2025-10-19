@@ -89,7 +89,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
 }
 
 // ADD
-export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount'>): Promise<string> {
+export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount' | 'author' | 'authorId'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to ask a question.');
@@ -350,3 +350,4 @@ export async function deleteAnswer(questionId: string, answerId: string): Promis
     });
     await logActivity(`User "${currentUser.name}" deleted an answer.`, 'question', questionId, currentUser.id);
 }
+
