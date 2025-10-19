@@ -157,15 +157,15 @@ export function FaqPageClient() {
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between self-stretch">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex flex-col items-end justify-end flex-shrink-0">
+                         <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
                             <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
                             <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
                             <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views || 0}</span>
+                             <span className="flex items-center gap-1.5">
+                                <MessageSquare className="h-4 w-4" /> {q.answers.length}
+                            </span>
                         </div>
-                         <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                            <MessageSquare className="h-4 w-4" /> comments: {q.answers.length}
-                        </span>
                     </div>
                 </div>
             );
