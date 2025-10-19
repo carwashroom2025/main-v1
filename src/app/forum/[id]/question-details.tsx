@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, ArrowLeft } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Question, Answer } from '@/lib/types';
@@ -83,12 +83,12 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
       <Card className="mb-8">
         <CardContent className="p-6 flex gap-4">
             <div className="flex flex-col items-center text-center text-sm">
-                <Button variant="ghost" onClick={() => handleVote('up')} className={cn(hasUpvoted && 'text-primary')}>
-                    <ArrowUp className="h-6 w-6" />
+                <Button variant="ghost" onClick={() => handleVote('up')} className={cn("h-auto p-2", hasUpvoted && 'text-primary')}>
+                    <ThumbsUp className="h-6 w-6" />
                 </Button>
                 <span className="text-2xl font-bold my-1">{question.votes}</span>
-                 <Button variant="ghost" onClick={() => handleVote('down')} className={cn(hasDownvoted && 'text-destructive')}>
-                    <ArrowDown className="h-6 w-6" />
+                 <Button variant="ghost" onClick={() => handleVote('down')} className={cn("h-auto p-2", hasDownvoted && 'text-destructive')}>
+                    <ThumbsDown className="h-6 w-6" />
                 </Button>
             </div>
           <div className="flex-1">

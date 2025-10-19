@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowDown, CheckCircle } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, CheckCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/auth-context';
@@ -135,12 +135,12 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
             <Card key={answer.id} className={answer.accepted ? "border-green-500" : ""}>
                 <CardContent className="p-6 flex gap-4">
                     <div className="flex flex-col items-center text-center text-sm">
-                         <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'up')} className={cn(hasUpvoted && 'text-primary')}>
-                            <ArrowUp className="h-6 w-6" />
+                         <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'up')} className={cn("h-auto p-2", hasUpvoted && 'text-primary')}>
+                            <ThumbsUp className="h-6 w-6" />
                          </Button>
                         <span className="text-xl font-bold my-1">{answer.votes}</span>
-                        <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'down')} className={cn(hasDownvoted && 'text-destructive')}>
-                            <ArrowDown className="h-6 w-6" />
+                        <Button variant="ghost" size="icon" onClick={() => handleVote(answer.id, 'down')} className={cn("h-auto p-2", hasDownvoted && 'text-destructive')}>
+                            <ThumbsDown className="h-6 w-6" />
                         </Button>
                     </div>
                 <div className="flex-1">
