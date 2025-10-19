@@ -151,6 +151,8 @@ export type Question = {
   createdAt: Timestamp;
   views: number;
   votes: number;
+  upvotes: number;
+  downvotes: number;
   answers: Answer[];
   upvotedBy: string[];
   downvotedBy: string[];

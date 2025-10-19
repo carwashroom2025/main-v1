@@ -1,11 +1,12 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowBigUp, Eye, MessageSquare, Search } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Eye, MessageSquare, Search } from 'lucide-react';
 import Link from 'next/link';
 import type { Question } from '@/lib/types';
 import { getQuestions } from '@/lib/firebase/firestore';
@@ -132,9 +133,10 @@ export function FaqPageClient() {
                             {q.title}
                         </Link>
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground pt-1">
-                        by <span className="font-medium text-foreground">{q.author}</span>
-                    </p>
+                     <div className="text-sm text-muted-foreground pt-1">
+                        Asked by <span className="font-medium text-foreground">{q.author}</span>
+                        <span className="italic"> {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</span>
+                    </div>
                 </CardHeader>
                 <CardContent className="flex-grow">
                      <div className="flex flex-wrap gap-2 mt-2">
@@ -148,14 +150,14 @@ export function FaqPageClient() {
                 </CardContent>
                 <CardFooter className="flex justify-between w-full text-sm text-muted-foreground">
                     <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1.5"><ArrowBigUp className="h-4 w-4" /> {q.votes}</span>
-                        <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
-                            <MessageSquare className="h-4 w-4" /> {q.answers.length}
+                         <span className={`flex items-center gap-1.5 ${q.answers.some(a => a.accepted) ? 'text-green-600' : ''}`}>
+                            <MessageSquare className="h-4 w-4" /> {q.answers.length} Answers
                         </span>
-                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views}</span>
+                        <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" /> {q.views} Views</span>
                     </div>
-                    <div>
-                        <i className="italic">posted {formatDistanceToNow(q.createdAt.toDate(), { addSuffix: true })}</i>
+                    <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {q.upvotes || 0}</span>
+                        <span className="flex items-center gap-1.5"><ThumbsDown className="h-4 w-4" /> {q.downvotes || 0}</span>
                     </div>
                 </CardFooter>
             </Card>

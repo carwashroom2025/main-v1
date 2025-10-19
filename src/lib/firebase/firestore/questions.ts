@@ -1,4 +1,5 @@
 
+
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion } from 'firebase/firestore';
 import type { Question, Answer } from '../../types';
@@ -85,7 +86,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
 }
 
 // ADD
-export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy'>): Promise<string> {
+export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to ask a question.');
@@ -99,6 +100,8 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
         createdAt: Timestamp.now(),
         views: 0,
         votes: 0,
+        upvotes: 0,
+        downvotes: 0,
         answers: [],
         upvotedBy: [],
         downvotedBy: [],
@@ -227,6 +230,8 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
             upvotedBy: newUpvotedBy,
             downvotedBy: newDownvotedBy,
             votes: newVoteCount,
+            upvotes: newUpvotedBy.length,
+            downvotes: newDownvotedBy.length,
         });
     });
 }
