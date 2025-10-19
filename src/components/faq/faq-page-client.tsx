@@ -99,7 +99,7 @@ export function FaqPageClient() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
             <h2 className="text-3xl font-bold">{pageTitle}</h2>
-            {!loading && activeTab !== 'MostVoted' && <p className="text-muted-foreground text-lg">{totalCount} questions</p>}
+            {!loading && <p className="text-muted-foreground text-lg">{totalCount} questions</p>}
         </div>
         <div className="flex items-center gap-4">
           {user && <AskQuestion onQuestionAdded={fetchQuestions} />}
