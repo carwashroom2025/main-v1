@@ -1,3 +1,9 @@
+
+// 🔹 FIRESTORE MODULE ENTRY POINT
+// This file re-exports all Firestore collection handlers.
+// When adding new Firestore collections via AI, create a new file in this folder (e.g., forum.ts)
+// and export its functions here.
+
 export * from './activity';
 export * from './analytics';
 export * from './blog';
