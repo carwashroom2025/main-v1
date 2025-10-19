@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { BusinessDetailGallery } from '@/components/services/business-detail-gallery';
 import { Separator } from '@/components/ui/separator';
 import { BusinessDetailHeader } from '@/components/services/business-detail-header';
-import type { Business, Review } from '@/lib/types';
+import type { Business, Review, Category } from '@/lib/types';
 import { Timestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
 
@@ -55,13 +55,18 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
     createdAt: (business.createdAt as Timestamp).toDate().toISOString(),
   } as unknown as Business;
 
+  const serializableCategories = categories.map(category => ({
+    ...category,
+    createdAt: category.createdAt ? (category.createdAt as Timestamp).toDate().toISOString() : undefined,
+  })) as Category[];
+
 
   return (
     <>
     <title>{`${business.title} | Carwashroom`}</title>
     <div className="container py-8 md:py-12">
         <div className="mb-8">
-            <BusinessDetailHeader business={serializableBusiness} averageRating={averageRating} reviewCount={totalReviews} categories={categories} />
+            <BusinessDetailHeader business={serializableBusiness} averageRating={averageRating} reviewCount={totalReviews} categories={serializableCategories} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
