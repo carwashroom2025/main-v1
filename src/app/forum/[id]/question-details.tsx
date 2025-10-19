@@ -2,18 +2,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ThumbsUp, ThumbsDown, ArrowLeft } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, ArrowLeft, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Question, Answer } from '@/lib/types';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AnswerSection } from '@/components/faq/answer-section';
 import { formatDistanceToNow } from 'date-fns';
-import { voteOnQuestion, getQuestionWithoutIncrementingViews } from '@/lib/firebase/firestore';
+import { voteOnQuestion, getQuestionWithoutIncrementingViews, deleteQuestion } from '@/lib/firebase/firestore';
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type SerializableAnswer = Omit<Answer, 'createdAt'> & { createdAt: string };
 type SerializableQuestion = Omit<Question, 'createdAt' | 'answers'> & {
@@ -27,6 +38,8 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
   const { user } = useAuth();
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -54,7 +67,7 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
 
   const handleVote = async (type: 'up' | 'down') => {
     if (!user) {
-        toast({ title: "Login Required", description: "You must be logged in to vote.", variant: "destructive" });
+        router.push(`/login?redirect=/forum/${question.id}`);
         return;
     }
 
@@ -66,10 +79,31 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
     }
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+        await deleteQuestion(question.id);
+        toast({
+            title: "Question Deleted",
+            description: "The question has been successfully deleted.",
+        });
+        router.push('/forum');
+    } catch (error: any) {
+        toast({
+            title: "Error",
+            description: error.message || "Could not delete the question.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsAlertOpen(false);
+    }
+  };
+
   const hasUpvoted = user && (question.upvotedBy || []).includes(user.id);
   const hasDownvoted = user && (question.downvotedBy || []).includes(user.id);
+  const canDelete = user && (user.id === question.authorId || ['Moderator', 'Administrator'].includes(user.role));
 
   return (
+    <>
     <div className="container py-12 md:py-16 max-w-4xl">
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -113,11 +147,37 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
                     </div>
                 </div>
             </div>
+             {canDelete && (
+                <div className="mt-4">
+                    <Button variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => setIsAlertOpen(true)}>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Question
+                    </Button>
+                </div>
+            )}
           </div>
         </CardContent>
       </Card>
 
       <AnswerSection question={question} onAnswerChange={refreshQuestion} />
     </div>
+
+    <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this question and all of its answers.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">
+                Delete
+            </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

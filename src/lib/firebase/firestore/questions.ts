@@ -1,5 +1,4 @@
 
-
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import type { Question, Answer } from '../../types';
@@ -21,7 +20,7 @@ export async function getQuestions(
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
-    let orderByField: 'createdAt' | 'answerCount' | 'votes' | 'upvotes' = 'createdAt';
+    let orderByField: 'createdAt' | 'answerCount' | 'upvotes' = 'createdAt';
     let orderByDirection: 'desc' | 'asc' = 'desc';
 
     if (sortBy === 'Oldest') {
@@ -29,7 +28,7 @@ export async function getQuestions(
     } else if (sortBy === 'TopAnswers') {
         orderByField = 'answerCount';
     } else if (sortBy === 'TopRated') {
-        orderByField = 'votes';
+        orderByField = 'upvotes';
     }
 
     const countSnapshot = await getCountFromServer(questionsCol);
@@ -89,7 +88,7 @@ export async function getQuestionWithoutIncrementingViews(id: string): Promise<Q
 }
 
 // ADD
-export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'author' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount'>): Promise<string> {
+export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt' | 'views' | 'votes' | 'answers' | 'upvotedBy' | 'downvotedBy' | 'upvotes' | 'downvotes' | 'answerCount'>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to ask a question.');
@@ -102,7 +101,6 @@ export async function addQuestion(questionData: Omit<Question, 'id' | 'createdAt
         authorId: currentUser.id,
         createdAt: Timestamp.now(),
         views: 0,
-        votes: 0,
         upvotes: 0,
         downvotes: 0,
         answers: [],
@@ -132,7 +130,6 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
       authorId: currentUser.id,
       authorAvatarUrl: currentUser.avatarUrl || '',
       createdAt: Timestamp.now(),
-      votes: 0,
       upvotes: 0,
       downvotes: 0,
       accepted: false,
@@ -149,7 +146,7 @@ export async function addAnswer(questionId: string, body: string): Promise<void>
 // UPDATE
 export async function updateQuestion(id: string, questionData: Partial<Omit<Question, 'id'>>): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
+    if (!currentUser || !['Moderator', 'Administrator', 'Author'].includes(currentUser.role)) {
         throw new Error('You do not have permission to update questions.');
     }
     const questionDocRef = doc(db, 'questions', id);
@@ -171,8 +168,8 @@ export async function toggleAnswerAccepted(questionId: string, answerId: string)
   
       const questionData = questionDoc.data() as Question;
   
-      if (currentUser?.id !== questionData.authorId) {
-        throw new Error('Only the author of the question can accept an answer.');
+      if (currentUser?.id !== questionData.authorId && !['Moderator', 'Administrator', 'Author'].includes(currentUser?.role || '')) {
+        throw new Error('Only the question author or a moderator can accept an answer.');
       }
   
       let isAlreadyAccepted = false;
@@ -185,16 +182,15 @@ export async function toggleAnswerAccepted(questionId: string, answerId: string)
             return { ...answer, accepted: true };
           }
         }
-        // This is the important change: if we are accepting a new answer, un-accept the old ones.
-        return { ...answer, accepted: false };
+        return answer;
       });
   
+      // if un-accepting, just update
       if (isAlreadyAccepted) {
-        // If we just un-accepted an answer, we can just update with the new list.
         transaction.update(questionRef, { answers: newAnswers });
       } else {
-        // If we accepted a new answer, make sure all others are not accepted.
-        const finalAnswers = newAnswers.map(a => a.id === answerId ? a : {...a, accepted: false});
+        // if accepting, un-accept all others
+        const finalAnswers = newAnswers.map(a => (a.id === answerId ? a : { ...a, accepted: false }));
         transaction.update(questionRef, { answers: finalAnswers });
       }
     });
@@ -236,12 +232,10 @@ export async function voteOnQuestion(questionId: string, userId: string, voteTyp
         
         const newUpvotes = newUpvotedBy.length;
         const newDownvotes = newDownvotedBy.length;
-        const newVoteCount = newUpvotes - newDownvotes;
         
         transaction.update(questionRef, {
             upvotedBy: newUpvotedBy,
             downvotedBy: newDownvotedBy,
-            votes: newVoteCount,
             upvotes: newUpvotes,
             downvotes: newDownvotes,
         });
@@ -291,11 +285,8 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
 
         answer.upvotedBy = newUpvotedBy;
         answer.downvotedBy = newDownvotedBy;
-        const newUpvotes = newUpvotedBy.length;
-        const newDownvotes = newDownvotedBy.length;
-        answer.votes = newUpvotes - newDownvotes;
-        answer.upvotes = newUpvotes;
-        answer.downvotes = newDownvotes;
+        answer.upvotes = newUpvotedBy.length;
+        answer.downvotes = newDownvotedBy.length;
         
         const newAnswers = [...answers];
         newAnswers[answerIndex] = answer;
@@ -307,15 +298,26 @@ export async function voteOnAnswer(questionId: string, answerId: string, userId:
 // DELETE
 export async function deleteQuestion(id: string): Promise<void> {
     const currentUser = await getCurrentUser();
-    if (!currentUser || !['Moderator', 'Administrator'].includes(currentUser.role)) {
-        throw new Error('You do not have permission to delete questions.');
-    }
+    if (!currentUser) throw new Error('You must be logged in.');
+
     const questionDocRef = doc(db, 'questions', id);
+    const questionDoc = await getDoc(questionDocRef);
+    if (!questionDoc.exists()) throw new Error('Question not found.');
+
+    const questionData = questionDoc.data() as Question;
+    const canDelete = currentUser.id === questionData.authorId || ['Moderator', 'Administrator'].includes(currentUser.role);
+    if (!canDelete) {
+        throw new Error('You do not have permission to delete this question.');
+    }
+    
     await deleteDoc(questionDocRef);
-    await logActivity(`Moderator "${currentUser.name}" deleted a question.`, 'question', id, currentUser.id);
+    await logActivity(`User "${currentUser.name}" deleted a question: "${questionData.title}".`, 'question', id, currentUser.id);
 }
 
 export async function deleteAnswer(questionId: string, answerId: string): Promise<void> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error("You must be logged in.");
+
     const questionRef = doc(db, 'questions', questionId);
     
     await runTransaction(db, async (transaction) => {
@@ -326,6 +328,17 @@ export async function deleteAnswer(questionId: string, answerId: string): Promis
         
         const questionData = questionDoc.data() as Question;
         const answers = questionData.answers || [];
+        const answerToDelete = answers.find(a => a.id === answerId);
+
+        if (!answerToDelete) {
+            throw new Error("Answer not found.");
+        }
+
+        const canDelete = currentUser.id === answerToDelete.authorId || ['Moderator', 'Administrator'].includes(currentUser.role);
+        if (!canDelete) {
+            throw new Error("You don't have permission to delete this answer.");
+        }
+
         const updatedAnswers = answers.filter(a => a.id !== answerId);
         
         transaction.update(questionRef, {
@@ -333,4 +346,5 @@ export async function deleteAnswer(questionId: string, answerId: string): Promis
             answerCount: increment(-1)
         });
     });
+    await logActivity(`User "${currentUser.name}" deleted an answer.`, 'question', questionId, currentUser.id);
 }

@@ -2,9 +2,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ThumbsUp, ThumbsDown, CheckCircle } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, CheckCircle, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/auth-context';
@@ -12,8 +13,18 @@ import { useToast } from '@/hooks/use-toast';
 import type { Question, Answer } from '@/lib/types';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { addAnswer, toggleAnswerAccepted, voteOnAnswer } from '@/lib/firebase/firestore';
+import { addAnswer, toggleAnswerAccepted, voteOnAnswer, deleteAnswer } from '@/lib/firebase/firestore';
 import { cn } from '@/lib/utils';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type SerializableAnswer = Omit<Answer, 'createdAt'> & { createdAt: string };
 type SerializableQuestion = Omit<Question, 'createdAt' | 'answers'> & {
@@ -31,6 +42,10 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
   const { user } = useAuth();
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [answerToDelete, setAnswerToDelete] = useState<Answer | null>(null);
+  const router = useRouter();
+
 
   useEffect(() => {
       setIsClient(true);
@@ -39,7 +54,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
   const sortedAnswers = [...question.answers].sort((a, b) => {
     if (a.accepted && !b.accepted) return -1;
     if (!a.accepted && b.accepted) return 1;
-    if (a.votes !== b.votes) return b.votes - a.votes;
+    if (a.upvotes - a.downvotes !== b.upvotes - b.downvotes) return (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
@@ -47,11 +62,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
   const handleAnswerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      toast({
-        title: 'Authentication Error',
-        description: 'You must be logged in to post an answer.',
-        variant: 'destructive',
-      });
+      router.push(`/login?redirect=/forum/${question.id}`);
       return;
     }
 
@@ -83,10 +94,15 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
   };
 
   const handleAcceptAnswer = async (answerId: string) => {
-    if (!user || user.id !== question.authorId) {
+    if (!user) {
+        router.push(`/login?redirect=/forum/${question.id}`);
+        return;
+    }
+
+    if (user.id !== question.authorId && !['Moderator', 'Administrator', 'Author'].includes(user.role)) {
         toast({
             title: 'Permission Denied',
-            description: 'Only the author of the question can accept an answer.',
+            description: 'Only the question author or a moderator can accept an answer.',
             variant: 'destructive',
         });
         return;
@@ -111,7 +127,7 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
 
   const handleVote = async (answerId: string, type: 'up' | 'down') => {
     if (!user) {
-        toast({ title: "Login Required", description: "You must be logged in to vote.", variant: "destructive" });
+        router.push(`/login?redirect=/forum/${question.id}`);
         return;
     }
 
@@ -122,6 +138,38 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
         toast({ title: "Error", description: e.message, variant: "destructive" });
     }
   };
+  
+  const handleDeleteClick = (answer: Answer) => {
+    if (!user) {
+        router.push(`/login?redirect=/forum/${question.id}`);
+        return;
+    }
+    setAnswerToDelete(answer);
+    setIsAlertOpen(true);
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!answerToDelete) return;
+    try {
+        await deleteAnswer(question.id, answerToDelete.id);
+        toast({
+            title: "Answer Deleted",
+            description: "The answer has been successfully deleted.",
+        });
+        onAnswerChange();
+    } catch (error: any) {
+        console.error("Failed to delete answer:", error);
+        toast({
+            title: "Error",
+            description: error.message || "Failed to delete answer.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsAlertOpen(false);
+        setAnswerToDelete(null);
+    }
+  }
+
 
   return (
     <>
@@ -131,6 +179,9 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
         {sortedAnswers.map(answer => {
           const hasUpvoted = user && (answer.upvotedBy || []).includes(user.id);
           const hasDownvoted = user && (answer.downvotedBy || []).includes(user.id);
+          const canAccept = user && (user.id === question.authorId || ['Moderator', 'Administrator', 'Author'].includes(user.role));
+          const canDelete = user && (user.id === answer.authorId || ['Moderator', 'Administrator'].includes(user.role));
+
           return (
             <Card key={answer.id} className={answer.accepted ? "border-green-500" : ""}>
                 <CardContent className="p-6">
@@ -160,16 +211,22 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
                             <span className="font-medium">{answer.downvotes || 0}</span>
                         </div>
                     </div>
-                    {user && user.id === question.authorId && (
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="mt-3" 
-                        onClick={() => handleAcceptAnswer(answer.id)}
-                    >
-                        {answer.accepted ? 'Unmark as Accepted' : 'Mark as Accepted'}
-                    </Button>
-                    )}
+                     <div className="flex items-center gap-2 mt-2">
+                        {canAccept && (
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleAcceptAnswer(answer.id)}
+                        >
+                            {answer.accepted ? 'Unmark as Accepted' : 'Mark as Accepted'}
+                        </Button>
+                        )}
+                        {canDelete && (
+                            <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteClick(answer)}>
+                                <Trash2 className="h-4 w-4 mr-1" /> Delete
+                            </Button>
+                        )}
+                     </div>
                 </CardContent>
             </Card>
             )
@@ -202,6 +259,23 @@ export function AnswerSection({ question, onAnswerChange }: AnswerSectionProps) 
             </div>
         </div>
       )}
+      
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this answer.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">
+                Delete
+            </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
     </>
   );
 }
