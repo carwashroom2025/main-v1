@@ -92,14 +92,14 @@ export function FaqPageClient() {
     q.body.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  const pageTitle = activeTab === 'MostVoted' ? "Most Voted Questions" : "All Questions";
+  const pageTitle = activeTab === 'MostVoted' ? "Most Voted Questions" : activeTab === 'TopRated' ? "Top Rated Questions" : "All Questions";
 
   return (
     <div className="container py-12 md:py-16">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
             <h2 className="text-3xl font-bold">{pageTitle}</h2>
-            {!loading && <p className="text-muted-foreground text-lg">{totalCount} questions</p>}
+            <p className="text-muted-foreground text-lg">{totalCount} questions</p>
         </div>
         <div className="flex items-center gap-4">
           {user && <AskQuestion onQuestionAdded={fetchQuestions} />}
@@ -107,6 +107,7 @@ export function FaqPageClient() {
             <TabsList>
               <TabsTrigger value="Newest">Newest</TabsTrigger>
               <TabsTrigger value="MostVoted">Most Voted</TabsTrigger>
+              <TabsTrigger value="TopRated">Top Rated</TabsTrigger>
               <TabsTrigger value="Oldest">Oldest</TabsTrigger>
             </TabsList>
           </Tabs>

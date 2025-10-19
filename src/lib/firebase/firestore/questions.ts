@@ -14,20 +14,22 @@ export async function getQuestions(
     options: { 
         page?: number, 
         limit?: number, 
-        sortBy?: 'Newest' | 'Oldest' | 'MostVoted'
+        sortBy?: 'Newest' | 'Oldest' | 'MostVoted' | 'TopRated'
     } = {}
 ): Promise<{ questions: Question[], totalCount: number }> {
     const { page = 1, limit: itemsPerPage = 10, sortBy = 'Newest' } = options;
     const questionsCol = collection(db, 'questions');
     let q = query(questionsCol);
 
-    let orderByField: 'createdAt' | 'upvotes' = 'createdAt';
+    let orderByField: 'createdAt' | 'upvotes' | 'votes' = 'createdAt';
     let orderByDirection: 'desc' | 'asc' = 'desc';
 
     if (sortBy === 'Oldest') {
         orderByDirection = 'asc';
     } else if (sortBy === 'MostVoted') {
         orderByField = 'upvotes';
+    } else if (sortBy === 'TopRated') {
+        orderByField = 'votes';
     }
 
     const countSnapshot = await getCountFromServer(questionsCol);
