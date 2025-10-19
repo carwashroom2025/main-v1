@@ -653,7 +653,7 @@ export async function getPendingClaimForBusiness(businessId: string, userId: str
   
 export async function getPendingClaims(): Promise<BusinessClaim[]> {
     const claimsCol = collection(db, 'claims');
-    const q = query(claimsCol, where('status', '==', 'pending'), orderBy('createdAt', 'asc'));
+    const q = query(claimsCol, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BusinessClaim));
 }
