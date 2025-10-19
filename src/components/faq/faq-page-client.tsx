@@ -91,12 +91,14 @@ export function FaqPageClient() {
     q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     q.body.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+  const pageTitle = activeTab === 'MostVoted' ? "Most Voted Questions" : "All Questions";
 
   return (
     <div className="container py-12 md:py-16">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
-            <h2 className="text-3xl font-bold">All Questions</h2>
+            <h2 className="text-3xl font-bold">{pageTitle}</h2>
             {!loading && <p className="text-muted-foreground text-lg">{totalCount} questions</p>}
         </div>
         <div className="flex items-center gap-4">
