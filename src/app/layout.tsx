@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Space_Grotesk, Poppins } from 'next/font/google';
+import { Space_Grotesk, Poppins, Dancing_Script } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -24,6 +24,12 @@ const poppins = Poppins({
   weight: ['400', '500', '600', '700', '800', '900'],
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['400', '700'],
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings('seo') as SeoSettings;
 
@@ -41,7 +47,7 @@ export default async function RootLayout({
 }>) {
   
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${dancingScript.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>

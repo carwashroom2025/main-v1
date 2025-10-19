@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -7,15 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { vehicleBrands, vehicleTypes } from '@/lib/car-data';
-import { Car } from 'lucide-react';
-import Link from 'next/link';
 import { getCategories } from '@/lib/firebase/firestore';
 import type { Category } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
+import { vehicleBrands, vehicleTypes } from '@/lib/car-data';
+import { Send } from 'lucide-react';
 
 export function HeroTabs() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -57,57 +56,67 @@ export function HeroTabs() {
       router.push('/services');
     }
   };
+  
+  const handleCarSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const brand = formData.get('brand') as string;
+    const type = formData.get('type') as string;
+    
+    const params = new URLSearchParams();
+    if (brand) {
+      params.set('brand', brand);
+    }
+    if (type) {
+      params.set('type', type);
+    }
+    
+    router.push(`/cars?${params.toString()}`);
+  }
 
   return (
-    <Tabs defaultValue="services" className="w-full">
-      <TabsList className="group grid w-full grid-cols-2 bg-white/20 backdrop-blur-sm border-none text-white rounded-t-lg rounded-b-none p-2 h-auto transition-all duration-500">
-        <TabsTrigger value="services" className="data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground rounded-md transition-colors duration-500">Services</TabsTrigger>
-        <TabsTrigger value="cars" className="relative data-[state=active]:bg-primary/80 data-[state=active]:text-primary-foreground rounded-md transition-colors duration-500">
-          <Car className="absolute -left-8 top-1/2 -translate-y-1/2 h-5 w-5 opacity-0 -translate-x-4 group-data-[state=cars]:opacity-100 group-data-[state=cars]:translate-x-0 transition-all duration-500" />
-          Cars
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="services" className="bg-white/20 backdrop-blur-sm p-6 rounded-b-lg mt-0">
-          <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 sm:flex-row">
-              <div className="relative w-full">
-                  <Select name="categories">
-                      <SelectTrigger className="w-full text-card-foreground">
-                          <SelectValue placeholder="What service are you looking for?" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
-                          ))}
-                      </SelectContent>
-                  </Select>
-              </div>
-              <div className="relative w-full sm:w-auto">
-                  <Select name="country">
-                      <SelectTrigger id="country-select" className="w-full sm:w-[180px] text-card-foreground">
-                          <SelectValue placeholder="Country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="USA">USA</SelectItem>
-                          <SelectItem value="UK">UK</SelectItem>
-                          <SelectItem value="UAE">UAE</SelectItem>
-                          <SelectItem value="CANADA">CANADA</SelectItem>
-                          <SelectItem value="INDIA">INDIA</SelectItem>
-                          <SelectItem value="CHINA">CHINA</SelectItem>
-                          <SelectItem value="JAPAN">JAPAN</SelectItem>
-                      </SelectContent>
-                  </Select>
-              </div>
-              <Button size="lg" className="w-full sm:w-auto" type="submit">
-                  Search
-              </Button>
-          </form>
-      </TabsContent>
-      <TabsContent value="cars" className="bg-white/20 backdrop-blur-sm p-6 rounded-b-lg mt-0">
-            <form action="/cars" method="GET" className="flex w-full flex-col items-center gap-4 sm:flex-row">
+    <div className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 sm:flex-row p-4 border rounded-md">
+            <h3 className="font-bold text-lg text-card-foreground">Search Services</h3>
+            <div className="relative w-full">
+                <Select name="categories">
+                    <SelectTrigger className="w-full text-card-foreground bg-white">
+                        <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="relative w-full sm:w-auto">
+                <Select name="country">
+                    <SelectTrigger id="country-select" className="w-full sm:w-[180px] text-card-foreground bg-white">
+                        <SelectValue placeholder="Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="USA">USA</SelectItem>
+                        <SelectItem value="UK">UK</SelectItem>
+                        <SelectItem value="UAE">UAE</SelectItem>
+                        <SelectItem value="CANADA">CANADA</SelectItem>
+                        <SelectItem value="INDIA">INDIA</SelectItem>
+                        <SelectItem value="CHINA">CHINA</SelectItem>
+                        <SelectItem value="JAPAN">JAPAN</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <Button size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/80" type="submit">
+                <Send className="h-5 w-5" />
+            </Button>
+        </form>
+        <form onSubmit={handleCarSearch} className="flex w-full flex-col items-center gap-4 sm:flex-row p-4 border rounded-md">
+            <h3 className="font-bold text-lg text-card-foreground">Search Cars</h3>
               <div className="relative w-full">
                   <Select name="brand">
-                      <SelectTrigger className="w-full text-card-foreground">
-                          <SelectValue placeholder="Select Brand" />
+                      <SelectTrigger className="w-full text-card-foreground bg-white">
+                          <SelectValue placeholder="All Brands" />
                       </SelectTrigger>
                       <SelectContent>
                           {vehicleBrands.map((brand) => (
@@ -118,8 +127,8 @@ export function HeroTabs() {
               </div>
               <div className="relative w-full">
                     <Select name="type">
-                      <SelectTrigger className="w-full text-card-foreground">
-                          <SelectValue placeholder="Select Type" />
+                      <SelectTrigger className="w-full text-card-foreground bg-white">
+                          <SelectValue placeholder="All Types" />
                       </SelectTrigger>
                       <SelectContent>
                           {vehicleTypes.map((type) => (
@@ -128,11 +137,11 @@ export function HeroTabs() {
                       </SelectContent>
                   </Select>
               </div>
-              <Button size="lg" className="w-full sm:w-auto" type="submit">
-                  Search
+              <Button size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/80" type="submit">
+                   <Send className="h-5 w-5" />
               </Button>
           </form>
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 }

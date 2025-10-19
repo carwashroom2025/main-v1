@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), {
   ssr: false,
-  loading: () => <Skeleton className="w-full max-w-3xl h-[172px] bg-white/10" />,
+  loading: () => <Skeleton className="w-full max-w-3xl h-[88px] bg-white/10" />,
 });
 
 
@@ -41,13 +41,14 @@ export function Hero() {
         />
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
-        <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+        <h2 className="text-3xl md:text-4xl font-headline text-primary mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>Find Your Next Car & Service</h2>
+        <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
           Find Your Next Car & Service
         </h1>
         <p className="mt-4 max-w-2xl text-lg md:text-xl">
           The best way to find cars and services from local and trusted businesses.
         </p>
-        <div className="mt-16 w-full max-w-3xl">
+        <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
         </div>
       </div>
