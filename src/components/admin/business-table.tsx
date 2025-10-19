@@ -106,7 +106,6 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
             <TableHead>Category</TableHead>
             <TableHead>Location</TableHead>
             <TableHead>Approved</TableHead>
-            <TableHead>Verified</TableHead>
             <TableHead>Featured</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
@@ -122,11 +121,6 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
               <TableCell>
                 <Badge variant={business.status === 'approved' ? 'default' : 'secondary'}>
                   {business.status === 'approved' ? 'Yes' : 'No'}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant={business.verified ? 'default' : 'secondary'}>
-                  {business.verified ? 'Yes' : 'No'}
                 </Badge>
               </TableCell>
               <TableCell>
