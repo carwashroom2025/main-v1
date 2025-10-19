@@ -2,26 +2,33 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Star, Share2, Heart } from 'lucide-react';
+import { Star, Share2, Heart, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Business } from '@/lib/types';
+import type { Business, Category } from '@/lib/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { useAuth } from '@/context/auth-context';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { BusinessForm } from '@/components/admin/business-form';
+
 
 type BusinessDetailHeaderProps = {
   business: Business;
   averageRating: number;
   reviewCount: number;
+  categories: Category[];
 };
 
-export function BusinessDetailHeader({ business, averageRating, reviewCount }: BusinessDetailHeaderProps) {
+export function BusinessDetailHeader({ business, averageRating, reviewCount, categories }: BusinessDetailHeaderProps) {
     const { toast } = useToast();
     const { user, loading, toggleFavoriteBusiness } = useAuth();
     const router = useRouter();
     const isFavorite = user?.favoriteBusinesses?.includes(business.id);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    
+    const canEdit = user && (['Author', 'Admin', 'Owner'].includes(user.role) || user.id === business.ownerId);
 
     const handleShare = async () => {
         const shareData = {
@@ -82,36 +89,57 @@ export function BusinessDetailHeader({ business, averageRating, reviewCount }: B
         }
         toggleFavoriteBusiness(business.id);
       }
+      
+      const onDataChange = () => {
+        setIsFormOpen(false);
+        router.refresh();
+      }
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 className="text-4xl font-bold tracking-tight">{business.title}</h1>
-            <p className="mt-1 text-muted-foreground">{business.category}</p>
+    <>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 className="text-4xl font-bold tracking-tight">{business.title}</h1>
+                <p className="mt-1 text-muted-foreground">{business.category}</p>
+            </div>
+            <div className="flex items-center gap-2 mt-4 md:mt-0">
+                <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger>
+                    <div className="flex items-center gap-1 text-yellow-500">
+                        <Star className="h-5 w-5" />
+                        <span className="font-bold text-lg text-foreground">
+                        {averageRating.toFixed(1)}
+                        </span>
+                    </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                    <p>{reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}</p>
+                    </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
+                <Button variant="outline" size="icon" onClick={handleFavoriteClick} disabled={loading}>
+                    <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+                </Button>
+                <Button variant="outline" size="icon" onClick={handleShare}>
+                    <Share2 className="h-5 w-5" />
+                </Button>
+                {canEdit && (
+                    <Button variant="outline" size="icon" onClick={() => setIsFormOpen(true)}>
+                        <Edit className="h-5 w-5" />
+                    </Button>
+                )}
+            </div>
         </div>
-        <div className="flex items-center gap-4 mt-4 md:mt-0">
-             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <div className="flex items-center gap-1 text-yellow-500">
-                    <Star className="h-5 w-5" />
-                    <span className="font-bold text-lg text-foreground">
-                      {averageRating.toFixed(1)}
-                    </span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <Button variant="outline" size="icon" onClick={handleFavoriteClick} disabled={loading}>
-                <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
-            </Button>
-            <Button variant="outline" size="icon" onClick={handleShare}>
-                <Share2 className="h-5 w-5" />
-            </Button>
-        </div>
-    </div>
+        {canEdit && (
+            <BusinessForm 
+                isOpen={isFormOpen}
+                setIsOpen={setIsFormOpen}
+                business={business}
+                onDataChange={onDataChange}
+                categories={categories}
+            />
+        )}
+    </>
   );
 }

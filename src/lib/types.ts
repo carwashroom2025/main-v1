@@ -106,7 +106,7 @@ export type Business = {
     };
     mainImageUrl: string;
     galleryImageUrls: string[];
-    createdAt: Timestamp;
+    createdAt: Timestamp | string;
     verified: boolean; // Is it visible to the public?
     featured: boolean;
     status: 'pending' | 'approved' | 'rejected' | 'edit-pending';

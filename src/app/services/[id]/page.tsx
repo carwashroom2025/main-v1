@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getBusiness, getReviews } from '@/lib/firebase/firestore';
+import { getBusiness, getReviews, getCategories } from '@/lib/firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Phone,
@@ -33,7 +33,11 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
     notFound();
   }
 
-  const reviews = await getReviews(params.id);
+  const [reviews, categories] = await Promise.all([
+    getReviews(params.id),
+    getCategories()
+  ]);
+
   const totalReviews = reviews.length;
   const averageRating = totalReviews > 0
     ? reviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews
@@ -57,7 +61,7 @@ export default async function BusinessDetailPage({ params }: { params: { id: str
     <title>{`${business.title} | Carwashroom`}</title>
     <div className="container py-8 md:py-12">
         <div className="mb-8">
-            <BusinessDetailHeader business={serializableBusiness} averageRating={averageRating} reviewCount={totalReviews} />
+            <BusinessDetailHeader business={serializableBusiness} averageRating={averageRating} reviewCount={totalReviews} categories={categories} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
