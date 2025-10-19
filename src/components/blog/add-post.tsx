@@ -27,7 +27,7 @@ export function AddPost({ onPostAdded }: AddPostProps) {
         return <Button disabled className="w-32 h-10 animate-pulse"></Button>;
     }
     
-    const canAddPost = user && ['Author', 'Admin', 'Owner'].includes(user.role);
+    const canAddPost = user && ['Author', 'Moderator', 'Administrator'].includes(user.role);
 
     if (!canAddPost) {
         return null;
