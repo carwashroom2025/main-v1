@@ -80,6 +80,10 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
   };
 
   const handleDeleteConfirm = async () => {
+    if (!user) {
+        toast({ title: "Not Authenticated", description: "You must be logged in to delete a question.", variant: "destructive" });
+        return;
+    }
     try {
         await deleteQuestion(question.id);
         toast({
@@ -127,9 +131,9 @@ export function QuestionDetails({ initialQuestion }: { initialQuestion: Serializ
             <div className="flex justify-between items-center">
                 <div className="text-sm text-muted-foreground">
                 {isClient ? (
-                    <span>Asked {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
+                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span> {formatDistanceToNow(new Date(question.createdAt), { addSuffix: true })} &bull; {question.views} views</span>
                 ) : (
-                    <span>Asked... &bull; {question.views} views</span>
+                    <span>Asked by <span className="font-medium text-foreground">{question.author}</span>... &bull; {question.views} views</span>
                 )}
                 </div>
                 <div className="flex items-center gap-4">
