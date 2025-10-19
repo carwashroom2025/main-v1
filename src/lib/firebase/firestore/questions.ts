@@ -74,6 +74,7 @@ export async function getQuestion(id: string): Promise<Question | null> {
 
     } catch (e) {
         console.error("Transaction failed: ", e);
+        // If the transaction fails, fall back to a non-incrementing read
         return getQuestionWithoutIncrementingViews(id);
     }
 }
@@ -182,12 +183,15 @@ export async function toggleAnswerAccepted(questionId: string, answerId: string)
             return { ...answer, accepted: true };
           }
         }
+        // This is the important change: if we are accepting a new answer, un-accept the old ones.
         return { ...answer, accepted: false };
       });
   
       if (isAlreadyAccepted) {
+        // If we just un-accepted an answer, we can just update with the new list.
         transaction.update(questionRef, { answers: newAnswers });
       } else {
+        // If we accepted a new answer, make sure all others are not accepted.
         const finalAnswers = newAnswers.map(a => a.id === answerId ? a : {...a, accepted: false});
         transaction.update(questionRef, { answers: finalAnswers });
       }
