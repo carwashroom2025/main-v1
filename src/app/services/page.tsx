@@ -17,6 +17,7 @@ export default async function ServicesPage() {
   const serializableBusinessListings = businessListings.map(business => ({
     ...business,
     createdAt: toISODate(business.createdAt),
+    updatedAt: toISODate(business.updatedAt),
   }));
 
   const serializableCategories = categories.map(category => ({
@@ -30,6 +31,7 @@ export default async function ServicesPage() {
     return businesses.map(business => ({
         ...business,
         createdAt: toISODate(business.createdAt),
+        updatedAt: toISODate(business.updatedAt),
     }));
   };
 
