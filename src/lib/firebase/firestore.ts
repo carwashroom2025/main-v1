@@ -663,6 +663,7 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
     const claimRef = doc(db, 'claims', claimId);
 
     return runTransaction(db, async (transaction) => {
+        // --- READS ---
         const claimDoc = await transaction.get(claimRef);
         if (!claimDoc.exists() || claimDoc.data().status !== 'pending') {
             throw new Error("Claim not found or already processed.");
@@ -676,7 +677,9 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
         if (!businessDoc.exists()) {
             throw new Error("Business to be claimed does not exist.");
         }
+        const userDoc = await transaction.get(userRef);
 
+        // --- WRITES ---
         // Update claim
         transaction.update(claimRef, { 
             status: 'approved',
@@ -688,11 +691,10 @@ export async function approveClaim(claimId: string, adminId: string): Promise<vo
         transaction.update(businessRef, {
             ownerId: claimData.userId,
             ownerName: claimData.userName,
-            verified: true
+            verified: true,
         });
 
         // Update user role if they are currently a 'User'
-        const userDoc = await transaction.get(userRef);
         if (userDoc.exists() && userDoc.data().role === 'User') {
              transaction.update(userRef, {
                 role: 'Business Owner'
@@ -1400,3 +1402,4 @@ export async function getMonthlyUserRegistrations() {
         return [];
     }
 }
+
