@@ -466,11 +466,25 @@ export async function getAllBusinessesForAdmin(options?: {
         );
     }
     
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) {
+            return date.toMillis();
+        }
+        if (typeof date === 'object' && 'seconds' in date && typeof date.seconds === 'number') {
+            return new Timestamp(date.seconds, date.nanoseconds || 0).toMillis();
+        }
+        if (typeof date === 'string') {
+            return new Date(date).getTime();
+        }
+        return 0;
+    };
+
     // Apply sorting
     if (options?.sortBy === 'createdAt-asc') {
-        allMatchingDocs.sort((a, b) => ((a.createdAt as Timestamp)?.toMillis() || 0) - ((b.createdAt as Timestamp)?.toMillis() || 0));
+        allMatchingDocs.sort((a, b) => getTime(a.createdAt) - getTime(b.createdAt));
     } else {
-        allMatchingDocs.sort((a, b) => ((b.createdAt as Timestamp)?.toMillis() || 0) - ((a.createdAt as Timestamp)?.toMillis() || 0));
+        allMatchingDocs.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
     }
 
     const totalCount = allMatchingDocs.length;
