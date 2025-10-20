@@ -42,10 +42,12 @@ export function Hero() {
         />
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
-        <h2 className="text-3xl md:text-4xl text-primary mb-2" style={{ fontFamily: "var(--font-display)" }}>Find Your</h2>
-        <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
-          Next Cars & Services
-        </h1>
+        <div className="relative">
+            <h2 className="absolute -top-8 left-1/2 -translate-x-1/2 text-5xl md:text-7xl text-primary z-10 whitespace-nowrap" style={{ fontFamily: "var(--font-display)" }}>Find Your</h2>
+            <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
+            Next Cars & Services
+            </h1>
+        </div>
         <p className="mt-4 max-w-2xl text-lg md:text-xl">
           The best way to find cars and services from local and trusted businesses.
         </p>
@@ -58,16 +60,27 @@ export function Hero() {
                 transition={{ duration: 0.8, delay: 0.5 }}
             >
                 <svg
-                    className="h-10 w-10 text-white"
-                    viewBox="0 0 24 24"
+                    className="h-16 w-16 text-white"
+                    viewBox="0 0 100 100"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                    d="M25 25 C 40 70, 60 70, 75 25"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                >
-                  <path d="M12 5v14m0 0l-7-7m7 7l7-7" />
+                    className="arrow-path-simple"
+                    />
+                    <path
+                    d="M70 20 L 75 25 L 80 20"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="arrow-head-simple"
+                    />
                 </svg>
                 <p className="text-4xl text-white" style={{ fontFamily: "var(--font-display)" }}>
                     Or browse the selected categories
