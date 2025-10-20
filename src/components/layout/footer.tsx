@@ -48,17 +48,17 @@ function ClientFooterContent() {
                 </div>
             </div>
             <div className="flex space-x-2 items-center">
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="#"><Instagram className="h-5 w-5 text-[#E4405F]" /></Link>
+                <Button variant="ghost" asChild>
+                  <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><Instagram className="h-5 w-5" /> Instagram</Link>
                 </Button>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="#"><Facebook className="h-5 w-5 text-[#1877F2]" /></Link>
+                <Button variant="ghost" asChild>
+                  <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><Facebook className="h-5 w-5" /> Facebook</Link>
                 </Button>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="#"><Twitter className="h-5 w-5 text-[#1DA1F2]" /></Link>
+                <Button variant="ghost" asChild>
+                  <Link href="#" className="text-muted-foreground hover:text-[#1DA1F2]"><Twitter className="h-5 w-5" /> Twitter</Link>
                 </Button>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="#"><Linkedin className="h-5 w-5 text-[#0A66C2]" /></Link>
+                <Button variant="ghost" asChild>
+                  <Link href="#" className="text-muted-foreground hover:text-[#0A66C2]"><Linkedin className="h-5 w-5" /> Linkedin</Link>
                 </Button>
             </div>
         </div>
