@@ -26,16 +26,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, X } from 'lucide-react';
+import { ListCarButton } from '@/components/cars/list-car-button';
 
 const ITEMS_PER_PAGE = 9;
 
-export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicle[] }) {
+export function CarListingsClient({ 
+  initialVehicles,
+  fetchCarsAction
+}: { 
+  initialVehicles: Vehicle[],
+  fetchCarsAction: () => Promise<Vehicle[]> 
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  const [allVehicles] = useState<Vehicle[]>(initialVehicles);
-  const [loading] = useState(false);
+  const [allVehicles, setAllVehicles] = useState<Vehicle[]>(initialVehicles);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   
   const brand = searchParams.get('brand') || 'all';
@@ -52,6 +59,11 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
     }
     router.push(`${pathname}?${params.toString()}`);
   }, [searchParams, pathname, router]);
+
+  const onCarListed = async () => {
+    const updatedVehicles = await fetchCarsAction();
+    setAllVehicles(updatedVehicles);
+  };
 
   const handleFilterChange = (filterName: 'brand' | 'type' | 'year', value: string) => {
     updateURL(filterName, value);
@@ -93,6 +105,9 @@ export function CarListingsClient({ initialVehicles }: { initialVehicles: Vehicl
 
   return (
     <>
+      <div className="flex justify-end mb-8">
+        <ListCarButton onCarListed={onCarListed} />
+      </div>
       <Card className="mb-8">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">

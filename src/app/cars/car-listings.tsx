@@ -18,6 +18,11 @@ export default async function CarListings() {
     
   const initialVehicles = await fetchInitialCars();
 
+  const fetchCarsAction = async () => {
+    'use server';
+    return fetchInitialCars();
+  };
+
   function CarListingsSkeleton() {
     return (
         <>
@@ -36,7 +41,10 @@ export default async function CarListings() {
 
   return (
     <Suspense fallback={<CarListingsSkeleton />}>
-        <CarListingsClient initialVehicles={initialVehicles} />
+        <CarListingsClient 
+            initialVehicles={initialVehicles} 
+            fetchCarsAction={fetchCarsAction}
+        />
     </Suspense>
   );
 }
