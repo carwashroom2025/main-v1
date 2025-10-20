@@ -81,7 +81,7 @@ export function HeroTabs() {
         <TabsTrigger value="cars">Cars</TabsTrigger>
       </TabsList>
       <TabsContent value="services">
-        <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tr-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
+        <form onSubmit={handleServiceSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tr-lg bg-white/90 dark:bg-black/50 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
           <div className="relative w-full">
               <Select name="categories">
                   <SelectTrigger className="w-full text-card-foreground">
@@ -114,7 +114,7 @@ export function HeroTabs() {
         </form>
       </TabsContent>
       <TabsContent value="cars">
-          <form onSubmit={handleCarSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tl-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
+          <form onSubmit={handleCarSearch} className="flex w-full flex-col items-center gap-4 rounded-b-lg rounded-tl-lg bg-white/90 dark:bg-black/50 p-4 shadow-lg backdrop-blur-sm sm:flex-row">
               <div className="relative w-full">
                   <Select name="brand">
                       <SelectTrigger className="w-full text-card-foreground">
