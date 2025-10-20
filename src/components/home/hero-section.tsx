@@ -51,32 +51,8 @@ export function Hero() {
         <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
            <div className="mt-8 flex justify-center items-center gap-4">
-                <svg className="h-16 w-16 text-white" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <style>
-                    {`
-                        .s-arrow-path {
-                        stroke-dasharray: 250;
-                        stroke-dashoffset: 250;
-                        animation: s-arrow-draw 2s ease-out 0.5s forwards;
-                        }
-                        .s-arrow-head {
-                        animation: s-arrow-pulse 2s infinite ease-in-out 2.5s;
-                        }
-                        @keyframes s-arrow-draw {
-                        to {
-                            stroke-dashoffset: 0;
-                        }
-                        }
-                        @keyframes s-arrow-pulse {
-                        0%, 100% { transform: scale(1); }
-                        50% { transform: scale(1.15); }
-                        }
-                    `}
-                    </style>
-                    <path className="s-arrow-path" d="M35 20 C 85 20, 15 80, 65 80" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <g className="s-arrow-head" style={{ transformOrigin: '65px 80px' }}>
-                        <path d="M55 75 L 65 85 L 75 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </g>
+                <svg className="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5V19M12 19L7 14M12 19L17 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
