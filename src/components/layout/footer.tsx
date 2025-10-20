@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ChevronUp, MapPin } from 'lucide-react';
+import { ArrowRight, ChevronUp, MapPin, Twitter, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 function ClientFooterContent() {
@@ -47,19 +47,19 @@ function ClientFooterContent() {
                     <span>202 Delma House Building, King Faisal Street, Sharjah, UAE</span>
                 </div>
             </div>
-            <div className="flex space-x-6 items-center">
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                    <ArrowRight className="h-4 w-4 mr-2" /> INSTAGRAM
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                    <ArrowRight className="h-4 w-4 mr-2" /> FACEBOOK
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                    <ArrowRight className="h-4 w-4 mr-2" /> TWITTER
-                </Link>
-                <Link href="#" className="flex items-center text-muted-foreground hover:text-primary">
-                    <ArrowRight className="h-4 w-4 mr-2" /> LINKEDIN
-                </Link>
+            <div className="flex space-x-2 items-center">
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="#"><Instagram className="h-5 w-5 text-[#E4405F]" /></Link>
+                </Button>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="#"><Facebook className="h-5 w-5 text-[#1877F2]" /></Link>
+                </Button>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="#"><Twitter className="h-5 w-5 text-[#1DA1F2]" /></Link>
+                </Button>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="#"><Linkedin className="h-5 w-5 text-[#0A66C2]" /></Link>
+                </Button>
             </div>
         </div>
 
