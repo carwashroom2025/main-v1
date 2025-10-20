@@ -50,24 +50,15 @@ export function Hero() {
         </p>
         <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
-           <div className="mt-8 text-center">
+           <div className="mt-8 flex justify-center items-center gap-4">
+                <svg className="h-16 w-16 text-white" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.5 12.5C25 35 62.5 27.5 50 50C37.5 72.5 60 85 75 87.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M85 75L75 87.5L65 77.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M85 75L70 80L75 87.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
                 </p>
-                 <svg 
-                    className="mx-auto mt-2 h-auto w-16 text-destructive"
-                    viewBox="0 0 64 64" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg"
-                 >
-                    <path 
-                        d="M32 54C42.8 54 54 42.8 54 32C54 21.2 42.8 10 32 10C21.2 10 10 21.2 10 32C10 38.9333 13.9333 46.8 20 50" 
-                        stroke="currentColor" 
-                        strokeWidth="4" 
-                        strokeLinecap="round"
-                    />
-                    <path d="M24 45L20 50L15 45" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
             </div>
         </div>
       </div>
