@@ -43,7 +43,6 @@ export function Hero() {
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
         <div className="relative">
-            <h2 className="absolute -top-8 left-1/2 -translate-x-1/2 text-5xl md:text-7xl text-primary z-10 whitespace-nowrap" style={{ fontFamily: "var(--font-display)" }}>Find Your</h2>
             <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
             Next Cars & Services
             </h1>
