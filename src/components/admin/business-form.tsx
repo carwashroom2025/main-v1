@@ -271,8 +271,8 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)}>
+                    <Label htmlFor="category">Category <span className="text-destructive">*</span></Label>
+                    <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)} required>
                         <SelectTrigger id="category">
                             <SelectValue placeholder="Select category" />
                         </SelectTrigger>
@@ -284,8 +284,8 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     </Select>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" name="description" value={formData.description || ''} onChange={handleChange} />
+                    <Label htmlFor="description">Description <span className="text-destructive">*</span></Label>
+                    <Textarea id="description" name="description" value={formData.description || ''} onChange={handleChange} required />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -295,8 +295,8 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
               <AccordionContent className="space-y-4 pt-4">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="location">Country</Label>
-                        <Select name="location" value={formData.location || ''} onValueChange={(value) => handleSelectChange('location', value)}>
+                        <Label htmlFor="location">Country <span className="text-destructive">*</span></Label>
+                        <Select name="location" value={formData.location || ''} onValueChange={(value) => handleSelectChange('location', value)} required>
                             <SelectTrigger id="location">
                                 <SelectValue placeholder="Select country" />
                             </SelectTrigger>
@@ -308,16 +308,16 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="address">Full Address</Label>
-                        <Input id="address" name="address" value={formData.address || ''} onChange={handleChange} />
+                        <Label htmlFor="address">Full Address <span className="text-destructive">*</span></Label>
+                        <Input id="address" name="address" value={formData.address || ''} onChange={handleChange} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" name="phone" value={formData.contact?.phone || ''} onChange={handleContactChange} />
+                        <Label htmlFor="phone">Phone <span className="text-destructive">*</span></Label>
+                        <Input id="phone" name="phone" value={formData.contact?.phone || ''} onChange={handleContactChange} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" value={formData.contact?.email || ''} onChange={handleContactChange} />
+                        <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
+                        <Input id="email" name="email" type="email" value={formData.contact?.email || ''} onChange={handleContactChange} required />
                     </div>
                     <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="website">Website</Label>
@@ -332,12 +332,12 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
               <AccordionContent className="space-y-6 pt-4">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="openingHours">Opening Hours</Label>
-                        <Input id="openingHours" name="openingHours" type="time" value={formData.openingHours || ''} onChange={handleChange} />
+                        <Label htmlFor="openingHours">Opening Hours <span className="text-destructive">*</span></Label>
+                        <Input id="openingHours" name="openingHours" type="time" value={formData.openingHours || ''} onChange={handleChange} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="closingHours">Closing Hours</Label>
-                        <Input id="closingHours" name="closingHours" type="time" value={formData.closingHours || ''} onChange={handleChange} />
+                        <Label htmlFor="closingHours">Closing Hours <span className="text-destructive">*</span></Label>
+                        <Input id="closingHours" name="closingHours" type="time" value={formData.closingHours || ''} onChange={handleChange} required />
                     </div>
                  </div>
                  <div className="space-y-4">
@@ -392,7 +392,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
               <AccordionTrigger>Images</AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div className="space-y-2">
-                    <Label>Main Image</Label>
+                    <Label>Main Image <span className="text-destructive">*</span></Label>
                     {formData.mainImageUrl ? (
                         <div className="relative group w-48 h-32">
                            <Image src={formData.mainImageUrl} alt="Main business" fill className="object-cover rounded-md" />
@@ -401,7 +401,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     ) : (
                         <div>
                             <label htmlFor="main-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"><Upload className="h-8 w-8 text-muted-foreground" /><span className="text-sm text-muted-foreground">Click to upload</span></label>
-                            <Input id="main-image-upload" type="file" className="sr-only" onChange={(e) => handleImageUpload(e, 'mainImageUrl')} accept="image/*" />
+                            <Input id="main-image-upload" type="file" className="sr-only" onChange={(e) => handleImageUpload(e, 'mainImageUrl')} accept="image/*" required={!business?.mainImageUrl}/>
                         </div>
                     )}
                 </div>
