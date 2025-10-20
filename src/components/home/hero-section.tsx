@@ -6,6 +6,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const HeroTabs = dynamic(() => import('./hero-tabs').then(mod => mod.HeroTabs), {
   ssr: false,
@@ -50,14 +51,28 @@ export function Hero() {
         </p>
         <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
-           <div className="mt-8 flex justify-center items-center gap-4">
-                <svg className="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 5V19M12 19L7 14M12 19L17 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <motion.div
+                className="mt-20 flex justify-center items-center gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+            >
+                <svg
+                    className="h-10 w-10 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                  <path d="M12 5v14m0 0l-7-7m7 7l7-7" />
                 </svg>
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
                 </p>
-            </div>
+            </motion.div>
         </div>
       </div>
     </section>
