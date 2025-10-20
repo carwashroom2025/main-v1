@@ -76,7 +76,7 @@ export function HeroTabs() {
 
   return (
     <Tabs defaultValue="services" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 bg-transparent/20 backdrop-blur-sm">
+      <TabsList className="grid w-full grid-cols-2 bg-white/20 dark:bg-black/20 backdrop-blur-sm">
         <TabsTrigger value="services">Services</TabsTrigger>
         <TabsTrigger value="cars">Cars</TabsTrigger>
       </TabsList>
