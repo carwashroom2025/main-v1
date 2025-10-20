@@ -55,16 +55,15 @@ export function Hero() {
           <HeroTabs />
             <motion.div
                 className="mt-20 flex justify-center items-center gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatType: 'loop' }}
             >
                 <svg
-                    className="h-16 w-16 text-white"
+                    className="h-10 w-10 text-white"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     xmlns="http://www.w3.org/2000/svg"
