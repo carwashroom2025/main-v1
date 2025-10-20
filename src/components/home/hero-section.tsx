@@ -52,32 +52,31 @@ export function Hero() {
           <HeroTabs />
            <div className="mt-8 flex justify-center items-center gap-4">
                 <svg className="h-16 w-16 text-white" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <style>
+                    <style>
                     {`
-                      .arrow-path {
-                        stroke-dasharray: 200;
-                        stroke-dashoffset: 200;
-                        animation: draw-arrow 2s ease-out forwards;
-                      }
-                      .arrow-head {
-                        animation: pulse-head 2s infinite ease-in-out 2s;
-                      }
-                      @keyframes draw-arrow {
-                        to {
-                          stroke-dashoffset: 0;
+                        .s-arrow-path {
+                        stroke-dasharray: 250;
+                        stroke-dashoffset: 250;
+                        animation: s-arrow-draw 2s ease-out 0.5s forwards;
                         }
-                      }
-                      @keyframes pulse-head {
-                        0%, 100% { transform: scale(1); opacity: 1; }
-                        50% { transform: scale(1.1); opacity: 0.8; }
-                      }
+                        .s-arrow-head {
+                        animation: s-arrow-pulse 2s infinite ease-in-out 2.5s;
+                        }
+                        @keyframes s-arrow-draw {
+                        to {
+                            stroke-dashoffset: 0;
+                        }
+                        }
+                        @keyframes s-arrow-pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.15); }
+                        }
                     `}
-                  </style>
-                  <g className="arrow-head" style={{ transformOrigin: '71.6667px 85px' }}>
-                    <path d="M71.6667 85V56.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M60 73.3333L71.6667 85L83.3333 73.3333" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </g>
-                  <path className="arrow-path" d="M36.6667 21.6667C30 35 44.1667 60 70.8333 60C97.5 60 81.6667 35 71.6667 21.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </style>
+                    <path className="s-arrow-path" d="M35 20 C 85 20, 15 80, 65 80" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <g className="s-arrow-head" style={{ transformOrigin: '65px 80px' }}>
+                        <path d="M55 75 L 65 85 L 75 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </g>
                 </svg>
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
