@@ -44,7 +44,7 @@ export function Hero() {
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-4">
         <div className="relative">
             <h1 className="text-4xl font-bold tracking-tight md:text-6xl uppercase">
-            Next Cars & Services
+            FIND YOUR NEXT CARS & SERVICES
             </h1>
         </div>
         <p className="mt-4 max-w-2xl text-lg md:text-xl">
