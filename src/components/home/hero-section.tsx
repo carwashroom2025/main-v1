@@ -54,17 +54,19 @@ export function Hero() {
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
                 </p>
-                 <svg
-                    className="mx-auto mt-2 h-auto w-12 text-destructive"
-                    viewBox="0 0 100 50"
-                    fill="none"
+                 <svg 
+                    className="mx-auto mt-2 h-auto w-16 text-destructive"
+                    viewBox="0 0 64 64" 
+                    fill="none" 
                     xmlns="http://www.w3.org/2000/svg"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M10 10 C 30 50, 70 50, 90 10 L 80 20 M 90 10 L 100 20" />
+                 >
+                    <path 
+                        d="M32 54C42.8 54 54 42.8 54 32C54 21.2 42.8 10 32 10C21.2 10 10 21.2 10 32C10 38.9333 13.9333 46.8 20 50" 
+                        stroke="currentColor" 
+                        strokeWidth="4" 
+                        strokeLinecap="round"
+                    />
+                    <path d="M24 45L20 50L15 45" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
             </div>
         </div>
