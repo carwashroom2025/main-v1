@@ -141,6 +141,7 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
                         <SelectValue placeholder="Sort by..." />
                     </SelectTrigger>
                     <SelectContent>
+                        <SelectItem value="rating-desc">Rating (High to Low)</SelectItem>
                         <SelectItem value="name-asc">Name (A-Z)</SelectItem>
                         <SelectItem value="name-desc">Name (Z-A)</SelectItem>
                         <SelectItem value="date-desc">Newest</SelectItem>

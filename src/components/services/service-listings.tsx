@@ -71,6 +71,9 @@ export function ServiceListings({
       return categoryMatch && countryMatch && searchMatch && ratingMatch;
     })
     .sort((a, b) => {
+      if (sortBy === 'rating-desc') {
+        return (b.averageRating || 0) - (a.averageRating || 0);
+      }
       if (sortBy === 'name-asc') {
         return a.title.localeCompare(b.title);
       }
