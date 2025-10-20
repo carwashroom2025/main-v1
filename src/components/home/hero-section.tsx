@@ -53,7 +53,7 @@ export function Hero() {
         <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
             <motion.div
-                className="mt-20 flex justify-center items-center gap-4"
+                className="mt-40 flex justify-center items-center gap-4"
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, repeatType: 'loop' }}
             >
