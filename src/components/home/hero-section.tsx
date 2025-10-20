@@ -71,7 +71,6 @@ export function Hero() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="arrow-path-simple"
                     />
                     <path
                     d="M70 20 L 75 25 L 80 20"
@@ -79,7 +78,6 @@ export function Hero() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="arrow-head-simple"
                     />
                 </svg>
                 <p className="text-4xl text-white" style={{ fontFamily: "var(--font-display)" }}>
