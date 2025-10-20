@@ -50,6 +50,23 @@ export function Hero() {
         </p>
         <div className="mt-12 w-full max-w-4xl">
           <HeroTabs />
+           <div className="mt-8 text-center">
+                <p className="font-display text-2xl text-white">
+                    Or browse the selected categories
+                </p>
+                 <svg
+                    className="mx-auto mt-2 h-auto w-12 text-destructive"
+                    viewBox="0 0 100 50"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M10 10 C 30 50, 70 50, 90 10 L 80 20 M 90 10 L 100 20" />
+                </svg>
+            </div>
         </div>
       </div>
       <div className={cn(
