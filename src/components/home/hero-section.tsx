@@ -52,9 +52,9 @@ export function Hero() {
           <HeroTabs />
            <div className="mt-8 flex justify-center items-center gap-4">
                 <svg className="h-16 w-16 text-white" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.5 12.5C25 35 62.5 27.5 50 50C37.5 72.5 60 85 75 87.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M85 75L75 87.5L65 77.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M85 75L70 80L75 87.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M36.6667 21.6667C30 35 44.1667 60 70.8333 60C97.5 60 81.6667 35 71.6667 21.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M71.6667 85V56.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M60 73.3333L71.6667 85L83.3333 73.3333" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 <p className="font-display text-2xl text-white">
                     Or browse the selected categories
