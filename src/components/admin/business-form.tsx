@@ -267,7 +267,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
               <AccordionTrigger>Basic Information</AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div className="space-y-2">
-                    <Label htmlFor="title">Business Name</Label>
+                    <Label htmlFor="title">Business Name <span className="text-destructive">*</span></Label>
                     <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required />
                 </div>
                 <div className="space-y-2">
