@@ -36,7 +36,6 @@ export function ServiceListings({
   const selectedCategories = searchParams.get('categories')?.split(',') || [];
   const selectedCountry = searchParams.get('country') || 'all';
   const sortBy = searchParams.get('sort') || 'date-desc';
-  const ratingFilter = searchParams.get('rating') || 'all';
 
   const onBusinessListed = async () => {
     const updatedListings = await fetchBusinessesAction();
@@ -65,10 +64,7 @@ export function ServiceListings({
       const searchMatch =
         !searchTerm ||
         listing.title.toLowerCase().startsWith(searchTerm.toLowerCase());
-      const ratingMatch = 
-        ratingFilter === 'all' ||
-        (listing.averageRating || 0) >= Number(ratingFilter);
-      return categoryMatch && countryMatch && searchMatch && ratingMatch;
+      return categoryMatch && countryMatch && searchMatch;
     })
     .sort((a, b) => {
       if (sortBy === 'rating-desc') {

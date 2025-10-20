@@ -18,7 +18,6 @@ import { ListBusiness } from '@/components/services/list-business';
 import { Card, CardContent } from '../ui/card';
 
 const locations = ['USA', 'UK', 'UAE', 'CANADA', 'INDIA', 'CHINA', 'JAPAN'];
-const ratings = ['5', '4', '3', '2', '1'];
 
 type ServiceFiltersProps = {
   categories: Category[];
@@ -34,7 +33,6 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
   const selectedCategories = searchParams.get('categories') || 'all';
   const selectedCountry = searchParams.get('country') || 'all';
   const sortBy = searchParams.get('sort') || 'date-desc';
-  const ratingFilter = searchParams.get('rating') || 'all';
 
   const [sortedCategories, setSortedCategories] = useState<Category[]>([]);
 
@@ -62,7 +60,7 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
     }
   }, [categories]);
 
-  const handleFilterChange = (filterName: 'categories' | 'country' | 'sort' | 'rating', value: string) => {
+  const handleFilterChange = (filterName: 'categories' | 'country' | 'sort', value: string) => {
     updateURL(filterName, value);
   };
   
@@ -81,7 +79,7 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
         </div>
         <Card>
             <CardContent className="p-6">
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
                     <div className="relative lg:col-span-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -124,17 +122,6 @@ export function ServiceFilters({ categories, onBusinessListed }: ServiceFiltersP
                         <SelectItem key={loc} value={loc}>{loc}</SelectItem>
                         ))}
                     </SelectContent>
-                    </Select>
-                    <Select value={ratingFilter} onValueChange={(value) => handleFilterChange('rating', value)}>
-                      <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Rating" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Any Rating</SelectItem>
-                        {ratings.map((rating) => (
-                          <SelectItem key={rating} value={rating}>{rating} Star{Number(rating) > 1 ? 's' : ''} & Up</SelectItem>
-                        ))}
-                      </SelectContent>
                     </Select>
                     <Select value={sortBy} onValueChange={(value) => handleFilterChange('sort', value)}>
                     <SelectTrigger className="h-12">
