@@ -214,6 +214,14 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please enter a business name.',
+        variant: 'destructive',
+      });
+      return;
+    }
     setLoading(true);
 
     try {
