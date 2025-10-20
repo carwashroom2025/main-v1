@@ -69,7 +69,7 @@ export function Hero() {
                 >
                   <path d="M12 5v14m0 0l-7-7m7 7l7-7" />
                 </svg>
-                <p className="text-2xl text-white" style={{ fontFamily: "var(--font-display)" }}>
+                <p className="text-4xl text-white" style={{ fontFamily: "var(--font-display)" }}>
                     Or browse the selected categories
                 </p>
             </motion.div>
