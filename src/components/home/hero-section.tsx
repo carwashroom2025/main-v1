@@ -61,24 +61,16 @@ export function Hero() {
             >
                 <svg
                     className="h-16 w-16 text-white"
-                    viewBox="0 0 100 100"
+                    viewBox="0 0 24 24"
                     fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     xmlns="http://www.w3.org/2000/svg"
                 >
-                    <path
-                    d="M25 25 C 40 70, 60 70, 75 25"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    />
-                    <path
-                    d="M70 20 L 75 25 L 80 20"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    />
+                    <path d="M12 5v14" />
+                    <path d="m19 12-7 7-7-7" />
                 </svg>
                 <p className="text-4xl text-white" style={{ fontFamily: "var(--font-display)" }}>
                     Or browse the selected categories
