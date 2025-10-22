@@ -74,16 +74,8 @@ function ClientFooterContent() {
             <li><Link href="/terms" className="hover:text-primary">Terms</Link></li>
           </ul>
         </div>
-
-        <div className="md:col-span-2 space-y-4">
-          <h4 className="font-bold text-lg">Quick Links</h4>
-          <ul className="space-y-3 text-muted-foreground">
-            <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
-            <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
-            <li><Link href="/forum" className="hover:text-primary">Forum</Link></li>
-            <li><Link href="/services" className="hover:text-primary">Services</Link></li>
-          </ul>
-        </div>
+        
+        <div className="md:col-span-4"></div>
 
         <div className="mt-16 border-t pt-8 text-center text-sm text-muted-foreground md:col-span-12">
             <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
