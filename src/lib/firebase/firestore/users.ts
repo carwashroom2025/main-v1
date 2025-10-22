@@ -14,6 +14,15 @@ export async function getUsers(): Promise<User[]> {
     return usersList;
 }
 
+export async function getUserById(id: string): Promise<User | null> {
+    const userDocRef = doc(db, 'users', id);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+        return { id: userDoc.id, ...userDoc.data() } as User;
+    }
+    return null;
+}
+
 // UPDATE
 export async function updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<void> {
     const userDocRef = doc(db, 'users', id);

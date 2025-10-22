@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { getPendingBusinesses, updateBusiness, logActivity } from '@/lib/firebase/firestore';
+import { getPendingBusinesses, updateBusiness, logActivity, getUserById, updateUser } from '@/lib/firebase/firestore';
 import type { Business } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -65,6 +65,19 @@ export default function ApproveListingsPage() {
     try {
         if (action === 'approve') {
             await updateBusiness(selectedBusiness.id, { status: 'approved', verified: true });
+            
+            // Check owner role and update if necessary
+            if (selectedBusiness.ownerId) {
+                const owner = await getUserById(selectedBusiness.ownerId);
+                if (owner && owner.role === 'User') {
+                    await updateUser(selectedBusiness.ownerId, { role: 'Business Owner' });
+                    toast({
+                        title: 'User Role Updated',
+                        description: `"${owner.name}" has been promoted to Business Owner.`,
+                    });
+                }
+            }
+
             await logActivity(`Admin "${user.name}" approved business listing: "${selectedBusiness.title}".`, 'listing', selectedBusiness.id, user.id);
             toast({
                 title: "Business Approved",
@@ -150,7 +163,7 @@ export default function ApproveListingsPage() {
                     </div>
                   </div>
                    <p className="text-sm text-muted-foreground mt-1">
-                        Submitted by {business.ownerName} on {format(business.createdAt.toDate(), 'PPP')}
+                        Submitted by {business.ownerName} on {format(new Date(business.createdAt as string), 'PPP')}
                     </p>
                   <p className="text-sm mt-2 line-clamp-2">{business.description}</p>
                 </div>
