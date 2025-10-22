@@ -22,60 +22,6 @@
       "imageHint": "car mechanic"
     },
     {
-      "id": "category-car-wash",
-      "description": "Car being washed with soap and water",
-      "imageUrl": "https://imgs.search.brave.com/zB1jpwxX0Lew1awKk-zsiRwGOSpasAcQ8NitJ5f-rXk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA3LzMzLzc2LzU1/LzM2MF9GXzczMzc2/NTU2Nl9PY0hTMEc5/Tjd1dWZNUzZIODdp/N0JmdE5TV09PVHhU/ci5qcGc",
-      "imageHint": "car wash"
-    },
-    {
-      "id": "category-service-centers",
-      "description": "A professional auto service center",
-      "imageUrl": "https://images.unsplash.com/photo-1613214149922-f1809c99b414?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwc2VydmljZXxlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car service"
-    },
-    {
-      "id": "category-car-dealers",
-      "description": "A car dealership showroom",
-      "imageUrl": "https://images.unsplash.com/photo-1548618607-fe992dd33eff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXIlMjBzaG93cm9vbXxlbnwwfHx8fDE3NTg2OTc2MDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car showroom"
-    },
-    {
-      "id": "category-showrooms",
-      "description": "A modern car showroom with luxury cars",
-      "imageUrl": "https://images.unsplash.com/photo-1647200528173-8ba041352ff2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwc2hvd3Jvb218ZW58MHx8fHwxNzU4Njk3NjAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car showroom"
-    },
-    {
-      "id": "category-used-cars",
-      "description": "A lot of used cars for sale",
-      "imageUrl": "https://imgs.search.brave.com/jBz4h3cqY7WqUKenj8otfUdPzNzjJodoRl6YBxQtXHk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzEzLzY0LzY1LzQ1/LzM2MF9GXzEzNjQ2/NTQ1NzhfandPV0Ew/RXJheTc1dVZDN3Fk/U09WVlpxSTVQZVlK/OFEuanBn",
-      "imageHint": "car lot"
-    },
-    {
-      "id": "category-car-insurance",
-      "description": "A person signing an insurance document with a car key and model car on the desk.",
-      "imageUrl": "https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dn",
-      "imageHint": "car insurance"
-    },
-    {
-      "id": "category-rent-a-car",
-      "description": "A person receiving car keys for a rental car",
-      "imageUrl": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZW50YWwlMjBjYXJ8ZW58MHx8fHwxNzU4ODE5NjEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "rental car"
-    },
-    {
-      "id": "category-spare-parts",
-      "description": "Shelves with various car spare parts",
-      "imageUrl": "https://images.unsplash.com/photo-1429772011165-0c2e054367b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYXIlMjBwYXJ0c3xlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car parts"
-    },
-    {
-      "id": "category-modifiers",
-      "description": "Mechanic working on a car engine.",
-      "imageUrl": "https://images.unsplash.com/photo-1648438048841-79c1de22b81e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjYXIlMjBtb2RpZmljYXRpb258ZW58MHx8fHwxNzU4ODE5NjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car modification"
-    },
-    {
       "id": "business-1",
       "description": "The storefront of a premium auto detailer",
       "imageUrl": "https://images.unsplash.com/photo-1619431856706-ca2cc58258f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdXRvJTIwZGV0YWlsaW5nfGVufDB8fHx8MTc1ODU4MjQ1NHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -338,12 +284,6 @@
       "description": "A placeholder map of a city.",
       "imageUrl": "https://images.unsplash.com/photo-1717343823307-973d0903d222?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODU4MzIxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city map"
-    },
-    {
-      "id": "others-category",
-      "description": "Man washing a car",
-      "imageUrl": "https://images.unsplash.com/photo-1633990308758-b26aada5804e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXIlMjB0b29sc3xlbnwwfHx8fDE3NTg4MTk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car tools"
     },
     {
       "id": "404-car",

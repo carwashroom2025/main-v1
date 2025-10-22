@@ -1,13 +1,8 @@
 
-
-'use client';
-
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { getCategories } from '@/lib/firebase/firestore';
 import type { Category } from '@/lib/types';
-import { useEffect, useState } from 'react';
-import { Skeleton } from '../ui/skeleton';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 import Image from 'next/image';
 
@@ -24,29 +19,19 @@ const categoryImageMap: { [key: string]: string } = {
   'Other Services': 'others-category',
 };
 
-export function AllServices() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchCategories() {
-        const categoriesFromDb = await getCategories();
+export async function AllServices() {
+  const categoriesFromDb = await getCategories();
         
-        const otherServicesCategory = categoriesFromDb.find(c => c.name === 'Other Services');
-        const sortedCategories = categoriesFromDb
-            .filter(c => c.name !== 'Other Services')
-            .sort((a, b) => a.name.localeCompare(b.name));
+  const otherServicesCategory = categoriesFromDb.find(c => c.name === 'Other Services');
+  const sortedCategories = categoriesFromDb
+      .filter(c => c.name !== 'Other Services')
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-        if (otherServicesCategory) {
-            sortedCategories.push(otherServicesCategory);
-        }
-
-        setCategories(sortedCategories);
-        setLoading(false);
-    }
-    fetchCategories();
-  }, []);
-
+  if (otherServicesCategory) {
+      sortedCategories.push(otherServicesCategory);
+  }
+  
+  const categories = sortedCategories;
 
   return (
     <section className="py-12 md:py-24 bg-background">
@@ -59,38 +44,32 @@ export function AllServices() {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {loading ? (
-             Array.from({ length: 10 }).map((_, i) => (
-                <Skeleton key={i} className="w-full h-48 rounded-lg" />
-             ))
-          ) : (
-            categories.map((category) => {
-                const categoryUrl = `/services?categories=${encodeURIComponent(category.name)}`;
-                const imageId = categoryImageMap[category.name];
-                const image = PlaceHolderImages.find(img => img.id === imageId);
+          {categories.map((category) => {
+              const categoryUrl = `/services?categories=${encodeURIComponent(category.name)}`;
+              const imageId = categoryImageMap[category.name];
+              const image = category.imageUrl || PlaceHolderImages.find(img => img.id === imageId)?.imageUrl;
 
-                return (
-                    <Link href={categoryUrl} key={category.id} className="group relative block rounded-lg overflow-hidden h-48 transition-all duration-300">
-                        {image && (
-                             <Image 
-                                src={image.imageUrl} 
-                                alt={category.name} 
-                                fill 
-                                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                                data-ai-hint={image.imageHint}
-                            />
-                        )}
-                        <div className="absolute inset-0 bg-black/50 transition-colors group-hover:bg-black/70" />
-                        <div className="absolute bottom-0 left-0 p-4">
-                            <h3 className="font-semibold text-lg text-white">{category.name}</h3>
-                        </div>
-                         <div className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                            <ArrowRight className="h-6 w-6" />
-                        </div>
-                    </Link>
-                );
-            })
-          )}
+              return (
+                  <Link href={categoryUrl} key={category.id} className="group relative block rounded-lg overflow-hidden h-48 transition-all duration-300">
+                      {image && (
+                           <Image 
+                              src={image} 
+                              alt={category.name} 
+                              fill 
+                              className="object-cover transition-transform duration-300 group-hover:scale-110"
+                              data-ai-hint={PlaceHolderImages.find(img => img.id === imageId)?.imageHint}
+                          />
+                      )}
+                      <div className="absolute inset-0 bg-black/50 transition-colors group-hover:bg-black/70" />
+                      <div className="absolute bottom-0 left-0 p-4">
+                          <h3 className="font-semibold text-lg text-white">{category.name}</h3>
+                      </div>
+                       <div className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ArrowRight className="h-6 w-6" />
+                      </div>
+                  </Link>
+              );
+          })}
         </div>
       </div>
     </section>
