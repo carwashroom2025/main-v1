@@ -23,6 +23,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Timestamp } from 'firebase/firestore';
 
 export default function ApproveListingsPage() {
   const [pendingBusinesses, setPendingBusinesses] = useState<Business[]>([]);
@@ -117,6 +118,14 @@ export default function ApproveListingsPage() {
     }
   }
 
+  const getDate = (timestamp: Timestamp | string | undefined) => {
+    if (!timestamp) return new Date();
+    if (timestamp instanceof Timestamp) {
+        return timestamp.toDate();
+    }
+    return new Date(timestamp);
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -163,7 +172,7 @@ export default function ApproveListingsPage() {
                     </div>
                   </div>
                    <p className="text-sm text-muted-foreground mt-1">
-                        Submitted by {business.ownerName} on {format(new Date(business.createdAt as string), 'PPP')}
+                        Submitted by {business.ownerName} on {format(getDate(business.createdAt), 'PPP')}
                     </p>
                   <p className="text-sm mt-2 line-clamp-2">{business.description}</p>
                 </div>
