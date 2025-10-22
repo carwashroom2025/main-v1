@@ -105,7 +105,7 @@ function ClientFooterContent() {
 
         <div className="md:col-span-3 md:col-start-7 space-y-4">
           <h4 className="font-bold text-lg">Social Links</h4>
-          <div className="flex space-x-2 items-center">
+          <div className="flex flex-col space-y-2 items-start">
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><InstagramIcon className="h-5 w-5" /> Instagram</Link>
                 </Button>
@@ -124,7 +124,7 @@ function ClientFooterContent() {
             </div>
         </div>
 
-        <div className="md:col-span-3 space-y-4">
+        <div className="md:col-span-2 md:col-start-11 space-y-4">
           <h4 className="font-bold text-lg">Carwashroom</h4>
           <ul className="space-y-3 text-muted-foreground">
             <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
