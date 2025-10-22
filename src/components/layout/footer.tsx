@@ -3,8 +3,19 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ChevronUp, MapPin, Twitter, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { ArrowRight, ChevronUp, MapPin, X, Facebook, Instagram, Youtube, Twitter } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+// A simple SVG icon for TikTok since it's not in lucide-react
+const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M16 4h4v4" />
+        <path d="M12 20v-9" />
+        <path d="M8 20v-9" />
+        <path d="M20 8c0-4.4-3.6-8-8-8S4 3.6 4 8c0 2.4 1.1 4.5 2.8 5.9L4 20h8l-2.8-6.1c.5-.1.9-.2 1.4-.2 4.4 0 8-3.6 8-8Z" />
+    </svg>
+);
+
 
 function ClientFooterContent() {
     const [isVisible, setIsVisible] = useState(false);
@@ -55,10 +66,13 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><Facebook className="h-5 w-5" /> Facebook</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#1DA1F2]"><Twitter className="h-5 w-5" /> Twitter</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /> X</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#0A66C2]"><Linkedin className="h-5 w-5" /> Linkedin</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-[#000000] dark:hover:text-white"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
+                </Button>
+                 <Button variant="ghost" asChild>
+                  <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><Youtube className="h-5 w-5" /> YouTube</Link>
                 </Button>
             </div>
         </div>
