@@ -99,9 +99,7 @@ function ClientFooterContent() {
             </div>
         </div>
 
-        <div className="md:col-span-1"></div>
-
-        <div className="md:col-span-2 space-y-4">
+        <div className="md:col-start-8 md:col-span-2 space-y-4">
           <h4 className="font-bold text-lg">Carwashroom</h4>
           <ul className="space-y-3 text-muted-foreground">
             <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
@@ -111,8 +109,6 @@ function ClientFooterContent() {
           </ul>
         </div>
         
-        <div className="md:col-span-4"></div>
-
         <div className="mt-16 border-t pt-8 text-center text-sm text-muted-foreground md:col-span-12">
             <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
             <p className="mt-2">
