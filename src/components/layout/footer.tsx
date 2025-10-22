@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ChevronUp, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
+import { ChevronUp, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
@@ -51,6 +51,15 @@ const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+);
+
+
 function ClientFooterContent() {
     const [isVisible, setIsVisible] = useState(false);
   
@@ -92,9 +101,31 @@ function ClientFooterContent() {
                     <span>202 Delma House Building, King Faisal Street, Sharjah, UAE</span>
                 </div>
             </div>
+        </div>
+
+        <div className="md:col-span-3 md:col-start-7 space-y-4">
+          <h4 className="font-bold text-lg">Quick Links</h4>
+          <ul className="space-y-3 text-muted-foreground">
+            <li><Link href="/services" className="hover:text-primary">Services</Link></li>
+            <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
+            <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
+            <li><Link href="/forum" className="hover:text-primary">Forum</Link></li>
+          </ul>
+        </div>
+
+        <div className="md:col-span-3 space-y-4">
+          <h4 className="font-bold text-lg">Carwashroom</h4>
+          <ul className="space-y-3 text-muted-foreground">
+            <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
+            <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
+          </ul>
+        </div>
+        
+        <div className="mt-16 border-t pt-8 md:col-span-12 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex space-x-2 items-center">
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><Instagram className="h-5 w-5" /> Instagram</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><InstagramIcon className="h-5 w-5" /> Instagram</Link>
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><FacebookIcon className="h-5 w-5" /> Facebook</Link>
@@ -109,30 +140,20 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><YoutubeIcon className="h-5 w-5" /> YouTube</Link>
                 </Button>
             </div>
-        </div>
-
-        <div className="md:col-start-11 md:col-span-2 space-y-4">
-          <h4 className="font-bold text-lg">Carwashroom</h4>
-          <ul className="space-y-3 text-muted-foreground">
-            <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
-            <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
-            <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-          </ul>
-        </div>
-        
-        <div className="mt-16 border-t pt-8 text-center text-sm text-muted-foreground md:col-span-12">
-            <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
-            <p className="mt-2">
-                Made with ❤️ by{' '}
-                <a
-                    href="https://codeuxe.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary"
-                >
-                    Codeuxe
-                </a>
-            </p>
+            <div className="text-sm text-muted-foreground text-center md:text-right">
+                <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
+                <p className="mt-2">
+                    Made with ❤️ by{' '}
+                    <a
+                        href="https://codeuxe.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-primary"
+                    >
+                        Codeuxe
+                    </a>
+                </p>
+            </div>
         </div>
 
         {isVisible && (
