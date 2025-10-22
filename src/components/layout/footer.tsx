@@ -91,7 +91,7 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /> X</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-[#000000] dark:hover:text-white"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
                 </Button>
                  <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><Youtube className="h-5 w-5" /> YouTube</Link>
@@ -99,7 +99,7 @@ function ClientFooterContent() {
             </div>
         </div>
 
-        <div className="md:col-start-8 md:col-span-2 space-y-4">
+        <div className="md:col-start-11 md:col-span-2 space-y-4">
           <h4 className="font-bold text-lg">Carwashroom</h4>
           <ul className="space-y-3 text-muted-foreground">
             <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
