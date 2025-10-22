@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1227" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
         <g clipPath="url(#clip0_1_2)">
             <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" fill="currentColor"/>
         </g>
@@ -104,26 +104,8 @@ function ClientFooterContent() {
         </div>
 
         <div className="md:col-span-3 md:col-start-7 space-y-4">
-          <h4 className="font-bold text-lg">Quick Links</h4>
-          <ul className="space-y-3 text-muted-foreground">
-            <li><Link href="/services" className="hover:text-primary">Services</Link></li>
-            <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
-            <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
-            <li><Link href="/forum" className="hover:text-primary">Forum</Link></li>
-          </ul>
-        </div>
-
-        <div className="md:col-span-3 space-y-4">
-          <h4 className="font-bold text-lg">Carwashroom</h4>
-          <ul className="space-y-3 text-muted-foreground">
-            <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
-            <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
-            <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-          </ul>
-        </div>
-        
-        <div className="mt-16 border-t pt-8 md:col-span-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex space-x-2 items-center">
+          <h4 className="font-bold text-lg">Social Links</h4>
+          <div className="flex space-x-2 items-center">
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><InstagramIcon className="h-5 w-5" /> Instagram</Link>
                 </Button>
@@ -140,6 +122,18 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><YoutubeIcon className="h-5 w-5" /> YouTube</Link>
                 </Button>
             </div>
+        </div>
+
+        <div className="md:col-span-3 space-y-4">
+          <h4 className="font-bold text-lg">Carwashroom</h4>
+          <ul className="space-y-3 text-muted-foreground">
+            <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
+            <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
+          </ul>
+        </div>
+        
+        <div className="mt-16 border-t pt-8 md:col-span-12 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-sm text-muted-foreground text-center md:text-right">
                 <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
                 <p className="mt-2">
