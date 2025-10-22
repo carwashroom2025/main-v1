@@ -228,11 +228,11 @@ export async function updateBusiness(id: string, businessData: Partial<Omit<Busi
         dataToUpdate.verified = false;
     }
 
-    if (dataToUpdate.mainImageUrl === undefined) {
-        dataToUpdate.mainImageUrl = '';
+    if (businessData.mainImageUrl !== undefined) {
+        dataToUpdate.mainImageUrl = businessData.mainImageUrl;
     }
-    if (dataToUpdate.galleryImageUrls === undefined) {
-        dataToUpdate.galleryImageUrls = [];
+    if (businessData.galleryImageUrls !== undefined) {
+        dataToUpdate.galleryImageUrls = businessData.galleryImageUrls;
     }
 
     dataToUpdate.updatedAt = serverTimestamp();
