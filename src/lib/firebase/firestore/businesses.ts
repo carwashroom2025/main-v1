@@ -107,7 +107,18 @@ export async function getPendingBusinesses(): Promise<Business[]> {
     const q = query(businessesCol, where('status', 'in', ['pending', 'edit-pending']));
     const businessesSnapshot = await getDocs(q);
     const businessesList = businessesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Business));
-    return businessesList.sort((a, b) => ((b.createdAt as Timestamp)?.toMillis() || 0) - ((a.createdAt as Timestamp)?.toMillis() || 0));
+    
+    const getTime = (date: any): number => {
+        if (!date) return 0;
+        if (date instanceof Timestamp) return date.toMillis();
+        if (typeof date === 'string') return new Date(date).getTime();
+        if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
+            return new Timestamp(date.seconds, date.nanoseconds).toMillis();
+        }
+        return 0;
+    };
+
+    return businessesList.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt));
 }
 
 export async function getFeaturedBusinesses(count?: number): Promise<Business[]> {
