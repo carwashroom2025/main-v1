@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronUp, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
         <g clipPath="url(#clip0_1_2)">
-            <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
+            <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" fill="currentColor"/>
         </g>
         <defs>
             <clipPath id="clip0_1_2">
@@ -18,7 +19,6 @@ const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
         </defs>
     </svg>
 );
-
 
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -38,6 +38,18 @@ const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg style={{fillRule:"evenodd",clipRule:"evenodd",strokeLinejoin:"round",strokeMiterlimit:2}} version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M374.245,285.825l14.104,-91.961l-88.233,0l0,-59.677c0,-25.159 12.325,-49.682 51.845,-49.682l40.117,0l0,-78.291c0,0 -36.408,-6.214 -71.214,-6.214c-72.67,0 -120.165,44.042 -120.165,123.775l0,70.089l-80.777,0l0,91.961l80.777,0l0,222.31c16.197,2.542 32.798,3.865 49.709,3.865c16.911,0 33.512,-1.323 49.708,-3.865l0,-222.31l74.129,0Z" style={{fill:"currentColor",fillRule:"nonzero"}}/>
+    </svg>
+);
+
+const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M50,52H14C7.4,52,2,46.6,2,40V24c0-6.6,5.4-12,12-12h36c6.6,0,12,5.4,12,12v16C62,46.6,56.6,52,50,52z" fill="#C2191E"/>
+        <polygon points="24,42 24,22 44,32  " fill="#FFFFFF"/>
+    </svg>
+);
 
 function ClientFooterContent() {
     const [isVisible, setIsVisible] = useState(false);
@@ -85,7 +97,7 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><Instagram className="h-5 w-5" /> Instagram</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><Facebook className="h-5 w-5" /> Facebook</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><FacebookIcon className="h-5 w-5" /> Facebook</Link>
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /> X</Link>
@@ -94,7 +106,7 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#000000] dark:hover:text-white"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
                 </Button>
                  <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><Youtube className="h-5 w-5" /> YouTube</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-[#FF0000]"><YoutubeIcon className="h-5 w-5" /> YouTube</Link>
                 </Button>
             </div>
         </div>
@@ -105,7 +117,6 @@ function ClientFooterContent() {
             <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
             <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
             <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="hover:text-primary">Terms</Link></li>
           </ul>
         </div>
         
