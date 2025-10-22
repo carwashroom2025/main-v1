@@ -3,8 +3,22 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ChevronUp, MapPin, X, Facebook, Instagram, Youtube, Twitter } from 'lucide-react';
+import { ChevronUp, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
+        <g clipPath="url(#clip0_1_2)">
+            <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
+        </g>
+        <defs>
+            <clipPath id="clip0_1_2">
+                <rect width="1200" height="1227" fill="white"/>
+            </clipPath>
+        </defs>
+    </svg>
+);
+
 
 // A simple SVG icon for TikTok since it's not in lucide-react
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -66,7 +80,7 @@ function ClientFooterContent() {
                   <Link href="#" className="text-muted-foreground hover:text-[#1877F2]"><Facebook className="h-5 w-5" /> Facebook</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /> X</Link>
+                  <Link href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /> X</Link>
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#000000] dark:hover:text-white"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
