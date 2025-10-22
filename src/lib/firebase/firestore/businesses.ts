@@ -1,4 +1,5 @@
 
+
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc } from 'firebase/firestore';
 import type { Business, Review } from '../../types';
@@ -183,7 +184,7 @@ export async function getBusiness(id: string): Promise<Business | null> {
 }
 
 // ADD
-export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<string> {
+export async function addBusiness(businessData: Partial<Omit<Business, 'id'>>): Promise<string> {
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         throw new Error('You must be logged in to add a business.');
@@ -193,6 +194,8 @@ export async function addBusiness(businessData: Omit<Business, 'id'>): Promise<s
     
     const newBusinessData = {
       ...businessData,
+      mainImageUrl: businessData.mainImageUrl || '',
+      galleryImageUrls: businessData.galleryImageUrls || [],
       ownerId: currentUser.id,
       ownerName: currentUser.name,
       status: businessData.status || (isAdminOrAuthor ? 'approved' : 'pending'),
