@@ -104,8 +104,8 @@ function ClientFooterContent() {
         </div>
 
         <div className="md:col-span-3 md:col-start-7 space-y-4">
-          <h4 className="font-bold text-lg">Social Links</h4>
-          <div className="flex flex-col space-y-2 items-start">
+            <h4 className="font-bold text-lg">Social Links</h4>
+            <div className="flex flex-col space-y-2 items-start">
                 <Button variant="ghost" asChild>
                   <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><InstagramIcon className="h-5 w-5" /> Instagram</Link>
                 </Button>
@@ -125,16 +125,16 @@ function ClientFooterContent() {
         </div>
 
         <div className="md:col-span-2 md:col-start-11 space-y-4">
-          <h4 className="font-bold text-lg">Carwashroom</h4>
-          <ul className="space-y-3 text-muted-foreground">
-            <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
-            <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
-            <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-          </ul>
+            <Image src="/logo.png" alt="Carwashroom Logo" width={150} height={40} />
+            <ul className="space-y-3 text-muted-foreground">
+                <li><Link href="/about" className="hover:text-primary">About Company</Link></li>
+                <li><Link href="/contact" className="hover:text-primary">Contact Us</Link></li>
+                <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
+            </ul>
         </div>
         
-        <div className="mt-16 border-t pt-8 md:col-span-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-sm text-muted-foreground text-center md:text-right">
+        <div className="mt-16 border-t pt-8 md:col-span-12 flex flex-col md:flex-row justify-center items-center gap-6">
+            <div className="text-sm text-muted-foreground text-center">
                 <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
                 <p className="mt-2">
                     Made with ❤️ by{' '}
