@@ -85,9 +85,7 @@ function ClientFooterContent() {
     return (
       <>
         <div className="md:col-span-5 space-y-6">
-            <div className="mb-4">
-              <Image src="/logo.png" alt="Carwashroom Logo" width={200} height={50} />
-            </div>
+            <h4 className="font-bold text-lg">Carwashroom</h4>
             <h3 className="text-xl font-bold uppercase tracking-wider">
             Unleash The Road Ahead;<br/> Your Next Car Awaits
             </h3>
@@ -172,7 +170,7 @@ export function Footer() {
 
   return (
       <footer className="relative border-t bg-card text-card-foreground overflow-hidden">
-        <div className="container py-16 relative z-10">
+        <div className="container py-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {isClient ? <ClientFooterContent /> : null}
           </div>
