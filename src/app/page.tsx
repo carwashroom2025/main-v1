@@ -7,6 +7,8 @@ import { AllServices } from '@/components/home/all-services';
 import { RecentBlogPosts } from '@/components/home/recent-blog-posts';
 import { AnimatedSection } from '@/components/shared/animated-section';
 
+export const revalidate = 60;
+
 export default function Home() {
   return (
     <>
