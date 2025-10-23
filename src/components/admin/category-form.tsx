@@ -120,7 +120,7 @@ export function CategoryForm({ isOpen, setIsOpen, category, onDataChange }: Cate
               <Label>Image</Label>
               {formData.imageUrl ? (
                   <div className="relative group w-full h-32">
-                     <Image src={formData.imageUrl} alt={formData.name || 'Category image'} fill className="object-cover rounded-md" />
+                     <Image src={formData.imageUrl} alt={formData.name || 'Category image'} width={460} height={128} className="object-cover rounded-md" />
                      <Button
                          type="button"
                          variant="destructive"

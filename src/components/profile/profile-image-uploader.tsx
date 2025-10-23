@@ -62,11 +62,11 @@ export function ProfileImageUploader({ user, onAvatarChange }: ProfileImageUploa
   };
 
   return (
-    <div className="relative group w-20 h-20">
-      <Avatar className="h-20 w-20">
-        <AvatarImage src={user.avatarUrl} alt={user.name} />
+    <div className="relative group w-24 h-24">
+      <Avatar className="h-24 w-24">
+        <AvatarImage src={user.avatarUrl} alt={user.name} width={96} height={96} />
         <AvatarFallback>
-          <UserIcon className="h-10 w-10 text-muted-foreground" />
+          <UserIcon className="h-12 w-12 text-muted-foreground" />
         </AvatarFallback>
       </Avatar>
       <label
@@ -74,9 +74,9 @@ export function ProfileImageUploader({ user, onAvatarChange }: ProfileImageUploa
         className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
       >
         {isUploading ? (
-          <Loader2 className="h-6 w-6 text-white animate-spin" />
+          <Loader2 className="h-8 w-8 text-white animate-spin" />
         ) : (
-          <Edit className="h-6 w-6 text-white" />
+          <Edit className="h-8 w-8 text-white" />
         )}
       </label>
       <Input

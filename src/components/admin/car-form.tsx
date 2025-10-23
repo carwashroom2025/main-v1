@@ -333,7 +333,7 @@ export function CarForm({ isOpen, setIsOpen, vehicle, onDataChange }: CarFormPro
                            <div className="flex flex-wrap gap-2">
                                 {(formData.imageUrls || []).map(url => (
                                     <div key={url} className="relative group w-24 h-24">
-                                        <Image src={url} alt="Vehicle image" fill className="object-cover rounded-md" />
+                                        <Image src={url} alt="Vehicle image" width={96} height={96} className="object-cover rounded-md" />
                                         <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeImage(url)}><X className="h-3 w-3" /></Button>
                                     </div>
                                 ))}

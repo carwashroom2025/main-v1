@@ -399,7 +399,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     <Label>Main Image <span className="text-destructive">*</span></Label>
                     {formData.mainImageUrl ? (
                         <div className="relative group w-48 h-32">
-                           <Image src={formData.mainImageUrl} alt="Main business" fill className="object-cover rounded-md" />
+                           <Image src={formData.mainImageUrl} alt="Main business" width={192} height={128} className="object-cover rounded-md" />
                            <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => removeImage(formData.mainImageUrl!, 'mainImageUrl')}><X className="h-4 w-4" /></Button>
                         </div>
                     ) : (
@@ -414,7 +414,7 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
                     <div className="flex flex-wrap gap-2">
                         {(formData.galleryImageUrls || []).map(url => (
                             <div key={url} className="relative group w-24 h-24">
-                                <Image src={url} alt="Gallery image" fill className="object-cover rounded-md" />
+                                <Image src={url} alt="Gallery image" width={96} height={96} className="object-cover rounded-md" />
                                 <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeImage(url, 'galleryImageUrls')}><X className="h-3 w-3" /></Button>
                             </div>
                         ))}

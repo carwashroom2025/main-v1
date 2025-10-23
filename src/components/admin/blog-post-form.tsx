@@ -223,7 +223,7 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
                     <Label>Featured Image</Label>
                      {formData.imageUrl ? (
                         <div className="relative group w-48 h-32">
-                           <Image src={formData.imageUrl} alt="Featured Image" fill className="object-cover rounded-md" />
+                           <Image src={formData.imageUrl} alt="Featured Image" width={192} height={128} className="object-cover rounded-md" />
                            <Button
                                type="button"
                                variant="destructive"
