@@ -91,7 +91,7 @@ function ClientFooterContent() {
             </h3>
             <div className="space-y-2">
                 <p className="text-3xl font-bold text-primary">+0552405099</p>
-                <p className="text-xl text-primary">ask@carwashroom.net</p>
+                <a href="mailto:ask@carwashroom.net" className="text-xl text-primary hover:underline">ask@carwashroom.net</a>
                 <div className="flex items-start text-muted-foreground pt-2">
                     <MapPin className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-1"/>
                     <span>202 Delma House Building, King Faisal Street, Sharjah, UAE</span>
@@ -120,11 +120,11 @@ function ClientFooterContent() {
         
         <div className="md:col-span-12 mt-8 flex flex-col items-center gap-6">
             <div className="flex items-center gap-6">
-                 <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><InstagramIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><FacebookIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><XIcon className="h-5 w-5" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><TikTokIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><YoutubeIcon className="h-6 w-6" /></a>
+                 <a href="http://instagram.com/carwashroomnet" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><InstagramIcon className="h-6 w-6" /></a>
+                <a href="https://www.facebook.com/carwashroom" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><FacebookIcon className="h-6 w-6" /></a>
+                <a href="https://x.com/carwashroom" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><XIcon className="h-5 w-5" /></a>
+                <a href="https://www.tiktok.com/@carwashroom" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><TikTokIcon className="h-6 w-6" /></a>
+                <a href="https://www.youtube.com/@carwashroomnet" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><YoutubeIcon className="h-6 w-6" /></a>
             </div>
             <Separator className="w-full max-w-lg" />
             <div className="text-sm text-muted-foreground text-center">
