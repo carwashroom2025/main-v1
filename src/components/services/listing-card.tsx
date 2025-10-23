@@ -28,7 +28,7 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   const truncatedDescription =
     listing.description.length > 120
-      ? `${listing.description.substring(0, 120)}...`
+      ? `${'``'}...`
       : listing.description;
 
   return (

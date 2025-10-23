@@ -36,6 +36,7 @@ export function Hero() {
           src="/hero.webp"
           alt="Hero background image of a car"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
           data-ai-hint="car"
