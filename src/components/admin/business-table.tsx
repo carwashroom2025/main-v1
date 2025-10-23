@@ -49,6 +49,7 @@ type BusinessTableProps = {
 export function BusinessTable({ businesses, onDataChange, featuredCount, categories }: BusinessTableProps) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [isDeleteSelectedAlertOpen, setIsDeleteSelectedAlertOpen] = useState(false);
     const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
     const [businessToDelete, setBusinessToDelete] = useState<Business | null>(null);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -107,6 +108,7 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
     }
 
     const handleDeleteSelected = async () => {
+        if (selectedIds.length === 0) return;
         try {
             await deleteMultipleBusinesses(selectedIds);
             toast({
@@ -122,6 +124,8 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
                 description: "Failed to delete selected businesses. Please try again.",
                 variant: "destructive",
             });
+        } finally {
+            setIsDeleteSelectedAlertOpen(false);
         }
     }
 
@@ -129,7 +133,7 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
     <>
     <div className="flex justify-end mb-4 gap-2">
         {selectedIds.length > 0 && (
-            <Button variant="destructive" onClick={handleDeleteSelected}>
+            <Button variant="destructive" onClick={() => setIsDeleteSelectedAlertOpen(true)}>
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete Selected ({selectedIds.length})
             </Button>
@@ -231,6 +235,21 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
             <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+
+    <AlertDialog open={isDeleteSelectedAlertOpen} onOpenChange={setIsDeleteSelectedAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the {selectedIds.length} selected businesses.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteSelected}>Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
