@@ -41,8 +41,7 @@ const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" xmlns="http://www
-.w3.org/2000/svg" {...props}>
+    <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" {...props}>
         <path d="M50,52H14C7.4,52,2,46.6,2,40V24c0-6.6,5.4-12,12-12h36c6.6,0,12,5.4,12,12v16C62,46.6,56.6,52,50,52z" fill="#C2191E"/>
         <polygon points="24,42 24,22 44,32  " fill="#FFFFFF"/>
     </svg>
@@ -117,7 +116,6 @@ function ClientFooterContent() {
         </div>
         
         <div className="md:col-span-12 mt-8 flex flex-col items-center gap-6">
-             <Image src="/logo.png" alt="Carwashroom logo" width={180} height={40} />
             <div className="flex items-center gap-6">
                  <a href="#" className="text-muted-foreground hover:text-foreground"><InstagramIcon className="h-6 w-6" /></a>
                 <a href="#" className="text-muted-foreground hover:text-foreground"><FacebookIcon className="h-6 w-6" /></a>
