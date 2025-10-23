@@ -105,6 +105,7 @@ function ClientFooterContent() {
                 <li><Link href="/services" className="hover:text-primary">Services</Link></li>
                 <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
                 <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
+                <li><Link href="/services" className="hover:text-primary">List Your Service</Link></li>
             </ul>
         </div>
         

@@ -1,27 +1,6 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-1",
-      "title": "Find Your Perfect Ride",
-      "description": "Explore thousands of new and used cars from trusted dealers.",
-      "imageUrl": "https://images.unsplash.com/photo-1707399720697-b1d1502fac58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcG9ydHMlMjBjYXJ8ZW58MHx8fHwxNzU4NTg3NjU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "sports car"
-    },
-    {
-      "id": "hero-2",
-      "title": "Quality Service Guaranteed",
-      "description": "Connect with top-rated mechanics and service centers near you.",
-      "imageUrl": "https://images.unsplash.com/photo-1471540161297-5ddd90d98af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBjYXJ8ZW58MHx8fHwxNzU4NTgyNDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "modern car"
-    },
-    {
-      "id": "hero-3",
-      "title": "Your Car, Your Way",
-      "description": "From detailing to modifications, find every service you need.",
-      "imageUrl": "https://images.unsplash.com/photo-1599474151975-1f978922fa02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjBtZWNoYW5pY3xlbnwwfHx8fDE3NTg1ODI0NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "car mechanic"
-    },
-    {
       "id": "business-1",
       "description": "The storefront of a premium auto detailer",
       "imageUrl": "https://images.unsplash.com/photo-1619431856706-ca2cc58258f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhdXRvJTIwZGV0YWlsaW5nfGVufDB8fHx8MTc1ODU4MjQ1NHww&ixlib=rb-4.1.0&q=80&w=1080",
