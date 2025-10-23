@@ -87,7 +87,6 @@ function ClientFooterContent() {
     return (
       <>
         <div className="md:col-span-5 space-y-6">
-            <Image src="/logo.png" alt="Carwashroom logo" width={180} height={40} />
             <h3 className="text-xl font-bold uppercase tracking-wider">
             Unleash The Road Ahead;<br/> Your Next Car Awaits
             </h3>
