@@ -3,7 +3,7 @@ import { FaqPageClient } from "@/components/faq/faq-page-client";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default function ForumPage() {
   return (

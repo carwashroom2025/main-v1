@@ -19,7 +19,7 @@ import { RelatedPosts } from '@/components/blog/related-posts';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default function BlogPostPage() {
   const params = useParams();

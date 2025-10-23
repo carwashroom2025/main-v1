@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CarDetailHeader } from '@/components/cars/car-detail-header';
 import { Timestamp } from 'firebase/firestore';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 async function getVehicle(id: string): Promise<Vehicle | null> {
     const { vehicles } = await getCars({ all: true });

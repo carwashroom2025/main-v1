@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import CarListings from './car-listings';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default function CarsPage() {
   return (

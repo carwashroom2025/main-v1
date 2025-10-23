@@ -28,7 +28,7 @@ import { Timestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { toISODate } from '@/lib/utils';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function BusinessDetailPage({ params }: { params: { id: string } }) {
   const business = await getBusiness(params.id);

@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BlogSidebar } from '@/components/blog/blog-sidebar';
 import { BlogHeader } from '@/components/blog/blog-header';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default function BlogPage() {
   return (
