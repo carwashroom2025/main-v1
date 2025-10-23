@@ -114,9 +114,13 @@ export function BusinessForm({ isOpen, setIsOpen, business, onDataChange, featur
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let sanitizedValue = value;
+    if (name === 'phone') {
+        sanitizedValue = value.replace(/[^0-9+()-]/g, '');
+    }
     setFormData((prev) => ({
       ...prev,
-      contact: { ...prev.contact, [name]: value },
+      contact: { ...prev.contact, [name]: sanitizedValue },
     }));
   };
   
