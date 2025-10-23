@@ -99,9 +99,6 @@ function ClientFooterContent() {
             </div>
         </div>
 
-        <div className="md:col-span-3 md:col-start-7 space-y-4">
-        </div>
-
         <div className="md:col-span-2 md:col-start-11 space-y-4">
             <h4 className="font-bold text-lg">Carwashroom</h4>
             <ul className="space-y-3 text-muted-foreground">
