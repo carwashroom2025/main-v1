@@ -107,9 +107,9 @@ export function CategoryTable({ categories, onDataChange }: CategoryTableProps) 
           {categories.map((category) => (
             <TableRow key={category.id}>
               <TableCell>
-                  <div className="w-16 h-10 bg-muted rounded-md flex items-center justify-center">
+                  <div className="w-16 h-10 bg-muted rounded-md flex items-center justify-center relative overflow-hidden">
                     {category.imageUrl ? (
-                        <Image src={category.imageUrl} alt={category.name} width={64} height={40} className="object-cover rounded-md" />
+                        <Image src={category.imageUrl} alt={category.name} fill className="object-cover" />
                     ) : (
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />
                     )}
