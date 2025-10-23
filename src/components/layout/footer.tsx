@@ -117,6 +117,7 @@ function ClientFooterContent() {
         </div>
         
         <div className="md:col-span-12 mt-8 flex flex-col items-center gap-6">
+             <Image src="/logo.png" alt="Carwashroom logo" width={180} height={40} />
             <div className="flex items-center gap-6">
                  <a href="#" className="text-muted-foreground hover:text-foreground"><InstagramIcon className="h-6 w-6" /></a>
                 <a href="#" className="text-muted-foreground hover:text-foreground"><FacebookIcon className="h-6 w-6" /></a>
