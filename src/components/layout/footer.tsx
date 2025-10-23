@@ -102,9 +102,9 @@ function ClientFooterContent() {
         <div className="md:col-span-2 md:col-start-9 space-y-4">
             <h4 className="font-bold text-lg">Carwashroom</h4>
             <ul className="space-y-3 text-muted-foreground">
-                <li><Link href="/services" className="hover:text-primary">Services</Link></li>
-                <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
                 <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
+                <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
+                <li><Link href="/services" className="hover:text-primary">Services</Link></li>
                 <li><Link href="/services" className="hover:text-primary">List Your Service</Link></li>
             </ul>
         </div>
