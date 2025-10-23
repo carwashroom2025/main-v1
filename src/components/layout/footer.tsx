@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { ChevronUp, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Separator } from '../ui/separator';
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1227" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
         <g clipPath="url(#clip0_1_2)">
             <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" fill="currentColor"/>
         </g>
@@ -100,24 +101,6 @@ function ClientFooterContent() {
         </div>
 
         <div className="md:col-span-3 md:col-start-7 space-y-4">
-            <h4 className="font-bold text-lg">Social Links</h4>
-            <div className="flex flex-col space-y-2 items-start">
-                <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#E4405F]"><InstagramIcon className="h-5 w-5" /> Instagram</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-current"><FacebookIcon className="h-5 w-5" /> Facebook</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /> X</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-[#00F7EF]"><TikTokIcon className="h-5 w-5" /> TikTok</Link>
-                </Button>
-                 <Button variant="ghost" asChild>
-                  <Link href="#" className="text-muted-foreground hover:text-current"><YoutubeIcon className="h-5 w-5" /> YouTube</Link>
-                </Button>
-            </div>
         </div>
 
         <div className="md:col-span-2 md:col-start-11 space-y-4">
@@ -133,20 +116,17 @@ function ClientFooterContent() {
             </ul>
         </div>
         
-        <div className="mt-16 border-t pt-8 md:col-span-12 flex justify-center items-center">
+        <div className="md:col-span-12 mt-8 flex flex-col items-center gap-6">
+            <div className="flex items-center gap-6">
+                 <a href="#" className="text-muted-foreground hover:text-foreground"><InstagramIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground"><FacebookIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground"><TikTokIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground"><YoutubeIcon className="h-6 w-6" /></a>
+            </div>
+            <Separator className="w-full max-w-lg" />
             <div className="text-sm text-muted-foreground text-center">
                 <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
-                <p className="mt-2">
-                    Made with ❤️ by{' '}
-                    <a
-                        href="https://codeuxe.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary"
-                    >
-                        Codeuxe
-                    </a>
-                </p>
             </div>
         </div>
 
