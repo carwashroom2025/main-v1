@@ -109,3 +109,15 @@ export async function deleteCategory(id: string): Promise<void> {
     await deleteDoc(categoryDocRef);
     await logActivity(`Moderator "${currentUser.name}" deleted a category.`, 'category', id, currentUser.id);
 }
+
+export async function deleteMultipleCategories(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'categories', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
+}

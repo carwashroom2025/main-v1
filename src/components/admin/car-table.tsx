@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, PlusCircle, Eye } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Eye, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,14 +33,17 @@ import {
 import type { Vehicle } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { CarForm } from './car-form';
-import { deleteVehicle } from '@/lib/firebase/firestore';
+import { deleteVehicle, deleteMultipleVehicles } from '@/lib/firebase/firestore';
 import Link from 'next/link';
+import { Checkbox } from '../ui/checkbox';
 
 export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDataChange: () => void }) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [isDeleteSelectedAlertOpen, setIsDeleteSelectedAlertOpen] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
     const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
 
     const handleEdit = (vehicle: Vehicle) => {
@@ -79,10 +82,52 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
             setVehicleToDelete(null);
         }
     }
+    
+    const handleSelect = (id: string) => {
+        setSelectedIds(prev => 
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    }
+
+    const handleSelectAll = (checked: boolean | 'indeterminate') => {
+        if (checked === true) {
+            setSelectedIds(vehicles.map(v => v.id));
+        } else {
+            setSelectedIds([]);
+        }
+    }
+
+    const handleDeleteSelected = async () => {
+        if (selectedIds.length === 0) return;
+        try {
+            await deleteMultipleVehicles(selectedIds);
+            toast({
+                title: `${selectedIds.length} Vehicles Deleted`,
+                description: "The selected vehicles have been successfully deleted.",
+            });
+            setSelectedIds([]);
+            onDataChange();
+        } catch (error) {
+            console.error("Failed to delete selected vehicles:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete selected vehicles. Please try again.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsDeleteSelectedAlertOpen(false);
+        }
+    }
 
   return (
     <>
-    <div className="flex justify-end mb-4">
+    <div className="flex justify-end mb-4 gap-2">
+         {selectedIds.length > 0 && (
+            <Button variant="destructive" onClick={() => setIsDeleteSelectedAlertOpen(true)}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Selected ({selectedIds.length})
+            </Button>
+        )}
         <Button onClick={handleAddNew}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Vehicle
@@ -92,6 +137,13 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
       <Table>
         <TableHeader>
           <TableRow>
+             <TableHead className="w-12">
+                <Checkbox
+                    checked={selectedIds.length > 0 && selectedIds.length === vehicles.length}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all"
+                />
+            </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Make</TableHead>
             <TableHead>Year</TableHead>
@@ -103,7 +155,14 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
         </TableHeader>
         <TableBody>
           {vehicles.map((vehicle) => (
-            <TableRow key={vehicle.id}>
+            <TableRow key={vehicle.id} data-state={selectedIds.includes(vehicle.id) && "selected"}>
+              <TableCell>
+                  <Checkbox
+                      checked={selectedIds.includes(vehicle.id)}
+                      onCheckedChange={() => handleSelect(vehicle.id)}
+                      aria-label="Select row"
+                  />
+              </TableCell>
               <TableCell className="font-medium">{vehicle.name}</TableCell>
               <TableCell>{vehicle.make}</TableCell>
               <TableCell>{vehicle.year}</TableCell>
@@ -154,6 +213,20 @@ export function CarTable({ vehicles, onDataChange }: { vehicles: Vehicle[], onDa
             <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+     <AlertDialog open={isDeleteSelectedAlertOpen} onOpenChange={setIsDeleteSelectedAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the {selectedIds.length} selected vehicles.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteSelected}>Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

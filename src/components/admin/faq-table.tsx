@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, PlusCircle, Eye } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Eye, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,11 +30,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import type { Question } from '@/lib/types';
-import { deleteQuestion } from '@/lib/firebase/firestore';
+import { deleteQuestion, deleteMultipleQuestions } from '@/lib/firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { FaqForm } from './faq-form';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import { Checkbox } from '../ui/checkbox';
 
 type FaqTableProps = {
   questions: Question[];
@@ -44,8 +45,10 @@ type FaqTableProps = {
 export function FaqTable({ questions, onDataChange }: FaqTableProps) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [isDeleteSelectedAlertOpen, setIsDeleteSelectedAlertOpen] = useState(false);
     const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
     const [questionToDelete, setQuestionToDelete] = useState<Question | null>(null);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
 
     const handleEdit = (question: Question) => {
@@ -84,10 +87,52 @@ export function FaqTable({ questions, onDataChange }: FaqTableProps) {
             setQuestionToDelete(null);
         }
     }
+    
+    const handleSelect = (id: string) => {
+        setSelectedIds(prev => 
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    }
+
+    const handleSelectAll = (checked: boolean | 'indeterminate') => {
+        if (checked === true) {
+            setSelectedIds(questions.map(q => q.id));
+        } else {
+            setSelectedIds([]);
+        }
+    }
+    
+    const handleDeleteSelected = async () => {
+        if (selectedIds.length === 0) return;
+        try {
+            await deleteMultipleQuestions(selectedIds);
+            toast({
+                title: `${selectedIds.length} Questions Deleted`,
+                description: "The selected questions have been successfully deleted.",
+            });
+            setSelectedIds([]);
+            onDataChange();
+        } catch (error) {
+            console.error("Failed to delete selected questions:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete selected questions. Please try again.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsDeleteSelectedAlertOpen(false);
+        }
+    }
 
   return (
     <>
-    <div className="flex justify-end mb-4">
+    <div className="flex justify-end mb-4 gap-2">
+         {selectedIds.length > 0 && (
+            <Button variant="destructive" onClick={() => setIsDeleteSelectedAlertOpen(true)}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Selected ({selectedIds.length})
+            </Button>
+        )}
         <Button onClick={handleAddNew}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Question
@@ -97,6 +142,13 @@ export function FaqTable({ questions, onDataChange }: FaqTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-12">
+                <Checkbox
+                    checked={selectedIds.length > 0 && selectedIds.length === questions.length}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all"
+                />
+            </TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Author</TableHead>
             <TableHead>Created At</TableHead>
@@ -108,7 +160,14 @@ export function FaqTable({ questions, onDataChange }: FaqTableProps) {
         </TableHeader>
         <TableBody>
           {questions.map((question) => (
-            <TableRow key={question.id}>
+            <TableRow key={question.id} data-state={selectedIds.includes(question.id) && "selected"}>
+                <TableCell>
+                  <Checkbox
+                      checked={selectedIds.includes(question.id)}
+                      onCheckedChange={() => handleSelect(question.id)}
+                      aria-label="Select row"
+                  />
+              </TableCell>
               <TableCell className="font-medium">{question.title}</TableCell>
               <TableCell>{question.author}</TableCell>
               <TableCell>{format(question.createdAt.toDate(), 'PPP')}</TableCell>
@@ -159,6 +218,20 @@ export function FaqTable({ questions, onDataChange }: FaqTableProps) {
             <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+     <AlertDialog open={isDeleteSelectedAlertOpen} onOpenChange={setIsDeleteSelectedAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the {selectedIds.length} selected questions.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteSelected}>Delete</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

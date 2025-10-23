@@ -1,7 +1,7 @@
 
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, getCountFromServer, addDoc, updateDoc, deleteDoc, Timestamp, startAfter, runTransaction, increment, arrayUnion, arrayRemove, writeBatch } from 'firebase/firestore';
 import type { Question, Answer } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -314,4 +314,16 @@ export async function deleteAnswer(questionId: string, answerId: string): Promis
         });
     });
     await logActivity(`User "${currentUser.name}" deleted an answer.`, 'question', questionId, currentUser.id);
+}
+
+export async function deleteMultipleQuestions(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'questions', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
 }

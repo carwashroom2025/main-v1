@@ -1,6 +1,6 @@
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, query, where, orderBy, addDoc, deleteDoc, Timestamp, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, query, where, orderBy, addDoc, deleteDoc, Timestamp, getDoc, writeBatch } from 'firebase/firestore';
 import type { Review } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -63,4 +63,16 @@ export async function deleteReview(reviewId: string): Promise<void> {
         await deleteDoc(reviewRef);
         await logActivity(`User "${currentUser.name}" deleted a review for "${reviewData.itemTitle}".`, 'review', reviewData.itemId, currentUser.id);
     }
+}
+
+export async function deleteMultipleReviews(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'reviews', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
 }

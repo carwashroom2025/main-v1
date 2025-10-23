@@ -1,6 +1,6 @@
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, addDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, addDoc, updateDoc, deleteDoc, Timestamp, writeBatch } from 'firebase/firestore';
 import type { BlogPost } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -159,4 +159,16 @@ export async function deleteBlogPost(id: string): Promise<void> {
     
     await deleteDoc(postDocRef);
     await logActivity(`User "${currentUser.name}" deleted a blog post.`, 'blog', id, currentUser.id);
+}
+
+export async function deleteMultipleBlogPosts(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'blogPosts', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
 }

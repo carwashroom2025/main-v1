@@ -124,3 +124,15 @@ export async function deleteVehicle(id: string): Promise<void> {
     const vehicleDocRef = doc(db, 'cars', id);
     await deleteDoc(vehicleDocRef);
 }
+
+export async function deleteMultipleVehicles(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'cars', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
+}
