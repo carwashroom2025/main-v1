@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -14,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Search, X } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { Category } from '@/lib/types';
-import { ListBusiness } from '@/components/services/list-business';
+import { ListBusiness } from '@/components/shared/list-business';
 import { Card, CardContent } from '../ui/card';
 
 const locations = ['USA', 'UK', 'UAE', 'CANADA', 'INDIA', 'CHINA', 'JAPAN'];

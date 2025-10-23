@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -7,6 +8,7 @@ import { ChevronUp, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Separator } from '../ui/separator';
+import { ListBusiness } from '../shared/list-business';
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1200 1227" fill="currentColor" {...props}>
@@ -105,7 +107,7 @@ function ClientFooterContent() {
                 <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
                 <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
                 <li><Link href="/services" className="hover:text-primary">Services</Link></li>
-                <li><Link href="/services" className="hover:text-primary">List Your Service</Link></li>
+                <li><ListBusiness onBusinessListed={() => {}} asButton={false} /></li>
             </ul>
         </div>
         
@@ -130,7 +132,7 @@ function ClientFooterContent() {
             <Separator className="w-full max-w-lg" />
             <div className="text-sm text-muted-foreground text-center">
                 <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
-                <p>Made with ❤️ by <a href="https://codeuxe.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary">Codeuxe</a></p>
+                <p>Made with ❤️ by <Link href="https://codeuxe.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary" scroll={false}>Codeuxe</Link></p>
             </div>
         </div>
 
