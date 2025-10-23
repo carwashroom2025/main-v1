@@ -22,7 +22,7 @@ const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg style={{enableBackground:"new 0 0 64 64"}} version="1.1" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid" xmlns="http://www.w3.org/2000/svg" {...props}>
         <path d="M55.1,19.2v6c-0.5,0.1-1.1,0.1-1.7,0.1c-4.5,0-8.7-1.7-11.9-4.4v19.8c0,4-1.3,7.8-3.6,10.8c-3.3,4.4-8.4,7.2-14.2,7.2   c-4.7,0-9-1.9-12.2-4.9c-1.7-2.8-2.7-6-2.7-9.5c0-9.7,7.7-17.6,17.3-17.9l0,6.6c-0.7-0.2-1.5-0.3-2.2-0.3c-4.4,0-8,3.7-8,8.2   c0,2.7,1.3,5.2,3.4,6.6c1.1,3.1,4.1,5.4,7.5,5.4c4.4,0,8-3.7,8-8.2V5.9h7.3c0.7,2.4,2,4.5,3.8,6.1C47.7,15.6,51.1,18.3,55.1,19.2z" fill="#00F7EF"></path>
         <g>
             <g>
@@ -90,7 +90,7 @@ function ClientFooterContent() {
             Unleash The Road Ahead;<br/> Your Next Car Awaits
             </h3>
             <div className="space-y-2">
-                <p className="text-3xl font-bold text-primary">0552405099</p>
+                <p className="text-3xl font-bold text-primary">+0552405099</p>
                 <p className="text-xl text-primary">ask@carwashroom.net</p>
                 <div className="flex items-start text-muted-foreground pt-2">
                     <MapPin className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-1"/>
@@ -110,7 +110,7 @@ function ClientFooterContent() {
         </div>
         
         <div className="md:col-span-2 space-y-4">
-            <h4 className="font-bold text-lg">About Company</h4>
+            <h4 className="font-bold text-lg">Support & Legal</h4>
             <ul className="space-y-3 text-muted-foreground">
                 <li><Link href="/about" className="hover:text-primary">About</Link></li>
                 <li><Link href="/contact" className="hover:text-primary">Contact</Link></li>
