@@ -120,11 +120,11 @@ function ClientFooterContent() {
         
         <div className="md:col-span-12 mt-8 flex flex-col items-center gap-6">
             <div className="flex items-center gap-6">
-                 <a href="#" className="text-muted-foreground hover:text-foreground"><InstagramIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground"><FacebookIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground"><XIcon className="h-5 w-5" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground"><TikTokIcon className="h-6 w-6" /></a>
-                <a href="#" className="text-muted-foreground hover:text-foreground"><YoutubeIcon className="h-6 w-6" /></a>
+                 <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><InstagramIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><FacebookIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><XIcon className="h-5 w-5" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><TikTokIcon className="h-6 w-6" /></a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-transform duration-300 hover:scale-125"><YoutubeIcon className="h-6 w-6" /></a>
             </div>
             <Separator className="w-full max-w-lg" />
             <div className="text-sm text-muted-foreground text-center">
