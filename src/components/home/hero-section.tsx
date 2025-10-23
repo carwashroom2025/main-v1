@@ -33,7 +33,7 @@ export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src="https://wgl-dsites.net/genesisauto/wp-content/uploads/2024/05/h3-1.webp"
+          src="/hero.webp"
           alt="Hero background image of a car"
           fill
           className="object-cover"
