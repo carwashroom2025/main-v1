@@ -4,6 +4,7 @@ import { getQuestion } from '@/lib/firebase/firestore';
 import { QuestionDetails } from './question-details';
 import type { Question } from '@/lib/types';
 
+export const revalidate = 60;
 
 export default async function QandAPage({ params }: { params: { id: string } }) {
     const question = await getQuestion(params.id);

@@ -19,6 +19,8 @@ import { RelatedPosts } from '@/components/blog/related-posts';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const revalidate = 60;
+
 export default function BlogPostPage() {
   const params = useParams();
   const postId = Array.isArray(params.id) ? params.id[0] : params.id;

@@ -8,6 +8,8 @@ import { Timestamp } from 'firebase/firestore';
 import { ServiceFilters } from '@/components/services/service-filters';
 import { toISODate } from '@/lib/utils';
 
+export const revalidate = 60;
+
 export default async function ServicesPage() {
   const [businessListings, categories] = await Promise.all([
     getBusinesses(),
