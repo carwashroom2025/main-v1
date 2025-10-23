@@ -132,7 +132,7 @@ export default function LoginForm() {
                     <FormItem>
                         <div className="flex items-center">
                             <FormLabel>Password</FormLabel>
-                            <Link href="/forgot-password" className="ml-auto inline-block text-sm underline">
+                            <Link href="/forgot-password" className="ml-auto inline-block text-sm underline" scroll={false}>
                                 Forgot your password?
                             </Link>
                         </div>
@@ -181,7 +181,7 @@ export default function LoginForm() {
         </div>
         <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="underline">
+            <Link href="/register" className="underline" scroll={false}>
                 Sign up
             </Link>
         </div>

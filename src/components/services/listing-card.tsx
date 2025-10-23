@@ -34,7 +34,7 @@ export function ListingCard({ listing }: ListingCardProps) {
   return (
     <Card className="group overflow-hidden flex flex-col shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <div className="relative aspect-[16/10]">
-        <Link href={`/services/${listing.id}`} className="block h-full w-full">
+        <Link href={`/services/${listing.id}`} scroll={false} className="block h-full w-full">
           {image ? (
             <Image
               src={image}
@@ -54,7 +54,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
       <CardContent className="p-4 flex flex-col flex-grow">
         <CardTitle className="leading-tight text-lg pt-1 group-hover:text-primary transition-colors">
-            <Link href={`/services/${listing.id}`}>{listing.title}</Link>
+            <Link href={`/services/${listing.id}`} scroll={false}>{listing.title}</Link>
         </CardTitle>
         <div className="pt-2">
             <StarRating rating={averageRating} reviewCount={reviewCount} size="sm" />
@@ -62,7 +62,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         <div className="mt-2 flex-grow text-sm text-muted-foreground">
             <p>
                 &ldquo;{truncatedDescription}&rdquo;
-                <Link href={`/services/${listing.id}`} className="text-primary font-semibold ml-1 hover:underline">
+                <Link href={`/services/${listing.id}`} scroll={false} className="text-primary font-semibold ml-1 hover:underline">
                     more
                 </Link>
             </p>
@@ -81,7 +81,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       </CardContent>
        <CardFooter className="p-4 pt-0">
           <Button asChild size="sm" className="w-full">
-                <Link href={`/services/${listing.id}`}>
+                <Link href={`/services/${listing.id}`} scroll={false}>
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
           </Button>

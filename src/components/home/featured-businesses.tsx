@@ -45,7 +45,7 @@ export async function FeaturedBusinesses() {
       </div>
        <div className="mt-12 text-center">
           <Button asChild size="lg">
-            <Link href="/services">View All Businesses</Link>
+            <Link href="/services" scroll={false}>View All Businesses</Link>
           </Button>
         </div>
     </section>

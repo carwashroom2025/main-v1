@@ -81,7 +81,7 @@ export function Header() {
                 </div>
                 <nav className="flex flex-col space-y-4">
                   {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} onClick={closeSheet} className="text-lg font-medium uppercase transition-colors hover:text-primary">
+                    <Link key={link.href} href={link.href} onClick={closeSheet} scroll={false} className="text-lg font-medium uppercase transition-colors hover:text-primary">
                       {link.label}
                     </Link>
                   ))}
@@ -90,10 +90,10 @@ export function Header() {
                   {!loading && !user ? (
                     <>
                       <Button asChild variant="outline">
-                          <Link href="/login" onClick={closeSheet}>Login</Link>
+                          <Link href="/login" onClick={closeSheet} scroll={false}>Login</Link>
                       </Button>
                       <Button asChild>
-                          <Link href="/register" onClick={closeSheet}>Register</Link>
+                          <Link href="/register" onClick={closeSheet} scroll={false}>Register</Link>
                       </Button>
                     </>
                   ) : user && (
@@ -121,6 +121,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  scroll={false}
                   className={`text-sm font-medium uppercase tracking-wider transition-colors hover:text-primary ${
                     isActive ? 'text-primary' : ''
                   }`}
@@ -153,11 +154,11 @@ export function Header() {
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile"><User className="mr-2" />Profile</Link>
+                      <Link href="/profile" scroll={false}><User className="mr-2" />Profile</Link>
                     </DropdownMenuItem>
                     {['Moderator', 'Administrator'].includes(user.role) && (
                       <DropdownMenuItem asChild>
-                        <Link href="/admin"><ShieldCheck className="mr-2" />Admin</Link>
+                        <Link href="/admin" scroll={false}><ShieldCheck className="mr-2" />Admin</Link>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onSelect={handleLogout}>
@@ -170,10 +171,10 @@ export function Header() {
             ) : (
                 <div className="hidden md:flex items-center gap-x-2">
                     <Button asChild variant="ghost">
-                        <Link href="/login">Login</Link>
+                        <Link href="/login" scroll={false}>Login</Link>
                     </Button>
                     <Button asChild>
-                        <Link href="/register">Register</Link>
+                        <Link href="/register" scroll={false}>Register</Link>
                     </Button>
                 </div>
             )}

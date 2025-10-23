@@ -40,7 +40,7 @@ export const VehicleCard = ({ vehicle }: { vehicle: Vehicle }) => {
     <Card className="overflow-hidden group">
       <CardContent className="p-0">
         <div className="relative aspect-video">
-          <Link href={`/cars/${vehicle.id}`}>
+          <Link href={`/cars/${vehicle.id}`} scroll={false}>
             {image ? (
                 <Image
                     src={image}
@@ -69,7 +69,7 @@ export const VehicleCard = ({ vehicle }: { vehicle: Vehicle }) => {
         </div>
         <div className="p-4 space-y-3">
           <h3 className="text-lg font-bold">
-            <Link href={`/cars/${vehicle.id}`}>{vehicle.name}</Link>
+            <Link href={`/cars/${vehicle.id}`} scroll={false}>{vehicle.name}</Link>
           </h3>
            <div className="flex items-baseline justify-between">
              <p className="text-muted-foreground">{vehicle.bodyType}</p>
@@ -91,7 +91,7 @@ export const VehicleCard = ({ vehicle }: { vehicle: Vehicle }) => {
           </div>
           <div className="flex justify-end items-center pt-2">
             <Button asChild variant="link" className="p-0">
-                <Link href={`/cars/${vehicle.id}`}>
+                <Link href={`/cars/${vehicle.id}`} scroll={false}>
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
             </Button>

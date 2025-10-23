@@ -201,7 +201,7 @@ export function BlogTable({ posts, onDataChange }: BlogTableProps) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem asChild>
-                        <Link href={`/blog/${post.slug}`} className="flex justify-between w-full">
+                        <Link href={`/blog/${post.slug}`} className="flex justify-between w-full" scroll={false}>
                             <span>View</span>
                             <Eye className="h-4 w-4" />
                         </Link>

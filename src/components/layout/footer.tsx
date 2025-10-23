@@ -104,9 +104,9 @@ function ClientFooterContent() {
         <div className="md:col-span-2 md:col-start-9 space-y-4">
             <h4 className="font-bold text-lg">Carwashroom</h4>
             <ul className="space-y-3 text-muted-foreground">
-                <li><Link href="/blog" className="hover:text-primary">Blog</Link></li>
-                <li><Link href="/cars" className="hover:text-primary">Cars</Link></li>
-                <li><Link href="/services" className="hover:text-primary">Services</Link></li>
+                <li><Link href="/blog" scroll={false} className="hover:text-primary">Blog</Link></li>
+                <li><Link href="/cars" scroll={false} className="hover:text-primary">Cars</Link></li>
+                <li><Link href="/services" scroll={false} className="hover:text-primary">Services</Link></li>
                 <li><ListBusiness onBusinessListed={() => {}} asButton={false} /></li>
             </ul>
         </div>
@@ -114,10 +114,10 @@ function ClientFooterContent() {
         <div className="md:col-span-2 space-y-4">
             <h4 className="font-bold text-lg">Support & Legal</h4>
             <ul className="space-y-3 text-muted-foreground">
-                <li><Link href="/about" className="hover:text-primary">About</Link></li>
-                <li><Link href="/forum" className="hover:text-primary">Forum</Link></li>
-                <li><Link href="/contact" className="hover:text-primary">Contact</Link></li>
-                <li><Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
+                <li><Link href="/about" scroll={false} className="hover:text-primary">About</Link></li>
+                <li><Link href="/forum" scroll={false} className="hover:text-primary">Forum</Link></li>
+                <li><Link href="/contact" scroll={false} className="hover:text-primary">Contact</Link></li>
+                <li><Link href="/privacy-policy" scroll={false} className="hover:text-primary">Privacy Policy</Link></li>
             </ul>
         </div>
         

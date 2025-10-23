@@ -23,7 +23,7 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {posts.map(post => {
                     return (
-                    <Link key={post.id} href={`/blog/${post.slug}`} className="group block">
+                    <Link key={post.id} href={`/blog/${post.slug}`} scroll={false} className="group block">
                         <Card className="h-full overflow-hidden">
                             <div className="relative aspect-video bg-muted flex items-center justify-center">
                                 {post.imageUrl ? (

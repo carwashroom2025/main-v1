@@ -181,7 +181,7 @@ export default function ModerateReviewsPage() {
                       </TableCell>
                       <TableCell>{review.author}</TableCell>
                       <TableCell>
-                        <Link href={getItemLink(review)} className="hover:underline font-medium">
+                        <Link href={getItemLink(review)} className="hover:underline font-medium" scroll={false}>
                             {review.itemTitle}
                         </Link>
                       </TableCell>

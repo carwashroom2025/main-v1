@@ -134,7 +134,7 @@ export function BlogSidebar() {
                         <div className="space-y-4">
                             {recentPosts.map(post => {
                                 return (
-                                <Link key={post.id} href={`/blog/${post.slug}`} className="group flex items-center gap-4">
+                                <Link key={post.id} href={`/blog/${post.slug}`} scroll={false} className="group flex items-center gap-4">
                                      <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
                                         {post.imageUrl ? (
                                             <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />

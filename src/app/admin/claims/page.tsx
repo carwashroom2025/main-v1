@@ -124,7 +124,7 @@ export default function ApproveClaimsPage() {
                     <div className="flex-grow">
                       <div className="flex items-start justify-between">
                          <h3 className="font-semibold text-lg">
-                            <Link href={`/services/${claim.businessId}`} className="hover:underline" target="_blank">{claim.businessName}</Link>
+                            <Link href={`/services/${claim.businessId}`} className="hover:underline" target="_blank" scroll={false}>{claim.businessName}</Link>
                         </h3>
                         <p className="text-sm text-muted-foreground mt-1">
                             Claimed on {format(claim.createdAt.toDate(), 'PPP')}

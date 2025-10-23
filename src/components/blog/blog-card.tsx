@@ -102,7 +102,7 @@ export function BlogCard({ post, priority = false }: BlogCardProps) {
               </DropdownMenuContent>
             </DropdownMenu>
         )}
-        <Link href={`/blog/${post.slug}`} className="relative block aspect-video md:w-1/3 md:h-auto md:flex-shrink-0">
+        <Link href={`/blog/${post.slug}`} scroll={false} className="relative block aspect-video md:w-1/3 md:h-auto md:flex-shrink-0">
             {post.imageUrl ? (
             <Image
                 src={post.imageUrl}
@@ -123,7 +123,7 @@ export function BlogCard({ post, priority = false }: BlogCardProps) {
               <Badge variant="default">{post.category}</Badge>
           </div>
           <h3 className="text-xl font-bold mb-2 leading-snug flex-grow">
-            <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+            <Link href={`/blog/${post.slug}`} scroll={false} className="hover:text-primary transition-colors">
               {post.title}
             </Link>
           </h3>

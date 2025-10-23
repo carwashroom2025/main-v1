@@ -50,7 +50,7 @@ export async function AllServices() {
               const image = category.imageUrl || PlaceHolderImages.find(img => img.id === imageId)?.imageUrl;
 
               return (
-                  <Link href={categoryUrl} key={category.id} className="group relative block rounded-lg overflow-hidden h-48 transition-all duration-300">
+                  <Link href={categoryUrl} scroll={false} key={category.id} className="group relative block rounded-lg overflow-hidden h-48 transition-all duration-300">
                       {image && (
                            <Image 
                               src={image} 

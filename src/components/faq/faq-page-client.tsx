@@ -141,7 +141,7 @@ export function FaqPageClient() {
                     </Avatar>
                     <div className="flex flex-col flex-grow">
                         <div className="flex-grow">
-                            <Link href={`/forum/${q.id}`} className="hover:text-primary transition-colors">
+                            <Link href={`/forum/${q.id}`} scroll={false} className="hover:text-primary transition-colors">
                                 <h3 className="font-semibold text-lg">{q.title}</h3>
                             </Link>
                             <div className="text-sm text-muted-foreground mt-1">

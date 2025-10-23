@@ -47,7 +47,7 @@ export function RecentBlogPosts() {
       </div>
        <div className="mt-12 text-center">
           <Button asChild size="lg">
-            <Link href="/blog">View All Posts</Link>
+            <Link href="/blog" scroll={false}>View All Posts</Link>
           </Button>
         </div>
     </section>

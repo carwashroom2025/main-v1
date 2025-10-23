@@ -24,7 +24,7 @@ export default function NotFoundPage() {
 
       <div className="mt-12">
         <Button asChild size="lg">
-          <Link href="/">
+          <Link href="/" scroll={false}>
             Back To Home
           </Link>
         </Button>

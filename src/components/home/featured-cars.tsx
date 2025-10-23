@@ -49,7 +49,7 @@ export function FeaturedCars() {
 
         <div className="mt-12 text-center">
           <Button asChild size="lg">
-            <Link href="/cars">View All Cars</Link>
+            <Link href="/cars" scroll={false}>View All Cars</Link>
           </Button>
         </div>
       </div>

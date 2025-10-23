@@ -208,8 +208,8 @@ export function CommentSection({ postId }: { postId: string }) {
             <div className="text-center p-8 border-2 border-dashed rounded-lg">
                 <p className="text-muted-foreground">You must be logged in to leave a comment.</p>
                 <div className="mt-4 flex justify-center gap-4">
-                    <Button asChild><Link href={`/login?redirect=/blog/${postId}`}>Login</Link></Button>
-                    <Button asChild variant="outline"><Link href="/register">Register</Link></Button>
+                    <Button asChild><Link href={`/login?redirect=/blog/${postId}`} scroll={false}>Login</Link></Button>
+                    <Button asChild variant="outline"><Link href="/register" scroll={false}>Register</Link></Button>
                 </div>
             </div>
         ) : (

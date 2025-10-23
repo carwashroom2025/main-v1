@@ -198,7 +198,7 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                      <DropdownMenuItem asChild>
-                        <Link href={`/services/${business.id}`} className="flex justify-between w-full">
+                        <Link href={`/services/${business.id}`} className="flex justify-between w-full" scroll={false}>
                             <span>View</span>
                             <Eye className="h-4 w-4" />
                         </Link>
