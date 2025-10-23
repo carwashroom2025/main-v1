@@ -1,7 +1,7 @@
 
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc, Timestamp, documentId, serverTimestamp, addDoc, writeBatch } from 'firebase/firestore';
 import type { Business, Review } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -260,4 +260,16 @@ export async function deleteBusiness(id: string): Promise<void> {
 
     const businessDocRef = doc(db, 'businesses', id);
     await deleteDoc(businessDocRef);
+}
+
+export async function deleteMultipleBusinesses(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    
+    const batch = writeBatch(db);
+    ids.forEach(id => {
+        const docRef = doc(db, 'businesses', id);
+        batch.delete(docRef);
+    });
+
+    await batch.commit();
 }

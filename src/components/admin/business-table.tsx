@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, PlusCircle, Eye } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Eye, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,11 +32,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import type { Business, Category } from '@/lib/types';
-import { deleteBusiness } from '@/lib/firebase/firestore';
+import { deleteBusiness, deleteMultipleBusinesses } from '@/lib/firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { BusinessForm } from './business-form';
 import { useAuth } from '@/context/auth-context';
 import Link from 'next/link';
+import { Checkbox } from '../ui/checkbox';
 
 type BusinessTableProps = {
   businesses: Business[];
@@ -50,6 +51,7 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
     const [businessToDelete, setBusinessToDelete] = useState<Business | null>(null);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const { toast } = useToast();
     const { user } = useAuth();
 
@@ -89,10 +91,49 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
             setBusinessToDelete(null);
         }
     }
+    
+    const handleSelect = (id: string) => {
+      setSelectedIds(prev => 
+        prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+      );
+    }
+
+    const handleSelectAll = (checked: boolean | 'indeterminate') => {
+        if (checked === true) {
+            setSelectedIds(businesses.map(b => b.id));
+        } else {
+            setSelectedIds([]);
+        }
+    }
+
+    const handleDeleteSelected = async () => {
+        try {
+            await deleteMultipleBusinesses(selectedIds);
+            toast({
+                title: `${selectedIds.length} Businesses Deleted`,
+                description: "The selected businesses have been successfully deleted.",
+            });
+            setSelectedIds([]);
+            onDataChange();
+        } catch (error) {
+            console.error("Failed to delete selected businesses:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete selected businesses. Please try again.",
+                variant: "destructive",
+            });
+        }
+    }
 
   return (
     <>
-    <div className="flex justify-end mb-4">
+    <div className="flex justify-end mb-4 gap-2">
+        {selectedIds.length > 0 && (
+            <Button variant="destructive" onClick={handleDeleteSelected}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Selected ({selectedIds.length})
+            </Button>
+        )}
         <Button onClick={handleAddNew}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Business
@@ -102,6 +143,13 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-12">
+                <Checkbox
+                    checked={selectedIds.length > 0 && selectedIds.length === businesses.length}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all"
+                />
+            </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Location</TableHead>
@@ -114,7 +162,14 @@ export function BusinessTable({ businesses, onDataChange, featuredCount, categor
         </TableHeader>
         <TableBody>
           {businesses.map((business) => (
-            <TableRow key={business.id}>
+            <TableRow key={business.id} data-state={selectedIds.includes(business.id) && "selected"}>
+              <TableCell>
+                  <Checkbox
+                      checked={selectedIds.includes(business.id)}
+                      onCheckedChange={() => handleSelect(business.id)}
+                      aria-label="Select row"
+                  />
+              </TableCell>
               <TableCell className="font-medium">{business.title}</TableCell>
               <TableCell>{business.category}</TableCell>
               <TableCell>{business.location}</TableCell>
