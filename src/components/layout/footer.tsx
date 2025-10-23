@@ -123,7 +123,7 @@ function ClientFooterContent() {
             <Separator className="w-full max-w-lg" />
             <div className="text-sm text-muted-foreground text-center">
                 <p>&copy; {new Date().getFullYear()} Carwashroom. All rights reserved.</p>
-                <p>Made with ❤️ by Codeuxe</p>
+                <p>Made with ❤️ by <a href="https://codeuxe.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary">Codeuxe</a></p>
             </div>
         </div>
 
