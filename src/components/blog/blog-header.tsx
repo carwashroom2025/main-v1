@@ -112,10 +112,7 @@ export function BlogHeader() {
                   <SelectItem value="popular">Most Popular</SelectItem>
               </SelectContent>
           </Select>
-          <Button onClick={handlePostAdded} className="h-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full">
-              <PlusCircle className="mr-2 h-5 w-5" />
-              New Post
-          </Button>
+          <AddPost onPostAdded={handlePostAdded} />
         </div>
       </div>
        {!isMobile && (

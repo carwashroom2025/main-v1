@@ -47,7 +47,7 @@ export function AddPost({ onPostAdded }: AddPostProps) {
 
     return (
         <>
-            <Button onClick={handleAddPostClick} className="rounded-full">
+            <Button onClick={handleAddPostClick} className="rounded-full h-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Post
             </Button>
