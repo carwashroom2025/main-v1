@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -102,7 +101,10 @@ function ClientFooterContent() {
         </div>
 
         <div className="md:col-span-2 md:col-start-9 space-y-4">
-            <h4 className="font-bold text-lg">Carwashroom</h4>
+            <h4 className="font-bold text-lg flex items-center">
+                <span className="w-1 h-5 bg-destructive mr-3"></span>
+                Carwashroom
+            </h4>
             <ul className="space-y-3 text-muted-foreground">
                 <li><Link href="/blog" scroll={false} className="hover:text-primary">Blog</Link></li>
                 <li><Link href="/cars" scroll={false} className="hover:text-primary">Cars</Link></li>
@@ -112,7 +114,10 @@ function ClientFooterContent() {
         </div>
         
         <div className="md:col-span-2 space-y-4">
-            <h4 className="font-bold text-lg">Support & Legal</h4>
+            <h4 className="font-bold text-lg flex items-center">
+                <span className="w-1 h-5 bg-destructive mr-3"></span>
+                Support &amp; Legal
+            </h4>
             <ul className="space-y-3 text-muted-foreground">
                 <li><Link href="/about" scroll={false} className="hover:text-primary">About</Link></li>
                 <li><Link href="/forum" scroll={false} className="hover:text-primary">Forum</Link></li>
