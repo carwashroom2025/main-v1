@@ -58,7 +58,7 @@ export function ListBusiness({ onBusinessListed, asButton = true }: ListBusiness
                     List Your Business
                 </Button>
             ) : (
-                <Button variant="link" onClick={handleListBusinessClick} className="p-0 h-auto hover:text-primary text-base no-underline">
+                <Button variant="link" onClick={handleListBusinessClick} className="p-0 h-auto hover:text-primary text-base no-underline hover:no-underline">
                     List Your Service
                 </Button>
             )}
