@@ -7,13 +7,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { getRecentBlogPosts, getBlogPosts, getPopularTags } from '@/lib/firebase/firestore';
+import { getBlogPosts, getPopularTags } from '@/lib/firebase/firestore';
 import type { BlogPost } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import Image from 'next/image';
-import { ImageIcon, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 function SidebarCard({ title, children }: { title: string, children: React.ReactNode }) {
     return (
@@ -35,7 +33,7 @@ function SidebarCard({ title, children }: { title: string, children: React.React
 export function BlogSidebar() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
+    const [trendingPosts, setTrendingPosts] = useState<BlogPost[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [popularTags, setPopularTags] = useState<string[]>([]);
@@ -50,8 +48,8 @@ export function BlogSidebar() {
                     getPopularTags(8),
                 ]);
                 setPosts(allPosts);
-                const sortedRecent = [...allPosts].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-                setRecentPosts(sortedRecent);
+                const sortedTrending = [...allPosts].sort((a,b) => (b.views || 0) - (a.views || 0));
+                setTrendingPosts(sortedTrending);
                 setPopularTags(popular);
                 
                 const usedCategoryNames = [...new Set(allPosts.map(p => p.category))].sort();
@@ -164,7 +162,7 @@ export function BlogSidebar() {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {posts.slice(0,3).map((post, index) => (
+                        {trendingPosts.slice(0,3).map((post, index) => (
                            <div key={post.id} className="flex items-start gap-4">
                                 <span className="text-3xl font-bold text-muted-foreground w-8 text-center">#{index + 1}</span>
                                 <div className="flex-1">
