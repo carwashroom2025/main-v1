@@ -16,8 +16,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const POSTS_PER_PAGE = 5;
+import { cn } from '@/lib/utils';
 
 export default function BlogListings() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -29,6 +28,9 @@ export default function BlogListings() {
   const category = searchParams.get('category');
   const tag = searchParams.get('tag');
   const sortBy = searchParams.get('sort') || 'latest';
+  const view = searchParams.get('view') || 'grid';
+
+  const POSTS_PER_PAGE = view === 'grid' ? 6 : 5;
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -44,7 +46,7 @@ export default function BlogListings() {
   
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, category, tag, sortBy])
+  }, [searchTerm, category, tag, sortBy, view])
 
   const filteredPosts = blogPosts
     .filter(post => {
@@ -83,11 +85,11 @@ export default function BlogListings() {
 
   if (loading) {
     return (
-        <div className="space-y-8">
-            {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex gap-6">
-                    <Skeleton className="h-48 w-1/3" />
-                    <div className="w-2/3 space-y-4">
+        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-8')}>
+            {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex flex-col gap-6">
+                    <Skeleton className="h-48 w-full" />
+                    <div className="w-full space-y-4">
                         <Skeleton className="h-6 w-1/4" />
                         <Skeleton className="h-8 w-3/4" />
                         <Skeleton className="h-4 w-full" />
@@ -103,9 +105,9 @@ export default function BlogListings() {
   return (
     <>
       {currentPosts.length > 0 ? (
-        <div className="space-y-8">
+        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')}>
             {currentPosts.map((post, index) => (
-            <BlogCard key={post.id} post={post} priority={index < 2} />
+            <BlogCard key={post.id} post={post} priority={index < 2} view={view} />
             ))}
         </div>
       ) : (

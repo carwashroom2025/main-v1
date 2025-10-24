@@ -1,11 +1,12 @@
 
+
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Search, X } from 'lucide-react';
+import { Search, X, PlusCircle, LayoutGrid, List } from 'lucide-react';
 import { AddPost } from './add-post';
 import {
   Select,
@@ -14,9 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
+import { cn } from '@/lib/utils';
 
-// This component exists to allow client-side interactions (search, new post)
-// without making the entire layout a client component.
 export function BlogHeader() {
   const router = useRouter();
   const pathname = usePathname();
@@ -31,13 +32,20 @@ export function BlogHeader() {
     } else {
         params.delete('search');
     }
-    // We only want to push a new state if we are on the main blog page
     if (pathname === '/blog') {
       router.push(`${pathname}?${params.toString()}`);
     } else {
        router.push(`/blog?${params.toString()}`);
     }
   };
+  
+  const handleViewChange = (view: string) => {
+    if (view) {
+        const params = new URLSearchParams(searchParams);
+        params.set('view', view);
+        router.push(`${pathname}?${params.toString()}`);
+    }
+  }
 
   const handleSortChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -50,8 +58,6 @@ export function BlogHeader() {
   }
   
   const handlePostAdded = () => {
-    // A bit of a hack to force a server component reload.
-    // This is necessary because the sidebar needs to update its categories count.
     router.refresh();
   }
   
@@ -65,17 +71,19 @@ export function BlogHeader() {
         router.push(`/blog?${params.toString()}`);
     }
   }
+  
+  const currentView = searchParams.get('view') || 'grid';
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-      <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto md:flex-grow max-w-lg">
-        <div className="relative flex-grow">
+      <form onSubmit={handleSearch} className="flex-grow w-full md:w-auto">
+        <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input 
-              placeholder="Search..." 
+              placeholder="Search articles, topics, or authors..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 rounded-full h-12"
+              className="pl-12 h-12 bg-card border-border"
             />
             {searchTerm && (
               <Button 
@@ -89,8 +97,18 @@ export function BlogHeader() {
               </Button>
             )}
         </div>
+      </form>
+      <div className="flex items-center gap-2">
+        <ToggleGroup type="single" value={currentView} onValueChange={handleViewChange} aria-label="View mode">
+          <ToggleGroupItem value="grid" aria-label="Grid view" className="h-12 w-12 data-[state=on]:bg-primary/20 data-[state=on]:text-primary">
+            <LayoutGrid className="h-5 w-5" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="list" aria-label="List view" className="h-12 w-12 data-[state=on]:bg-primary/20 data-[state=on]:text-primary">
+            <List className="h-5 w-5" />
+          </ToggleGroupItem>
+        </ToggleGroup>
         <Select value={searchParams.get('sort') || 'latest'} onValueChange={handleSortChange}>
-            <SelectTrigger className="w-[180px] rounded-full h-12">
+            <SelectTrigger className="w-[180px] h-12 bg-card border-border">
                 <SelectValue placeholder="Sort by..." />
             </SelectTrigger>
             <SelectContent>
@@ -99,8 +117,11 @@ export function BlogHeader() {
                 <SelectItem value="popular">Most Popular</SelectItem>
             </SelectContent>
         </Select>
-      </form>
-      <AddPost onPostAdded={handlePostAdded} />
+        <Button onClick={handlePostAdded} className="h-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+            <PlusCircle className="mr-2 h-5 w-5" />
+            New Post
+        </Button>
+      </div>
     </div>
   );
 }

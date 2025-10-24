@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,7 +13,24 @@ import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, ArrowRight } from 'lucide-react';
+
+function SidebarCard({ title, children }: { title: string, children: React.ReactNode }) {
+    return (
+        <Card className="bg-card border-border">
+            <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold flex items-center">
+                    <span className="w-1 h-5 bg-destructive mr-3"></span>
+                    {title}
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                {children}
+            </CardContent>
+        </Card>
+    );
+}
+
 
 export function BlogSidebar() {
     const router = useRouter();
@@ -27,13 +45,13 @@ export function BlogSidebar() {
         async function fetchData() {
             setLoading(true);
             try {
-                const [recent, allPosts, popular] = await Promise.all([
-                    getRecentBlogPosts(3), 
+                const [allPosts, popular] = await Promise.all([
                     getBlogPosts(),
-                    getPopularTags(5),
+                    getPopularTags(8),
                 ]);
-                setRecentPosts(recent);
                 setPosts(allPosts);
+                const sortedRecent = [...allPosts].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setRecentPosts(sortedRecent);
                 setPopularTags(popular);
                 
                 const usedCategoryNames = [...new Set(allPosts.map(p => p.category))].sort();
@@ -52,7 +70,6 @@ export function BlogSidebar() {
         const params = new URLSearchParams(searchParams);
         const currentFilter = params.get(type);
 
-        // If clicking the currently active filter, remove it. Otherwise, set it.
         if (currentFilter === value) {
             params.delete(type);
         } else {
@@ -78,111 +95,89 @@ export function BlogSidebar() {
 
     return (
         <div className="sticky top-24 space-y-8">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Categories</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {loading ? (
-                         <div className="space-y-3">
-                            <Skeleton className="h-8 w-full" />
-                            <Skeleton className="h-8 w-full" />
-                            <Skeleton className="h-8 w-3/4" />
-                        </div>
-                    ) : (
-                        <div className="space-y-2">
-                           <button 
-                                onClick={() => handleFilterClick('category', 'all')}
+            <SidebarCard title="Categories">
+                {loading ? (
+                        <div className="space-y-3">
+                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="h-8 w-3/4" />
+                    </div>
+                ) : (
+                    <div className="space-y-2">
+                        <button 
+                            onClick={() => handleFilterClick('category', 'all')}
+                            className={cn(
+                                "w-full text-left p-3 rounded-lg flex justify-between items-center transition-colors text-muted-foreground hover:bg-muted/50",
+                                !currentCategory && !currentTag ? "bg-primary/10 text-primary font-semibold" : ""
+                            )}
+                        >
+                            <span>All Categories</span>
+                            <Badge variant={!currentCategory && !currentTag ? "destructive" : "secondary"}>{getCategoryCount('all')}</Badge>
+                        </button>
+                        {categories.map(catName => (
+                            <button
+                                key={catName}
+                                onClick={() => handleFilterClick('category', catName)}
                                 className={cn(
-                                    "w-full text-left p-3 rounded-lg flex justify-between items-center transition-colors",
-                                    !currentCategory && !currentTag ? "bg-primary/10 text-primary font-semibold" : "hover:bg-accent"
+                                    "w-full text-left p-3 rounded-lg flex justify-between items-center transition-colors text-muted-foreground hover:bg-muted/50",
+                                    currentCategory === catName ? "bg-primary/10 text-primary font-semibold" : ""
                                 )}
                             >
-                                <span>All Categories</span>
-                                <Badge variant={!currentCategory && !currentTag ? "default" : "secondary"}>{getCategoryCount('all')}</Badge>
+                                <span>{catName}</span>
+                                <Badge variant={currentCategory === catName ? "destructive" : "secondary"}>{getCategoryCount(catName)}</Badge>
                             </button>
-                            {categories.map(catName => (
-                                <button
-                                    key={catName}
-                                    onClick={() => handleFilterClick('category', catName)}
-                                    className={cn(
-                                        "w-full text-left p-3 rounded-lg flex justify-between items-center transition-colors",
-                                        currentCategory === catName ? "bg-primary/10 text-primary font-semibold" : "hover:bg-accent"
-                                    )}
-                                >
-                                    <span>{catName}</span>
-                                    <Badge variant={currentCategory === catName ? "default" : "secondary"}>{getCategoryCount(catName)}</Badge>
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                        ))}
+                    </div>
+                )}
+            </SidebarCard>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Recent Posts</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {loading ? (
-                         <div className="space-y-4">
-                             <Skeleton className="h-16 w-full" />
-                             <Skeleton className="h-16 w-full" />
-                             <Skeleton className="h-16 w-full" />
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {recentPosts.map(post => {
-                                return (
-                                <Link key={post.id} href={`/blog/${post.slug}`} scroll={false} className="group flex items-center gap-4">
-                                     <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
-                                        {post.imageUrl ? (
-                                            <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
-                                        ) : (
-                                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                                        )}
-                                     </div>
-                                     <div>
-                                        <h4 className="font-semibold leading-tight group-hover:text-primary">{post.title}</h4>
-                                        <p className="text-sm text-muted-foreground">{format(new Date(post.date), 'MMMM d, yyyy')}</p>
-                                     </div>
-                                </Link>
-                            )})}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-            
-            <Card>
-                <CardHeader>
-                    <CardTitle>Popular Tags</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {loading ? (
-                         <div className="flex flex-wrap gap-2">
-                            <Skeleton className="h-6 w-16" />
-                            <Skeleton className="h-6 w-20" />
-                            <Skeleton className="h-6 w-12" />
-                            <Skeleton className="h-6 w-24" />
-                        </div>
-                    ) : (
+            <SidebarCard title="Popular Tags">
+                {loading ? (
                         <div className="flex flex-wrap gap-2">
-                            {popularTags.map(tag => (
-                                <Badge 
-                                    key={tag}
-                                    variant={currentTag === tag ? "default" : "secondary"}
-                                    onClick={() => handleFilterClick('tag', tag)}
-                                    className="cursor-pointer hover:bg-accent"
-                                >
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                        <Skeleton className="h-6 w-16" />
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-6 w-12" />
+                        <Skeleton className="h-6 w-24" />
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap gap-2">
+                        {popularTags.map(tag => (
+                            <Badge 
+                                key={tag}
+                                variant={currentTag === tag ? "destructive" : "secondary"}
+                                onClick={() => handleFilterClick('tag', tag)}
+                                className="cursor-pointer hover:bg-primary/80"
+                            >
+                                {tag}
+                            </Badge>
+                        ))}
+                    </div>
+                )}
+            </SidebarCard>
+
+             <SidebarCard title="Trending Now">
+                {loading ? (
+                        <div className="space-y-4">
+                            <Skeleton className="h-12 w-full" />
+                            <Skeleton className="h-12 w-full" />
+                            <Skeleton className="h-12 w-full" />
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {posts.slice(0,3).map((post, index) => (
+                           <div key={post.id} className="flex items-start gap-4">
+                                <span className="text-3xl font-bold text-muted-foreground w-8 text-center">#{index + 1}</span>
+                                <div className="flex-1">
+                                    <Link href={`/blog/${post.slug}`} scroll={false}>
+                                        <h4 className="font-semibold leading-tight hover:text-primary">{post.title}</h4>
+                                    </Link>
+                                    <p className="text-xs text-muted-foreground mt-1">{post.views || 0} views</p>
+                                </div>
+                           </div>
+                        ))}
+                    </div>
+                )}
+            </SidebarCard>
         </div>
     )
 }
-
-    
