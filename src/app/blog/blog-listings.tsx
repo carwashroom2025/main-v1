@@ -30,7 +30,7 @@ export default function BlogListings() {
   const sortBy = searchParams.get('sort') || 'latest';
   const view = searchParams.get('view') || 'grid';
 
-  const POSTS_PER_PAGE = view === 'grid' ? 6 : 5;
+  const POSTS_PER_PAGE = view === 'grid' ? 9 : 6;
 
   const fetchPosts = async () => {
     setLoading(true);
