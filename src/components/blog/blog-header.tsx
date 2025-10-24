@@ -17,12 +17,14 @@ import {
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function BlogHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const isMobile = useIsMobile();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ export function BlogHeader() {
 
   return (
     <div className="flex flex-col mb-8 gap-4">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <form onSubmit={handleSearch} className="flex-grow w-full md:w-auto">
           <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -116,16 +118,18 @@ export function BlogHeader() {
           </Button>
         </div>
       </div>
-       <div className="flex justify-end">
-         <ToggleGroup type="single" value={currentView} onValueChange={handleViewChange} aria-label="View mode">
+       {!isMobile && (
+        <div className="flex justify-end">
+            <ToggleGroup type="single" value={currentView} onValueChange={handleViewChange} aria-label="View mode">
             <ToggleGroupItem value="grid" aria-label="Grid view" className="h-12 w-12 data-[state=on]:bg-primary/20 data-[state=on]:text-primary">
-              <LayoutGrid className="h-5 w-5" />
+                <LayoutGrid className="h-5 w-5" />
             </ToggleGroupItem>
             <ToggleGroupItem value="list" aria-label="List view" className="h-12 w-12 data-[state=on]:bg-primary/20 data-[state=on]:text-primary">
-              <List className="h-5 w-5" />
+                <List className="h-5 w-5" />
             </ToggleGroupItem>
-          </ToggleGroup>
-       </div>
+            </ToggleGroup>
+        </div>
+       )}
     </div>
   );
 }

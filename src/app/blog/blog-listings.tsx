@@ -17,18 +17,21 @@ import {
 } from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function BlogListings() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const isMobile = useIsMobile();
 
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get('search') || '';
   const category = searchParams.get('category');
   const tag = searchParams.get('tag');
   const sortBy = searchParams.get('sort') || 'latest';
-  const view = searchParams.get('view') || 'grid';
+  const viewParam = searchParams.get('view') || 'grid';
+  const view = isMobile ? 'grid' : viewParam;
 
   const POSTS_PER_PAGE = view === 'grid' ? 9 : 6;
 
