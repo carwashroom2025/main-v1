@@ -99,21 +99,28 @@ export async function getRecentBlogPosts(count: number): Promise<BlogPost[]> {
 
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
     const postsCol = collection(db, 'blogPosts');
-    const q = query(postsCol, where('slug', '==', slug));
+    const q = query(postsCol, where('slug', '==', slug), limit(1));
     const postSnapshot = await getDocs(q);
     if (postSnapshot.empty) {
         return null;
     }
     const postDoc = postSnapshot.docs[0];
 
-    // Increment view count
-    await runTransaction(db, async (transaction) => {
-        const postRef = doc(db, 'blogPosts', postDoc.id);
-        transaction.update(postRef, { views: increment(1) });
-    });
+    try {
+        await runTransaction(db, async (transaction) => {
+            const postRef = doc(db, 'blogPosts', postDoc.id);
+            const freshDoc = await transaction.get(postRef);
+            if (!freshDoc.exists()) {
+                throw "Document does not exist!";
+            }
+            const newViews = (freshDoc.data().views || 0) + 1;
+            transaction.update(postRef, { views: newViews });
+        });
+    } catch (e) {
+        console.error("View count transaction failed: ", e);
+        // Don't block the user from seeing the post if the transaction fails
+    }
 
-    // Re-fetch the doc to get the updated data for the return value, though not strictly necessary
-    // as the initial data is usually sufficient for immediate display.
     const updatedPostDoc = await getDoc(doc(db, 'blogPosts', postDoc.id));
 
     return { id: updatedPostDoc.id, ...updatedPostDoc.data() } as BlogPost;
