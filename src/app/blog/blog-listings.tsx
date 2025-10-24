@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,6 +17,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { format } from 'date-fns';
 
 export default function BlogListings() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -53,10 +53,18 @@ export default function BlogListings() {
 
   const filteredPosts = blogPosts
     .filter(post => {
-      const searchMatch = searchTerm === '' ||
-                          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          post.content.toLowerCase().includes(searchTerm.toLowerCase());
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      if (lowerCaseSearchTerm === '') return true;
+      
+      const searchMatch = 
+          post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.excerpt.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.content.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.category.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.author.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.tags.some(t => t.toLowerCase().includes(lowerCaseSearchTerm)) ||
+          format(new Date(post.date), 'MMMM d, yyyy').toLowerCase().includes(lowerCaseSearchTerm);
+
       return searchMatch;
     })
     .sort((a, b) => {
