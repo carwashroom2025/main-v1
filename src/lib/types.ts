@@ -83,6 +83,7 @@ export type BlogPost = {
     date: string; // Stored as a string like 'YYYY-MM-DD'
     createdAt?: Timestamp | string;
     updatedAt?: Timestamp | string;
+    views?: number;
 };
 
 export type Business = {

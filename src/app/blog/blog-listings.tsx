@@ -60,6 +60,9 @@ export default function BlogListings() {
         if (sortBy === 'oldest') {
             return dateA - dateB;
         }
+        if (sortBy === 'popular') {
+            return (b.views || 0) - (a.views || 0);
+        }
         return dateB - dateA; // latest (default)
     });
 

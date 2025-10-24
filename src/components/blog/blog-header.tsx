@@ -96,6 +96,7 @@ export function BlogHeader() {
             <SelectContent>
                 <SelectItem value="latest">Latest</SelectItem>
                 <SelectItem value="oldest">Oldest</SelectItem>
+                <SelectItem value="popular">Most Popular</SelectItem>
             </SelectContent>
         </Select>
       </form>

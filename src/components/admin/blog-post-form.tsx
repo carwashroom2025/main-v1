@@ -44,6 +44,7 @@ const initialFormData: Partial<BlogPost> = {
   category: '',
   tags: [],
   readTime: 5,
+  views: 0,
   date: format(new Date(), 'yyyy-MM-dd'),
 };
 

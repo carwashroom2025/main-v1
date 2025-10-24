@@ -1,6 +1,6 @@
 
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, addDoc, updateDoc, deleteDoc, Timestamp, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, addDoc, updateDoc, deleteDoc, Timestamp, writeBatch, runTransaction, increment } from 'firebase/firestore';
 import type { BlogPost } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
@@ -78,7 +78,18 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
         return null;
     }
     const postDoc = postSnapshot.docs[0];
-    return { id: postDoc.id, ...postDoc.data() } as BlogPost;
+
+    // Increment view count
+    await runTransaction(db, async (transaction) => {
+        const postRef = doc(db, 'blogPosts', postDoc.id);
+        transaction.update(postRef, { views: increment(1) });
+    });
+
+    // Re-fetch the doc to get the updated data for the return value, though not strictly necessary
+    // as the initial data is usually sufficient for immediate display.
+    const updatedPostDoc = await getDoc(doc(db, 'blogPosts', postDoc.id));
+
+    return { id: updatedPostDoc.id, ...updatedPostDoc.data() } as BlogPost;
 }
 
 export async function getPopularTags(count: number): Promise<string[]> {
@@ -109,6 +120,7 @@ export async function addBlogPost(postData: Omit<BlogPost, 'id'>): Promise<strin
         ...postData,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
+        views: 0,
     });
     await logActivity(`User "${currentUser.name}" created a new blog post: "${postData.title}".`, 'blog', docRef.id, currentUser.id);
     return docRef.id;
