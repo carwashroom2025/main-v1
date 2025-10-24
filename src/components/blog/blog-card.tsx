@@ -180,7 +180,28 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
 
   return (
     <>
-      <Card className="group flex flex-col h-full bg-card rounded-lg overflow-hidden border border-border hover:border-primary/50 transition-all duration-300">
+      <Card className="group relative flex flex-col h-full bg-card rounded-lg overflow-hidden border border-border hover:border-primary/50 transition-all duration-300">
+        {canManagePost && (
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full bg-background/50 hover:bg-background/80">
+                <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem onSelect={() => setIsFormOpen(true)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={handleDeleteClick} className="text-destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+            </DropdownMenu>
+        )}
         <Link href={`/blog/${post.slug}`} scroll={false} className="relative block aspect-video">
             {post.imageUrl ? (
             <Image
@@ -232,6 +253,22 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
                 onDataChange={handleDataChange}
             />
         )}
+        
+        <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the post
+                    "{post.title}".
+                </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
       </>
   );
 }
