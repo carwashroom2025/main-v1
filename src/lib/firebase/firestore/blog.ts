@@ -1,9 +1,11 @@
 
+
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit, addDoc, updateDoc, deleteDoc, Timestamp, writeBatch, runTransaction, increment } from 'firebase/firestore';
-import type { BlogPost } from '../../types';
+import type { BlogPost, User } from '../../types';
 import { getCurrentUser } from '../auth';
 import { logActivity } from './activity';
+import { getUsers } from './users';
 
 // Blog Posts
 
@@ -21,6 +23,18 @@ export async function getBlogPosts({ category, tag }: { category?: string | null
     if (tag) {
         postsList = postsList.filter(post => post.tags.includes(tag));
     }
+    
+    // Add author avatar url to each post
+    const users = await getUsers();
+    const userMap = new Map(users.map(user => [user.id, user]));
+    
+    postsList = postsList.map(post => {
+        const author = userMap.get(post.authorId);
+        return {
+            ...post,
+            authorAvatarUrl: author?.avatarUrl || '',
+        };
+    });
 
     return postsList;
 }
@@ -66,7 +80,20 @@ export async function getRecentBlogPosts(count: number): Promise<BlogPost[]> {
     const postsCol = collection(db, 'blogPosts');
     const q = query(postsCol, orderBy('date', 'desc'), limit(count));
     const postsSnapshot = await getDocs(q);
-    const postsList = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
+    
+    let postsList = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
+
+    const users = await getUsers();
+    const userMap = new Map(users.map(user => [user.id, user]));
+    
+    postsList = postsList.map(post => {
+        const author = userMap.get(post.authorId);
+        return {
+            ...post,
+            authorAvatarUrl: author?.avatarUrl || '',
+        };
+    });
+
     return postsList;
 }
 

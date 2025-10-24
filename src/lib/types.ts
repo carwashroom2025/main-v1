@@ -75,6 +75,7 @@ export type BlogPost = {
     content: string;
     author: string;
     authorId: string;
+    authorAvatarUrl?: string;
     imageUrl: string;
     excerpt: string;
     category: string;

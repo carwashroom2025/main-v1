@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -34,6 +35,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { deleteBlogPost } from '@/lib/firebase/firestore';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 type BlogCardProps = {
   post: BlogPost;
@@ -131,7 +133,10 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
                 <p className="text-muted-foreground mb-4 line-clamp-2 flex-grow">{post.excerpt}</p>
                 <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground mt-auto">
                     <div className="flex items-center gap-2">
-                        <User className="mr-2 h-4 w-4" />
+                        <Avatar className="h-6 w-6">
+                            <AvatarImage src={post.authorAvatarUrl} alt={post.author} />
+                            <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                        </Avatar>
                         <span>{post.author}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -202,7 +207,10 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
           <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
           <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground mt-auto pt-4 border-t border-border/50">
               <div className="flex items-center gap-1.5">
-                  <User className="h-4 w-4" />
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={post.authorAvatarUrl} alt={post.author} />
+                    <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                  </Avatar>
                   <span>{post.author}</span>
               </div>
               <div className="flex items-center gap-1.5">
