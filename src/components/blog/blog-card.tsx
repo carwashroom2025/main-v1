@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState } from 'react';
@@ -8,7 +7,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2, Clock, Eye } from 'lucide-react';
+import { Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2, Eye } from 'lucide-react';
 import type { BlogPost } from '@/lib/types';
 import { format } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
@@ -197,7 +196,7 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
             </Link>
           </h3>
           <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground mt-auto pt-4 border-t border-border/50">
+          <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground mt-auto pt-4 border-t border-border/50">
               <div className="flex items-center gap-1.5">
                   <User className="h-4 w-4" />
                   <span>{post.author}</span>
