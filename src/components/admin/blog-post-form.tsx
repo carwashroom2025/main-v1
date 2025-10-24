@@ -76,6 +76,7 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
             setFormData({
               ...initialFormData,
               ...post,
+              date: post.date ? format(new Date(post.date), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
             });
             setTagsString(post.tags?.join(', ') || '');
         } else {
@@ -134,10 +135,11 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
     setLoading(true);
 
     try {
-      const dataToSave = {
+      const dataToSave: Partial<BlogPost> = {
         ...formData,
         tags: tagsString.split(',').map(t => t.trim()).filter(Boolean),
-        readTime: Number(formData.readTime)
+        readTime: Number(formData.readTime) || 0,
+        date: formData.date ? format(new Date(formData.date), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')
       };
 
       if (post) {
@@ -169,102 +171,101 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{post ? 'Edit Post' : 'Add New Post'}</DialogTitle>
-          <DialogDescription>
-            {post ? 'Update the details of the blog post.' : 'Fill in the details for the new blog post.'}
+          <DialogTitle className="flex items-center">
+            <span className="w-1 h-5 bg-destructive mr-3"></span>
+            {post ? 'Edit Post' : 'Create New Blog Post'}
+          </DialogTitle>
+          <DialogDescription className="pl-4">
+            {post ? 'Update the details of the blog post.' : 'Fill in the details below to create a new blog post for your automotive blog.'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="py-4 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="slug">Slug</Label>
-                    <Input id="slug" name="slug" value={formData.slug || ''} onChange={handleChange} required />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)}>
-                        <SelectTrigger id="category">
-                            <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {blogCategories.map(cat => (
-                                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="tags">Tags (comma-separated)</Label>
-                    <Input id="tags" name="tags" value={tagsString} onChange={handleTagsChange} />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="author">Author</Label>
-                    <Select name="author" value={formData.author || ''} onValueChange={(value) => handleSelectChange('author', value)} disabled={!isAdmin}>
-                        <SelectTrigger id="author">
-                            <SelectValue placeholder="Select author" />
-                        </SelectTrigger>
-                        <SelectContent>
-                             {authors.map(author => (
-                                <SelectItem key={author.id} value={author.name}>{author.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="readTime">Read Time (minutes)</Label>
-                    <Input id="readTime" name="readTime" type="number" value={formData.readTime || 0} onChange={handleChange} required />
-                </div>
-                 <div className="space-y-2 md:col-span-2">
-                    <Label>Featured Image</Label>
-                     {formData.imageUrl ? (
-                        <div className="relative group w-48 h-32">
-                           <Image src={formData.imageUrl} alt="Featured Image" width={192} height={128} className="object-cover rounded-md" />
-                           <Button
-                               type="button"
-                               variant="destructive"
-                               size="icon"
-                               className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100"
-                               onClick={() => setFormData(prev => ({...prev, imageUrl: ''}))}
-                           >
-                               <X className="h-4 w-4" />
-                           </Button>
+          <div className="space-y-2">
+              <Label htmlFor="title">Title <span className="text-destructive">*</span></Label>
+              <Input id="title" name="title" value={formData.title || ''} onChange={handleChange} required placeholder="Enter blog post title" />
+          </div>
+           <div className="space-y-2">
+              <Label htmlFor="excerpt">Description</Label>
+              <Textarea id="excerpt" name="excerpt" value={formData.excerpt || ''} onChange={handleChange} placeholder="Enter a brief description of your blog post" />
+              <p className="text-xs text-muted-foreground">Plain text summary for preview cards</p>
+          </div>
+          <div className="space-y-2">
+              <Label htmlFor="content">HTML Content <span className="text-destructive">*</span></Label>
+              <Textarea id="content" name="content" value={formData.content || ''} onChange={handleChange} rows={8} required placeholder="Enter the full blog post content with HTML tags (e.g., <p>Paragraph</p>, <h2>Heading</h2>, <ul><li>List item</li></ul>)" />
+               <p className="text-xs text-muted-foreground">Full blog post content with HTML formatting</p>
+          </div>
+          <div className="space-y-2">
+            <Label>Featured Image <span className="text-destructive">*</span></Label>
+             <div className="flex items-center gap-2">
+                <div className="relative flex-grow">
+                    <Input 
+                        id="imageUrl" 
+                        name="imageUrl" 
+                        value={formData.imageUrl || ''} 
+                        onChange={handleChange}
+                        placeholder="https://images.unsplash.com/..."
+                    />
+                     <label
+                        htmlFor="image-upload"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+                    >
+                        <div className="p-2 rounded-md hover:bg-muted">
+                             <Upload className="h-5 w-5 text-muted-foreground" />
                         </div>
-                    ) : (
-                        <div className="w-full">
-                            <label
-                                htmlFor="image-upload"
-                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/50"
-                            >
-                                <Upload className="h-8 w-8 text-muted-foreground" />
-                                <span className="text-sm text-muted-foreground">Click to upload</span>
-                            </label>
-                            <Input id="image-upload" type="file" className="sr-only" onChange={handleImageUpload} accept="image/*" />
-                        </div>
-                    )}
-                    {uploadProgress !== null && <Progress value={uploadProgress} className="w-full" />}
-                 </div>
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="excerpt">Excerpt</Label>
-                    <Textarea id="excerpt" name="excerpt" value={formData.excerpt || ''} onChange={handleChange} />
+                    </label>
+                    <Input id="image-upload" type="file" className="sr-only" onChange={handleImageUpload} accept="image/*" />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="content">Content (HTML allowed)</Label>
-                    <Textarea id="content" name="content" value={formData.content || ''} onChange={handleChange} rows={10} />
-                </div>
-            </div>
-            
-            <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={loading || uploadProgress !== null}>
-                    {loading ? 'Saving...' : (uploadProgress !== null ? 'Uploading...' : 'Save Changes')}
-                </Button>
-            </DialogFooter>
+                 {formData.imageUrl && (
+                    <div className="relative group w-20 h-14 flex-shrink-0">
+                       <Image src={formData.imageUrl} alt="Featured Image" layout="fill" className="object-cover rounded-md" />
+                       <Button
+                           type="button"
+                           variant="destructive"
+                           size="icon"
+                           className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100"
+                           onClick={() => setFormData(prev => ({...prev, imageUrl: ''}))}
+                       >
+                           <X className="h-3 w-3" />
+                       </Button>
+                    </div>
+                )}
+             </div>
+             <p className="text-xs text-muted-foreground">Optional: Add a URL for the featured image or upload one.</p>
+             {uploadProgress !== null && <Progress value={uploadProgress} className="w-full mt-2" />}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                  <Label htmlFor="category">Category <span className="text-destructive">*</span></Label>
+                  <Select name="category" value={formData.category || ''} onValueChange={(value) => handleSelectChange('category', value)} required>
+                      <SelectTrigger id="category">
+                          <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {blogCategories.map(cat => (
+                              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          ))}
+                      </SelectContent>
+                  </Select>
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="readTime">Read Time <span className="text-destructive">*</span></Label>
+                  <Input id="readTime" name="readTime" type="number" value={formData.readTime || ''} onChange={handleChange} required placeholder="e.g., 5 min read" />
+              </div>
+          </div>
+          <div className="space-y-2">
+              <Label htmlFor="tags">Tags</Label>
+              <p className="text-xs text-muted-foreground">Or add a custom tag:</p>
+              <Input id="tags" name="tags" value={tagsString} onChange={handleTagsChange} placeholder="Type custom tags, comma separated" />
+          </div>
+          
+          <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={loading || uploadProgress !== null}>
+                  {loading ? 'Saving...' : (uploadProgress !== null ? 'Uploading...' : (isEditMode ? 'Update Post' : 'Create Post'))}
+              </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
