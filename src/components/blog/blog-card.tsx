@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2, Clock } from 'lucide-react';
+import { Calendar, User, Edit, ImageIcon, MoreHorizontal, Trash2, Clock, Eye } from 'lucide-react';
 import type { BlogPost } from '@/lib/types';
 import { format } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
@@ -207,8 +207,8 @@ export function BlogCard({ post, priority = false, view = 'grid' }: BlogCardProp
                   <span>{format(new Date(post.date), 'MMM d, yyyy')}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                  <Clock className="h-4 w-4" />
-                  <span>{post.readTime} min read</span>
+                  <Eye className="h-4 w-4" />
+                  <span>{post.views || 0} views</span>
               </div>
           </div>
         </CardContent>
