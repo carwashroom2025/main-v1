@@ -128,6 +128,7 @@ export function CommentSection({ postId }: { postId: string }) {
   const [loading, setLoading] = useState(true);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState<{commentId: string, reply?: Reply} | null>(null);
+  const [visibleCommentsCount, setVisibleCommentsCount] = useState(5);
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
   const isLoggedIn = !!user;
@@ -197,6 +198,8 @@ export function CommentSection({ postId }: { postId: string }) {
   
   const totalComments = comments.reduce((acc, comment) => acc + 1 + (comment.replies?.length || 0), 0);
 
+  const visibleComments = comments.slice(0, visibleCommentsCount);
+
   return (
     <>
     <Card>
@@ -238,9 +241,21 @@ export function CommentSection({ postId }: { postId: string }) {
                     <Skeleton className="h-20 w-full" />
                 </div>
             ) : comments.length > 0 ? (
-                comments.map((comment) => (
-                    <CommentWithReplies key={comment.id} comment={comment} onReplySubmit={(text, parentId) => handleCommentSubmit(text, parentId)} onDelete={handleDeleteClick} currentUser={user} />
-                ))
+                <>
+                    {visibleComments.map((comment) => (
+                        <CommentWithReplies key={comment.id} comment={comment} onReplySubmit={(text, parentId) => handleCommentSubmit(text, parentId)} onDelete={handleDeleteClick} currentUser={user} />
+                    ))}
+                    {comments.length > visibleCommentsCount && (
+                        <Button variant="link" onClick={() => setVisibleCommentsCount(comments.length)}>
+                            Show all {comments.length - visibleCommentsCount} comments
+                        </Button>
+                    )}
+                    {visibleCommentsCount > 5 && (
+                        <Button variant="link" onClick={() => setVisibleCommentsCount(5)}>
+                            Show less
+                        </Button>
+                    )}
+                </>
             ) : (
                 <p className="text-muted-foreground text-center py-8">Be the first to leave a comment!</p>
             )}
