@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { BlogPost, User } from '@/lib/types';
-import { addBlogPost, updateBlogPost, getUsers } from '@/lib/firebase/firestore';
+import { addBlogPost, updateBlogPost, getUsers, getPopularTags } from '@/lib/firebase/firestore';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { format } from 'date-fns';
 import { useAuth } from '@/context/auth-context';
@@ -25,6 +25,8 @@ import { Upload, X } from 'lucide-react';
 import Image from 'next/image';
 import { uploadFile } from '@/lib/firebase/storage';
 import { Progress } from '../ui/progress';
+import { cn } from '@/lib/utils';
+import { Badge } from '../ui/badge';
 
 type BlogPostFormProps = {
   isOpen: boolean;
@@ -58,16 +60,21 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
   const isAdmin = user && ['Moderator', 'Administrator'].includes(user.role);
   const [tagsString, setTagsString] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [popularTags, setPopularTags] = useState<string[]>([]);
   
   useEffect(() => {
-    async function fetchAuthors() {
+    async function fetchData() {
       if (isOpen) {
-        const allUsers = await getUsers();
+        const [allUsers, fetchedPopularTags] = await Promise.all([
+          getUsers(),
+          getPopularTags(10)
+        ]);
         const authorUsers = allUsers.filter(u => ['Author', 'Moderator', 'Administrator'].includes(u.role));
         setAuthors(authorUsers);
+        setPopularTags(fetchedPopularTags);
       }
     }
-    fetchAuthors();
+    fetchData();
   }, [isOpen]);
 
   useEffect(() => {
@@ -111,6 +118,15 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
   
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagsString(e.target.value);
+  }
+
+  const handlePopularTagClick = (tag: string) => {
+    const currentTags = tagsString.split(',').map(t => t.trim()).filter(Boolean);
+    if (currentTags.includes(tag)) {
+        setTagsString(currentTags.filter(t => t !== tag).join(', '));
+    } else {
+        setTagsString([...currentTags, tag].join(', '));
+    }
   }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,6 +272,22 @@ export function BlogPostForm({ isOpen, setIsOpen, post, onDataChange }: BlogPost
           </div>
           <div className="space-y-2">
               <Label htmlFor="tags">Tags</Label>
+              <div className="flex flex-wrap gap-2">
+                {popularTags.map(tag => {
+                    const currentTags = tagsString.split(',').map(t => t.trim());
+                    const isSelected = currentTags.includes(tag);
+                    return (
+                        <Badge
+                            key={tag}
+                            variant={isSelected ? "default" : "secondary"}
+                            onClick={() => handlePopularTagClick(tag)}
+                            className="cursor-pointer"
+                        >
+                            {tag}
+                        </Badge>
+                    )
+                })}
+              </div>
               <p className="text-xs text-muted-foreground">Or add a custom tag:</p>
               <Input id="tags" name="tags" value={tagsString} onChange={handleTagsChange} placeholder="Type custom tags, comma separated" />
           </div>
