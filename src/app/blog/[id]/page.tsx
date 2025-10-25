@@ -43,8 +43,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
-export default function BlogPostPage({ params }: { params: { id: string } }) {
-  const { id: postId } = params;
+export default function BlogPostPage({ params: { id: slug } }: { params: { id: string } }) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,12 +55,12 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
 
 
   const fetchPostData = async () => {
-    if (!postId) {
+    if (!slug) {
       setLoading(false);
       return;
     }
     setLoading(true);
-    const postData = await getBlogPost(postId as string);
+    const postData = await getBlogPost(slug);
     if (postData) {
       setPost(postData);
       const related = await getRelatedBlogPosts(postData, 3);
@@ -73,11 +72,11 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
   };
   
   useEffect(() => {
-    if (postId) {
+    if (slug) {
       fetchPostData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId]);
+  }, [slug]);
   
   const handleDeleteConfirm = async () => {
     if (!post) return;
