@@ -105,20 +105,14 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
         return null;
     }
     const postDoc = postSnapshot.docs[0];
+    
+    // Increment view count in a non-blocking way
+    const postRef = doc(db, 'blogPosts', postDoc.id);
+    updateDoc(postRef, { views: increment(1) }).catch(error => {
+        console.error("Failed to increment view count:", error);
+    });
 
-    try {
-        await runTransaction(db, async (transaction) => {
-            const postRef = doc(db, 'blogPosts', postDoc.id);
-            transaction.update(postRef, { views: increment(1) });
-        });
-    } catch (e) {
-        console.error("View count transaction failed: ", e);
-        // Don't block the user from seeing the post if the transaction fails
-    }
-
-    const updatedPostDoc = await getDoc(doc(db, 'blogPosts', postDoc.id));
-
-    return { id: updatedPostDoc.id, ...updatedPostDoc.data() } as BlogPost;
+    return { id: postDoc.id, ...postDoc.data() } as BlogPost;
 }
 
 export async function getPopularTags(count: number): Promise<string[]> {
