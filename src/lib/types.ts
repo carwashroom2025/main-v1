@@ -7,6 +7,7 @@ export type User = {
     name: string;
     email: string;
     avatarUrl?: string;
+    bio?: string;
     role: 'Administrator' | 'Moderator' | 'Author' | 'User' | 'Business Owner';
     status: 'Active' | 'Suspended';
     verified: boolean;

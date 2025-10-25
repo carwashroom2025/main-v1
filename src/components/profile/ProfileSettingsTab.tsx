@@ -12,15 +12,18 @@ import { useToast } from '@/hooks/use-toast';
 import { sendPasswordReset } from '@/lib/firebase/auth';
 import { ProfileImageUploader } from '@/components/profile/profile-image-uploader';
 import { Skeleton } from '../ui/skeleton';
+import { Textarea } from '../ui/textarea';
 
 export function ProfileSettingsTab() {
   const { user, setUser, loading } = useAuth();
   const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     if (user) {
       setName(user.name);
+      setBio(user.bio || '');
     }
   }, [user]);
 
@@ -38,11 +41,12 @@ export function ProfileSettingsTab() {
     if (!user) return;
 
     try {
-      await updateUser(user.id, { name });
-      setUser(prev => prev ? { ...prev, name } : null);
+      const dataToUpdate = { name, bio };
+      await updateUser(user.id, dataToUpdate);
+      setUser(prev => prev ? { ...prev, ...dataToUpdate } : null);
       toast({
         title: 'Profile Updated',
-        description: 'Your name has been successfully updated.',
+        description: 'Your profile has been successfully updated.',
       });
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -110,6 +114,15 @@ export function ProfileSettingsTab() {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bio">About Me</Label>
+                  <Textarea
+                    id="bio"
+                    placeholder="Tell us a little about yourself"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
                   />
                 </div>
                 <div>
