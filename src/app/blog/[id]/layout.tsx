@@ -6,9 +6,7 @@ export default function BlogPostLayout({
 }) {
   return (
     <>
-      <div className="container py-12">
-        {children}
-      </div>
+      {children}
     </>
   );
 }

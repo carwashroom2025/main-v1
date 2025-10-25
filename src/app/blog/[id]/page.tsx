@@ -9,7 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { Clock, Calendar, ImageIcon } from 'lucide-react';
+import { Clock, Calendar, ImageIcon, ArrowLeft, Edit } from 'lucide-react';
 import { CommentSection } from '@/components/shared/comment-section';
 import { Separator } from '@/components/ui/separator';
 import { ShareButtons } from '@/components/blog/share-buttons';
@@ -18,8 +18,11 @@ import type { BlogPost } from '@/lib/types';
 import { RelatedPosts } from '@/components/blog/related-posts';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-export const dynamic = 'force-dynamic';
+import { BlogSidebar } from '@/components/blog/blog-sidebar';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { BlogPostForm } from '@/components/admin/blog-post-form';
+import { useAuth } from '@/context/auth-context';
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -27,6 +30,8 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const fetchPostData = async () => {
     if (!postId) {
@@ -51,7 +56,6 @@ export default function BlogPostPage() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
-
 
   if (loading || !post) {
     return (
@@ -78,87 +82,133 @@ export default function BlogPostPage() {
     createdAt: post.createdAt?.toString(),
     updatedAt: post.updatedAt?.toString(),
   };
+
+  const canEdit = user && (user.id === post.authorId || ['Moderator', 'Administrator'].includes(user.role));
   
   return (
     <>
     <title>{`${post.title} | Carwashroom`}</title>
-    <div className="max-w-4xl mx-auto">
-        <article>
-          <header className="mb-8 text-center">
-              <div className="mb-4">
-                  <Badge variant="default">{post.category}</Badge>
-              </div>
-              <div className="flex items-center justify-center gap-4">
-                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                    {post.title}
-                </h1>
-              </div>
-              <div className="mt-4 flex justify-center items-center gap-6 text-muted-foreground text-sm">
-                  <div className="flex items-center gap-2">
-                      {authorImage && (
-                          <Avatar className="h-8 w-8">
-                              <AvatarImage src={authorImage.imageUrl} alt={post.author} />
-                              <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                      )}
-                      <span>by {post.author}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>{format(new Date(post.date), 'MMMM d, yyyy')}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{post.readTime} min read</span>
-                  </div>
-              </div>
-          </header>
-
-          {post.imageUrl ? (
-            <div className="relative aspect-video rounded-lg overflow-hidden mb-8">
-              <Image
-                src={post.imageUrl}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-              />
+    <div className="container py-12">
+        <div className="flex justify-between items-center mb-6">
+            <div>
+                <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary flex items-center mb-4">
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Blog
+                </Link>
             </div>
-          ) : (
-             <div className="relative aspect-video rounded-lg overflow-hidden mb-8 bg-muted flex items-center justify-center">
-                <ImageIcon className="h-16 w-16 text-muted-foreground" />
-             </div>
-          )}
+            {canEdit && (
+                <Button variant="outline" onClick={() => setIsFormOpen(true)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit Post
+                </Button>
+            )}
+        </div>
 
-          <div
-            className="prose prose-lg dark:prose-invert mx-auto prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary hover:prose-a:text-primary/80"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mt-8">
+            <main className="lg:col-span-3">
+                <article>
+                    {post.imageUrl ? (
+                        <div className="relative aspect-video rounded-lg overflow-hidden mb-8">
+                        <Image
+                            src={post.imageUrl}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                         <div className="absolute top-4 left-4">
+                             <Badge variant="default">{post.category}</Badge>
+                         </div>
+                        </div>
+                    ) : (
+                        <div className="relative aspect-video rounded-lg overflow-hidden mb-8 bg-muted flex items-center justify-center">
+                            <ImageIcon className="h-16 w-16 text-muted-foreground" />
+                        </div>
+                    )}
+                    
+                    <header className="mb-8">
+                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                            {post.title}
+                        </h1>
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 text-muted-foreground text-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    {authorImage && (
+                                        <Avatar className="h-8 w-8">
+                                            <AvatarImage src={authorImage.imageUrl} alt={post.author} />
+                                            <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                    )}
+                                    <span>by {post.author}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4" />
+                                    <span>{format(new Date(post.date), 'MMMM d, yyyy')}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    <span>{post.readTime} min read</span>
+                                </div>
+                            </div>
+                            <ShareButtons post={serializablePost as BlogPost} />
+                        </div>
+                    </header>
 
-          <div className="mt-8 flex justify-end">
-              <ShareButtons post={serializablePost as BlogPost} />
-          </div>
-        </article>
+                    <div
+                        className="prose prose-lg dark:prose-invert mx-auto prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary hover:prose-a:text-primary/80"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
 
-        <Separator className="my-12" />
+                </article>
 
-        <div className="mt-12">
-          <AuthorBio author={post.author} />
+                <Separator className="my-12" />
+                
+                {post.tags && post.tags.length > 0 && (
+                    <>
+                        <div className="mb-8">
+                            <h3 className="text-lg font-semibold mb-2">Tags</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {post.tags.map(tag => (
+                                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                                ))}
+                            </div>
+                        </div>
+                        <Separator className="my-12" />
+                    </>
+                )}
+
+                <div className="mt-12">
+                    <AuthorBio author={post.author} />
+                </div>
+                <Separator className="my-12" />
+
+                <div className="mt-12">
+                    <CommentSection postId={post.id} />
+                </div>
+            </main>
+
+            <aside className="lg:col-span-1">
+                <BlogSidebar />
+            </aside>
         </div>
 
         <Separator className="my-12" />
         
         {relatedPosts.length > 0 && (
-          <>
-            <RelatedPosts posts={relatedPosts} />
-            <Separator className="my-12" />
-          </>
+            <div className="mt-12">
+                <RelatedPosts posts={relatedPosts} />
+            </div>
         )}
-
-        <div className="mt-12">
-          <CommentSection postId={post.id} />
-        </div>
     </div>
+    
+    {canEdit && (
+        <BlogPostForm 
+            isOpen={isFormOpen} 
+            setIsOpen={setIsFormOpen} 
+            post={post} 
+            onDataChange={fetchPostData}
+        />
+    )}
     </>
   );
 }
