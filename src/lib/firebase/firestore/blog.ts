@@ -109,12 +109,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
     try {
         await runTransaction(db, async (transaction) => {
             const postRef = doc(db, 'blogPosts', postDoc.id);
-            const freshDoc = await transaction.get(postRef);
-            if (!freshDoc.exists()) {
-                throw "Document does not exist!";
-            }
-            const newViews = (freshDoc.data().views || 0) + 1;
-            transaction.update(postRef, { views: newViews });
+            transaction.update(postRef, { views: increment(1) });
         });
     } catch (e) {
         console.error("View count transaction failed: ", e);

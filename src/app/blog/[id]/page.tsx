@@ -9,7 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { Clock, Calendar, ImageIcon, ArrowLeft, Edit, MoreHorizontal, Eye, Trash2 } from 'lucide-react';
+import { Clock, Calendar, ImageIcon, ArrowLeft, MoreHorizontal, Trash2, Edit, Eye } from 'lucide-react';
 import { CommentSection } from '@/components/shared/comment-section';
 import { Separator } from '@/components/ui/separator';
 import { ShareButtons } from '@/components/blog/share-buttons';
@@ -43,9 +43,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const postId = Array.isArray(params.id) ? params.id[0] : params.id;
+export default function BlogPostPage({ params }: { params: { id: string } }) {
+  const { id: postId } = params;
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -160,7 +159,7 @@ export default function BlogPostPage() {
             )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mt-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
             <main className="lg:col-span-3">
                 <article>
                     {post.imageUrl ? (
@@ -204,6 +203,10 @@ export default function BlogPostPage() {
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-4 w-4" />
                                     <span>{post.readTime} min read</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Eye className="h-4 w-4" />
+                                    <span>{post.views || 0} views</span>
                                 </div>
                             </div>
                             <ShareButtons post={serializablePost as BlogPost} />
