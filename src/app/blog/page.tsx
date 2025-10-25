@@ -1,5 +1,4 @@
 
-
 import { Suspense } from 'react';
 import BlogListings from './blog-listings';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -10,11 +9,11 @@ export const dynamic = 'force-dynamic';
 
 export default function BlogPage() {
   return (
-    <div className="container py-12">
+    <div className="container py-8 md:py-12">
       <Suspense>
         <BlogHeader />
       </Suspense>
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 md:gap-12 mt-8">
         <main className="lg:col-span-3">
           <Suspense fallback={<BlogPageSkeleton />}>
             <BlogListings />

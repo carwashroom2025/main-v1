@@ -96,7 +96,7 @@ export default function BlogListings() {
 
   if (loading) {
     return (
-        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-8')}>
+        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'space-y-8')}>
             {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-6">
                     <Skeleton className="h-48 w-full" />
@@ -116,7 +116,7 @@ export default function BlogListings() {
   return (
     <>
       {currentPosts.length > 0 ? (
-        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')}>
+        <div className={cn("grid gap-8", view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')}>
             {currentPosts.map((post, index) => (
             <BlogCard key={post.id} post={post} priority={index < 2} view={view} />
             ))}
