@@ -43,7 +43,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
-export default function BlogPostPage({ params: { id: slug } }: { params: { id: string } }) {
+export default function BlogPostPage({ params }: { params: { id: string } }) {
+  const slug = params.id;
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
