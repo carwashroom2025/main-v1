@@ -149,12 +149,6 @@ export default function BlogPostPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/blog/${post.slug}`} className="flex justify-between w-full" scroll={false}>
-                            <span>View</span>
-                            <Eye className="h-4 w-4" />
-                        </Link>
-                      </DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => setIsFormOpen(true)}>
                         <Edit className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
@@ -166,7 +160,7 @@ export default function BlogPostPage() {
             )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mt-8 items-start">
             <main className="lg:col-span-3">
                 <article>
                     {post.imageUrl ? (
