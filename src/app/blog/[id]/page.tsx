@@ -13,7 +13,6 @@ import { Clock, Calendar, ImageIcon, ArrowLeft, Edit } from 'lucide-react';
 import { CommentSection } from '@/components/shared/comment-section';
 import { Separator } from '@/components/ui/separator';
 import { ShareButtons } from '@/components/blog/share-buttons';
-import { AuthorBio } from '@/components/blog/author-bio';
 import type { BlogPost } from '@/lib/types';
 import { RelatedPosts } from '@/components/blog/related-posts';
 import { useEffect, useState } from 'react';
@@ -161,10 +160,10 @@ export default function BlogPostPage() {
 
                 </article>
 
-                <Separator className="my-12" />
                 
                 {post.tags && post.tags.length > 0 && (
                     <>
+                        <Separator className="my-12" />
                         <div className="mb-8">
                             <h3 className="text-lg font-semibold mb-2">Tags</h3>
                             <div className="flex flex-wrap gap-2">
@@ -173,13 +172,9 @@ export default function BlogPostPage() {
                                 ))}
                             </div>
                         </div>
-                        <Separator className="my-12" />
                     </>
                 )}
 
-                <div className="mt-12">
-                    <AuthorBio author={post.author} />
-                </div>
                 <Separator className="my-12" />
 
                 <div className="mt-12">
