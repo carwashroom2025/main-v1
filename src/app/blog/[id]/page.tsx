@@ -3,13 +3,13 @@
 
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { getBlogPost, getRelatedBlogPosts } from '@/lib/firebase/firestore';
+import { getBlogPost, getRelatedBlogPosts, deleteBlogPost } from '@/lib/firebase/firestore';
 import { blogAuthors } from '@/lib/blog-data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { Clock, Calendar, ImageIcon, ArrowLeft, Edit } from 'lucide-react';
+import { Clock, Calendar, ImageIcon, ArrowLeft, Edit, MoreHorizontal, Eye, Trash2 } from 'lucide-react';
 import { CommentSection } from '@/components/shared/comment-section';
 import { Separator } from '@/components/ui/separator';
 import { ShareButtons } from '@/components/blog/share-buttons';
@@ -22,6 +22,26 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { BlogPostForm } from '@/components/admin/blog-post-form';
 import { useAuth } from '@/context/auth-context';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -31,6 +51,10 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
 
   const fetchPostData = async () => {
     if (!postId) {
@@ -55,6 +79,26 @@ export default function BlogPostPage() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
+  
+  const handleDeleteConfirm = async () => {
+    if (!post) return;
+    try {
+        await deleteBlogPost(post.id);
+        toast({
+            title: "Post Deleted",
+            description: `"${post.title}" has been successfully deleted.`,
+        });
+        router.push('/blog');
+    } catch (error: any) {
+        toast({
+            title: "Error",
+            description: error.message || "Failed to delete post.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsAlertOpen(false);
+    }
+  }
 
   if (loading || !post) {
     return (
@@ -82,7 +126,7 @@ export default function BlogPostPage() {
     updatedAt: post.updatedAt?.toString(),
   };
 
-  const canEdit = user && (user.id === post.authorId || ['Moderator', 'Administrator'].includes(user.role));
+  const canManagePost = user && (user.id === post.authorId || ['Moderator', 'Administrator'].includes(user.role));
   
   return (
     <>
@@ -95,11 +139,30 @@ export default function BlogPostPage() {
                     Back to Blog
                 </Link>
             </div>
-            {canEdit && (
-                <Button variant="outline" onClick={() => setIsFormOpen(true)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit Post
-                </Button>
+            {canManagePost && (
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/blog/${post.slug}`} className="flex justify-between w-full" scroll={false}>
+                            <span>View</span>
+                            <Eye className="h-4 w-4" />
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsFormOpen(true)}>
+                        <Edit className="mr-2 h-4 w-4" /> Edit
+                        </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setIsAlertOpen(true)} className="text-destructive">
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
             )}
         </div>
 
@@ -196,7 +259,7 @@ export default function BlogPostPage() {
         )}
     </div>
     
-    {canEdit && (
+    {canManagePost && (
         <BlogPostForm 
             isOpen={isFormOpen} 
             setIsOpen={setIsFormOpen} 
@@ -204,6 +267,21 @@ export default function BlogPostPage() {
             onDataChange={fetchPostData}
         />
     )}
+     <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the post
+                "{post.title}".
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
     </>
   );
 }
